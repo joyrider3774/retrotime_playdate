@@ -33,10 +33,10 @@
 #define GameFastEddy_rowfloorsizey (32.0f * yscale)
 #define GameFastEddy_rows 5
 
-#define GameFastEddy_playerspeed (6.4f*xscale)
-#define GameFastEddy_playerjumpspeed 2.0f
-#define GameFastEddy_playerclimbspeed (2.0f * yscale)
-#define GameFastEddy_collectablespeed (2*xscale)
+#define GameFastEddy_playerspeed (6.4f*xscale * FPSScale)
+#define GameFastEddy_playerjumpspeed 2.0f * FPSScale
+#define GameFastEddy_playerclimbspeed (2.0f * yscale * FPSScale)
+#define GameFastEddy_collectablespeed (2*xscale * FPSScale)
 
 #define GameFastEddy_maxenemies 10
 #define GameFastEddy_maxcollectables 2

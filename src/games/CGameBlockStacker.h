@@ -12,8 +12,8 @@
 #define CGameBlockStacker_numcols 12
 #define CGameBlockStacker_numrows 18
 #define CGameBlockStacker_blocksize (ScreenHeight / CGameBlockStacker_numrows)
-#define CGameBlockStacker_ticksidle 3
-#define CGameBlockStacker_ticksinputidle 4
+#define CGameBlockStacker_ticksidle 1
+#define CGameBlockStacker_ticksinputidle 2
 #define CGameBlockStacker_totalelements 216//numcols * numrows
 
 typedef struct CGameBlockStacker CGameBlockStacker;

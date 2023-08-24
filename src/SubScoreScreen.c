@@ -89,7 +89,7 @@ void SubScoreScreen()
 	if (SubGameState == SGFrame)
 	{
 		if (SubStateCounter < 16.0f)
-			SubStateCounter += 0.2f;
+			SubStateCounter += 0.4f;
 		else
 			SubGameState = SGCalcScore;
 	}

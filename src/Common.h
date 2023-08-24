@@ -27,7 +27,8 @@
 #define xscale (ScreenWidth / 1280.0f)
 #define yscale (ScreenHeight / 720.0f)
 
-#define DesiredFps 0
+#define DesiredFps 30
+#define FPSScale (60.0f / DesiredFps)
 
 #define ScoreBarHeight (int)(24*yscale)
 

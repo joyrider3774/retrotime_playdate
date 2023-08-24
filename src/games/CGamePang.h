@@ -10,9 +10,9 @@
 
 #define CGamePang_backgroundcopyheight 30
 
-#define CGamePang_enemyspeed 1.0f*yscale
-#define CGamePang_playerspeed 8.0f*xscale
-#define CGamePang_bulletspeed 10.0f*yscale
+#define CGamePang_enemyspeed 1.0f*yscale*FPSScale
+#define CGamePang_playerspeed 8.0f*xscale*FPSScale
+#define CGamePang_bulletspeed 10.0f*yscale*FPSScale
 
 #define CGamePang_playerstateidle 0
 #define CGamePang_playerstatemoveleft 2

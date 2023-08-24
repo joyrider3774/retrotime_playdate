@@ -13,7 +13,7 @@
 #define CGameSnake_rows 22
 //(int)(ScreenWidth / snakesize) -1;
 #define CGameSnake_cols 38
-#define CGameSnake_updateticks 8
+#define CGameSnake_updateticks 8 / FPSScale
 //rows*cols
 #define CGameSnake_totalcells 836
 

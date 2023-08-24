@@ -35,7 +35,7 @@ CGameFastEddy* Create_CGameFastEddy()
 	GameFastEddy->playerjumpheight = GameFastEddy->rowsize * 2/ 4;
 	GameFastEddy->collectableheight = GameFastEddy->rowsize / 2;
 	GameFastEddy->keyheight = GameFastEddy->rowsize / 4;
-	GameFastEddy->playerjumpspeeddec = GameFastEddy_playerjumpspeed / GameFastEddy->playerjumpheight;
+	GameFastEddy->playerjumpspeeddec = GameFastEddy_playerjumpspeed / GameFastEddy->playerjumpheight * FPSScale;
 
 
 	Initialize_CSpriteObject(&GameFastEddy->player);

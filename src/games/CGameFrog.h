@@ -34,7 +34,7 @@ typedef struct SObjectInfo SObjectInfo;
 
 #define CGameFrog_debugmode false
 #define CGameFrog_playerspeed 16.0f*3.0f*yscale
-#define CGameFrog_globalworldspeed 0.5f*yscale
+#define CGameFrog_globalworldspeed 0.5f*yscale*FPSScale
 
 #define CGameFrog_rowtypewater 0
 #define CGameFrog_rowtyperoad 1
@@ -76,7 +76,7 @@ typedef struct SObjectInfo SObjectInfo;
 //(int)FLOORING(CGameFrog_visiblerows, 2) or visible rows / 2 floored
 #define CGameFrog_playerstartrow 7
 
-#define CGameFrog_speeddeviation 0.25f*yscale
+#define CGameFrog_speeddeviation 0.25f*yscale*FPSScale
 
 #define CGameFrog_rowtypewaterstart 0
 #define CGameFrog_rowtypewaterend 2

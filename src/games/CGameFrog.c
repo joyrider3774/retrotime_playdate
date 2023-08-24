@@ -32,7 +32,7 @@ CGameFrog* Create_CGameFrog()
 	GameFrog->rowtypes[0].backgroundtileend = 9;
 	GameFrog->rowtypes[0].deadlyground = true;
 	GameFrog->rowtypes[0].id = CGameFrog_idenemyplant;
-	GameFrog->rowtypes[0].speed = 1.0f*yscale;
+	GameFrog->rowtypes[0].speed = 1.0f*yscale*FPSScale;
 	GameFrog->rowtypes[0].minspace = 2;
 	GameFrog->rowtypes[0].maxrepeats = 4;
 
@@ -41,7 +41,7 @@ CGameFrog* Create_CGameFrog()
 	GameFrog->rowtypes[1].backgroundtileend = 9;
 	GameFrog->rowtypes[1].deadlyground = true;
 	GameFrog->rowtypes[1].id = CGameFrog_idenemyplant;
-	GameFrog->rowtypes[1].speed = 2.0f*yscale;
+	GameFrog->rowtypes[1].speed = 2.0f*yscale* FPSScale;
 	GameFrog->rowtypes[1].minspace = 3;
 	GameFrog->rowtypes[1].maxrepeats = 2;
 
@@ -50,7 +50,7 @@ CGameFrog* Create_CGameFrog()
 	GameFrog->rowtypes[2].backgroundtileend = 9;
 	GameFrog->rowtypes[2].deadlyground = true;
 	GameFrog->rowtypes[2].id = CGameFrog_idenemyplant;
-	GameFrog->rowtypes[2].speed = 3.0f*yscale;
+	GameFrog->rowtypes[2].speed = 3.0f*yscale*FPSScale;
 	GameFrog->rowtypes[2].minspace = 4;
 	GameFrog->rowtypes[2].maxrepeats = 3;
 
@@ -59,7 +59,7 @@ CGameFrog* Create_CGameFrog()
 	GameFrog->rowtypes[3].backgroundtileend = 0;
 	GameFrog->rowtypes[3].deadlyground = false;
 	GameFrog->rowtypes[3].id = CGameFrog_idenemycar1;
-	GameFrog->rowtypes[3].speed = 2.0f*yscale;
+	GameFrog->rowtypes[3].speed = 2.0f*yscale* FPSScale;
 	GameFrog->rowtypes[3].minspace = 4;
 	GameFrog->rowtypes[3].maxrepeats = 2;
 
@@ -68,7 +68,7 @@ CGameFrog* Create_CGameFrog()
 	GameFrog->rowtypes[4].backgroundtileend = 0;
 	GameFrog->rowtypes[4].deadlyground = false;
 	GameFrog->rowtypes[4].id = CGameFrog_idenemycar2;
-	GameFrog->rowtypes[4].speed = 1.0f*yscale;
+	GameFrog->rowtypes[4].speed = 1.0f*yscale* FPSScale;
 	GameFrog->rowtypes[4].minspace = 3;
 	GameFrog->rowtypes[4].maxrepeats = 2;
 
@@ -77,7 +77,7 @@ CGameFrog* Create_CGameFrog()
 	GameFrog->rowtypes[5].backgroundtileend = 0;
 	GameFrog->rowtypes[5].deadlyground = false;
 	GameFrog->rowtypes[5].id = CGameFrog_idenemycar3;
-	GameFrog->rowtypes[5].speed = 7.0f*yscale;
+	GameFrog->rowtypes[5].speed = 7.0f*yscale* FPSScale;
 	GameFrog->rowtypes[5].minspace = CGameFrog_numrows;
 	GameFrog->rowtypes[5].maxrepeats = 1;
 
@@ -86,7 +86,7 @@ CGameFrog* Create_CGameFrog()
 	GameFrog->rowtypes[6].backgroundtileend = 0;
 	GameFrog->rowtypes[6].deadlyground = false;
 	GameFrog->rowtypes[6].id = CGameFrog_idenemycar4;
-	GameFrog->rowtypes[6].speed = 1.5f*yscale;
+	GameFrog->rowtypes[6].speed = 1.5f*yscale* FPSScale;
 	GameFrog->rowtypes[6].minspace = 4;
 	GameFrog->rowtypes[6].maxrepeats = 2;
 	
@@ -95,7 +95,7 @@ CGameFrog* Create_CGameFrog()
 	GameFrog->rowtypes[7].backgroundtileend = 0;
 	GameFrog->rowtypes[7].deadlyground = false;
 	GameFrog->rowtypes[7].id = CGameFrog_idenemycar5;
-	GameFrog->rowtypes[7].speed = 2.5f*yscale;
+	GameFrog->rowtypes[7].speed = 2.5f*yscale* FPSScale;
 	GameFrog->rowtypes[7].minspace = 3;
 	GameFrog->rowtypes[7].maxrepeats = 2;
 	
@@ -104,15 +104,15 @@ CGameFrog* Create_CGameFrog()
 	GameFrog->rowtypes[8].backgroundtileend = 10;
 	GameFrog->rowtypes[8].deadlyground = false;
 	GameFrog->rowtypes[8].id = CGameFrog_idnone;
-	GameFrog->rowtypes[8].speed = 2.0f*yscale;
+	GameFrog->rowtypes[8].speed = 2.0f*yscale* FPSScale;
 	GameFrog->rowtypes[8].minspace = 2;
 	GameFrog->rowtypes[8].maxrepeats = 2;
 
 	GameFrog->levelincspeeds[0] = 0.0f;
-	GameFrog->levelincspeeds[1] = 0.25f*yscale;
-	GameFrog->levelincspeeds[2] = 0.5f*yscale;
-	GameFrog->levelincspeeds[3] = 1.0f*yscale;
-	GameFrog->levelincspeeds[4] = 1.5f*yscale;
+	GameFrog->levelincspeeds[1] = 0.25f*yscale* FPSScale;
+	GameFrog->levelincspeeds[2] = 0.5f*yscale* FPSScale;
+	GameFrog->levelincspeeds[3] = 1.0f*yscale* FPSScale;
+	GameFrog->levelincspeeds[4] = 1.5f*yscale* FPSScale;
 
 	GameFrog->levelincspawns[0] = 30;
 	GameFrog->levelincspawns[1] = 90;

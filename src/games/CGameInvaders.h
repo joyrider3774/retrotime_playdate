@@ -20,10 +20,10 @@
 #define CGameInvaders_enemyspacing (60*yscale)
 #define CGameInvaders_enemyhorzspacing (50*xscale)
 
-#define CGameInvaders_enemyspeed (1.0f*xscale)
-#define CGameInvaders_enemyspeedinc (0.15f*xscale)
-#define CGameInvaders_playerspeed (8.0f*xscale)
-#define CGameInvaders_bulletspeed (10.0f*yscale)
+#define CGameInvaders_enemyspeed (1.0f*xscale*FPSScale)
+#define CGameInvaders_enemyspeedinc (0.15f*xscale*FPSScale)
+#define CGameInvaders_playerspeed (8.0f*xscale*FPSScale)
+#define CGameInvaders_bulletspeed (10.0f*yscale*FPSScale)
 #define CGameInvaders_asteroidsoffset (150*xscale)
 #define CGameInvaders_endscreenconstant ((45*xscale) + 150*xscale)
 #define CGameInvaders_maxexplosion 10

@@ -11,10 +11,10 @@
 #define CGameBreakOut_tweenblockpositions 0
 #define CGameBreakOut_tweenblockdeath 1
 #define CGameBreakOut_blockstatedeath 1
-#define CGameBreakOut_ballspeed (6.0f*yscale)
-#define CGameBreakOut_ballspeedinc (0.1f*yscale)
-#define CGameBreakOut_ballvelsegments 5
-#define CGameBreakOut_playerspeed (8.0f*xscale)
+#define CGameBreakOut_ballspeed (6.0f*yscale*FPSScale)
+#define CGameBreakOut_ballspeedinc (0.1f*yscale*FPSScale)
+#define CGameBreakOut_ballvelsegments (5*FPSScale)
+#define CGameBreakOut_playerspeed (8.0f*xscale*FPSScale)
 #define CGameBreakOut_blockxoffset (120.0f*xscale)
 #define CGameBreakOut_blockyoffset (80.0f*yscale)
 #define CGameBreakOut_blockrows 10
