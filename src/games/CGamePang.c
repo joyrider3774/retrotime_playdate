@@ -1,11 +1,11 @@
-#include <SDL.h>
+#include <pd_api.h>
 #include <stdbool.h>
 #include "CGamePang.h"
 #include "CGameBase.h"
 #include "../CGame.h"
 #include "../Common.h"
 #include "../Vec2F.h"
-
+#include "../pd_helperfuncs.h"
 
 
 CGamePang* Create_CGamePang()
@@ -111,18 +111,18 @@ void CGamePang_createball(CGamePang* GamePang, int size, float x, float y, float
 		if (!GamePang->balls[i].alive)
 		{
 			GamePang->balls[i].spr = CSprites_CreateSprite();
-			CSprites_SetSpriteImage(Renderer,GamePang->balls[i].spr, &GamePang->spritesheetball);
+			CSprites_SetSpriteImage(GamePang->balls[i].spr, &GamePang->spritesheetball);
 			CSprites_SetSpriteCollisionShape(GamePang->balls[i].spr, SHAPE_CIRCLE, 35,35,0,0,0);
 			//CSprites_SetSpriteCollisionShape(GamePang->balls[i].spr, SHAPE_BOX, 27,27,0,0,0);
 			CSprites_SetSpriteColour(GamePang->balls[i].spr, 1, 1, 1, 0.7f);
 			Vec2F Scale = GamePang->ballscale;
 			Scale.x = Scale.x * size;
 			Scale.y = Scale.y * size;
-			CSprites_SetSpriteScale(Renderer,GamePang->balls[i].spr, Scale);
+			CSprites_SetSpriteScale(GamePang->balls[i].spr, Scale);
 			CSprites_SetSpriteDepth(GamePang->balls[i].spr, 6);
 			GamePang->balls[i].tz = CImage_ImageSize(GamePang->spritesheetball);
-			GamePang->balls[i].tz.x = GamePang->balls[i].tz.x * Scale.x;
-			GamePang->balls[i].tz.x = GamePang->balls[i].tz.y * Scale.y;
+			GamePang->balls[i].tz.x =(int)(GamePang->balls[i].tz.x * Scale.x);
+			GamePang->balls[i].tz.x =(int)(GamePang->balls[i].tz.y * Scale.y);
 			GamePang->balls[i].pos.x = x;
 			GamePang->balls[i].pos.y = y;
 			CSprites_SetSpriteLocation(GamePang->balls[i].spr, GamePang->balls[i].pos);
@@ -227,7 +227,7 @@ void CGamePang_drawballs(CGamePang* GamePang)
 	for (int i = 0; i < CGamePang_maxballs; i++)
 	{
 		if (GamePang->balls[i].alive)
-			CSprites_DrawSprite(Renderer, GamePang->balls[i].spr);
+			CSprites_DrawSprite(GamePang->balls[i].spr);
 
 	}
 }
@@ -240,7 +240,7 @@ void CGamePang_createballs(CGamePang* GamePang)
 	{
 		if ((i > GamePang->GameBase->screenleft) && (i < GamePang->GameBase->screenright))
 		{
-			GamePang->createball(GamePang,CGamePang_ballbig, i, 160.0f*yscale, speed);
+			GamePang->createball(GamePang,CGamePang_ballbig, (float)i, 160.0f*yscale, speed);
 			speed *= -1;
 			added += 1;
 			if (added >= GamePang->GameBase->level)
@@ -263,18 +263,18 @@ void CGamePang_destroybullet(CGamePang* GamePang)
 void CGamePang_createbullet(CGamePang* GamePang)
 {
 	GamePang->bullet.spr = CSprites_CreateSprite();
-	CSprites_SetSpriteImageTiles(Renderer,GamePang->bullet.spr, &GamePang->spritesheetbullet, 1, 2);
+	CSprites_SetSpriteImageTiles(GamePang->bullet.spr, &GamePang->spritesheetbullet, 1, 2);
 	CSprites_SetSpriteAnimation(GamePang->bullet.spr, 0, 0, 0);
-	CSprites_SetSpriteCollisionShape(GamePang->bullet.spr, SHAPE_BOX, CSprites_TileSize(GamePang->bullet.spr).y-18, CSprites_TileSize(GamePang->bullet.spr).x+160,0,0,0);
+	CSprites_SetSpriteCollisionShape(GamePang->bullet.spr, SHAPE_BOX, CSprites_TileSize(GamePang->bullet.spr).y-18.0f, CSprites_TileSize(GamePang->bullet.spr).x+160.0f,0,0,0);
 
 	CSprites_SetSpriteRotation(GamePang->bullet.spr, 90);
-	CSprites_SetSpriteScale(Renderer,GamePang->bullet.spr, GamePang->bulletscale);
+	CSprites_SetSpriteScale(GamePang->bullet.spr, GamePang->bulletscale);
 	CSprites_SetSpriteDepth(GamePang->bullet.spr, 3);
 	GamePang->bullet.tz = CSprites_TileSize(GamePang->bullet.spr);
-	GamePang->bullet.tz.x = GamePang->bullet.tz.x * GamePang->bulletscale.x;
-	GamePang->bullet.tz.y = GamePang->bullet.tz.y * GamePang->bulletscale.y;
+	GamePang->bullet.tz.x = (int)(GamePang->bullet.tz.x * GamePang->bulletscale.x);
+	GamePang->bullet.tz.y = (int)(GamePang->bullet.tz.y * GamePang->bulletscale.y);
 	int tmpx = GamePang->bullet.tz.x;
-	GamePang->bullet.tz.x = GamePang->bullet.tz.y;
+	GamePang->bullet.tz.x = (int)(GamePang->bullet.tz.y);
 	GamePang->bullet.tz.y = tmpx;
 	GamePang->bullet.pos.x = GamePang->player.pos.x;
 	GamePang->bullet.pos.y = GamePang->player.pos.y - (GamePang->player.tz.y) + (GamePang->bullet.tz.y /2);
@@ -316,17 +316,20 @@ void CGamePang_drawbullet(CGamePang* GamePang)
 	if (GamePang->bullet.alive)
 	{
 		//copy whats on screen to a temporary buffer (i know this already contains the background)
-		SDL_Texture* prev = SDL_GetRenderTarget(Renderer);
-		SDL_SetRenderTarget(Renderer, TexTmp);
-		CImage_DrawImageTex(Renderer, prev, NULL, NULL);
-		SDL_SetRenderTarget(Renderer, prev);
+		LCDBitmap* prev = pd->graphics->copyBitmap(pd->graphics->getDisplayBufferBitmap());
+		pd->graphics->pushContext(TexTmp);
+		CImage_DrawImageTex(prev, NULL, NULL);
+		pd->graphics->pushContext(prev);
 		//draw the sprite
-		CSprites_DrawSprite(Renderer, GamePang->bullet.spr);
+		CSprites_DrawSprite(GamePang->bullet.spr);
+		pd->graphics->popContext();
+		pd->graphics->popContext();
 		//draw bottom part of what was previously on screen back to the screen to obscure bottom part of the chain texture
 		//this makes it seem as if the texture is created on the ground instead of at the bottom of the screen, like it is
 		//in real time.
 		SDL_Rect Rect = {0, GamePang->GameBase->screenbottom - CGamePang_backgroundcopyheight, GamePang->GameBase->screenright, CGamePang_backgroundcopyheight};
-		CImage_DrawImageTex(Renderer, TexTmp, &Rect, &Rect);
+		CImage_DrawImageTex(TexTmp, &Rect, &Rect);
+
 	}
 }
 
@@ -344,16 +347,16 @@ void CGamePang_destroyplayer(CGamePang* GamePang)
 void CGamePang_createplayer(CGamePang* GamePang)
 {
 	GamePang->player.spr = CSprites_CreateSprite();
-	CSprites_SetSpriteImageTiles(Renderer,GamePang->player.spr, &GamePang->spritesheetplayer, 12, 8);
+	CSprites_SetSpriteImageTiles(GamePang->player.spr, &GamePang->spritesheetplayer, 12, 8);
 	CSprites_SetSpriteAnimation(GamePang->player.spr, 37, 37, 0);
-	CSprites_SetSpriteCollisionShape(GamePang->player.spr, SHAPE_BOX, CSprites_TileSize(GamePang->player.spr).x - 24, CSprites_TileSize(GamePang->player.spr).y-14,0,0,14*yscale);
+	CSprites_SetSpriteCollisionShape(GamePang->player.spr, SHAPE_BOX, CSprites_TileSize(GamePang->player.spr).x - 24.0f, CSprites_TileSize(GamePang->player.spr).y-14.0f,0,0,14*yscale);
 
-	CSprites_SetSpriteScale(Renderer,GamePang->player.spr, GamePang->playerscale);
+	CSprites_SetSpriteScale(GamePang->player.spr, GamePang->playerscale);
 	CSprites_SetSpriteDepth(GamePang->player.spr, 37);
 	GamePang->player.state = CGamePang_playerstateidle;
 	GamePang->player.tz = CSprites_TileSize(GamePang->player.spr);
-	GamePang->player.tz.x = GamePang->player.tz.x * GamePang->playerscale.x;
-	GamePang->player.tz.y = GamePang->player.tz.y * GamePang->playerscale.y;
+	GamePang->player.tz.x = (int)(GamePang->player.tz.x * GamePang->playerscale.x);
+	GamePang->player.tz.y = (int)(GamePang->player.tz.y * GamePang->playerscale.y);
 	GamePang->player.pos.x = (float)(GamePang->GameBase->screenright - GamePang->GameBase->screenleft) / 2;
 	GamePang->player.pos.y = (float)GamePang->GameBase->screenbottom -10- GamePang->player.tz.y / 2;
 	GamePang->GameBase->HealthPoints = 3;
@@ -414,7 +417,7 @@ void CGamePang_updateplayer(CGamePang* GamePang)
 				}
 				else
 				{
-					GamePang->player.pos.x = GamePang->GameBase->screenleft + GamePang->player.tz.x / 2;
+					GamePang->player.pos.x = (float)(GamePang->GameBase->screenleft + GamePang->player.tz.x / 2.0f);
 					if (GamePang->playerstate(GamePang,CGamePang_playerstatemoveleft))
 					{
 						GamePang->remplayerstate(GamePang,CGamePang_playerstatemoveleft);
@@ -439,7 +442,7 @@ void CGamePang_updateplayer(CGamePang* GamePang)
 					}
 					else
 					{
-						GamePang->player.pos.x = GamePang->GameBase->screenright - GamePang->player.tz.x / 2;
+						GamePang->player.pos.x = (float)(GamePang->GameBase->screenright - GamePang->player.tz.x / 2.0f);
 						if (GamePang->playerstate(GamePang,CGamePang_playerstatemoveleft))
 						{
 							GamePang->remplayerstate(GamePang,CGamePang_playerstatemoveright);
@@ -487,10 +490,10 @@ void CGamePang_drawplayer(CGamePang* GamePang)
 		if (GamePang->playerstate(GamePang,CGamePang_playerstatereviving))
 		{
 			if (GamePang->player.stateticks % 3 == 0)
-				CSprites_DrawSprite(Renderer, GamePang->player.spr);
+				CSprites_DrawSprite(GamePang->player.spr);
 		}
 		else
-			CSprites_DrawSprite(Renderer, GamePang->player.spr);
+			CSprites_DrawSprite(GamePang->player.spr);
 	}
 }
 
@@ -499,7 +502,7 @@ void CGamePang_drawplayer(CGamePang* GamePang)
 
 void CGamePang_DrawBackground(CGamePang* GamePang)
 {
-	CImage_DrawImage(Renderer, GamePang->background, NULL, NULL);
+	CImage_DrawImage(GamePang->background, NULL, NULL);
 }
 
 //init - deinit ----------------------------------------------------------------------------------------------------------------
@@ -529,11 +532,11 @@ void CGamePang_deinit(CGamePang* GamePang)
 
 void CGamePang_LoadSound(CGamePang* GamePang)
 {
-	GamePang->SfxDie = CAudio_LoadSound("common/die.wav");
-	GamePang->SfxSucces = CAudio_LoadSound("common/succes.wav");
-	GamePang->SfxShoot = CAudio_LoadSound("pang/shoot.wav");
-	GamePang->SfxPop = CAudio_LoadSound("pang/pop.wav");
-	GamePang->MusMusic = CAudio_LoadMusic("pang/music.ogg");
+	GamePang->SfxDie = CAudio_LoadSound("common/die");
+	GamePang->SfxSucces = CAudio_LoadSound("common/succes");
+	GamePang->SfxShoot = CAudio_LoadSound("pang/shoot");
+	GamePang->SfxPop = CAudio_LoadSound("pang/pop");
+	GamePang->MusMusic = CAudio_LoadMusic("pang/music");
 }
 
 void CGamePang_UnLoadSound(CGamePang* GamePang)
@@ -549,23 +552,23 @@ void CGamePang_UnLoadSound(CGamePang* GamePang)
 
 void CGamePang_LoadGraphics(CGamePang* GamePang)
 {
-	GamePang->background = CImage_LoadImage(Renderer, "pang/background.png");
-	GamePang->spritesheetplayer = CImage_LoadImageEx(Renderer, "pang/character.png",0, 118, dumpScaledBitmaps);
-	GamePang->spritesheetbullet = CImage_LoadImageEx(Renderer, "pang/weapon.png", 0, 128, dumpScaledBitmaps);
-	GamePang->spritesheetball = CImage_LoadImageEx(Renderer, "pang/ball.png",0, 128, dumpScaledBitmaps);
+	GamePang->background = CImage_LoadImage("pang/background.png");
+	GamePang->spritesheetplayer = CImage_LoadImageEx("pang/character.png",0, 118, dumpScaledBitmaps);
+	GamePang->spritesheetbullet = CImage_LoadImageEx("pang/weapon.png", 0, 128, dumpScaledBitmaps);
+	GamePang->spritesheetball = CImage_LoadImageEx("pang/ball.png",0, 128, dumpScaledBitmaps);
 	
-	// SDL_SaveBMPTextureScaled(Renderer, "./retrotimefs/graphics/pang/character.bmp", CImage_GetImage(GamePang->spritesheetplayer), 1,1, true, 0, 118);
-	// SDL_SaveBMPTextureScaled(Renderer, "./retrotimefs/graphics/pang/weapon.bmp", CImage_GetImage(GamePang->spritesheetbullet), 1,1, true, 0, 128);
-	// SDL_SaveBMPTextureScaled(Renderer, "./retrotimefs/graphics/pang/ball.bmp", CImage_GetImage(GamePang->spritesheetball), 1,1, true, 0, 128);
+	// SDL_SaveBMPTextureScaled("./retrotimefs/graphics/pang/character.bmp", CImage_GetImage(GamePang->spritesheetplayer), 1,1, true, 0, 118);
+	// SDL_SaveBMPTextureScaled("./retrotimefs/graphics/pang/weapon.bmp", CImage_GetImage(GamePang->spritesheetbullet), 1,1, true, 0, 128);
+	// SDL_SaveBMPTextureScaled("./retrotimefs/graphics/pang/ball.bmp", CImage_GetImage(GamePang->spritesheetball), 1,1, true, 0, 128);
 
 
 	if (!useDefaultColorAssets)
 	{
 		GamePang->UnloadGraphics(GamePang);
-		GamePang->background = CImage_LoadImage(Renderer, "pang/background.png");
-		GamePang->spritesheetplayer = CImage_LoadImage(Renderer, "pang/character.bmp");
-		GamePang->spritesheetbullet = CImage_LoadImage(Renderer, "pang/weapon.bmp");
-	 	GamePang->spritesheetball = CImage_LoadImage(Renderer, "pang/ball.bmp");
+		GamePang->background = CImage_LoadImage("pang/background.png");
+		GamePang->spritesheetplayer = CImage_LoadImage("pang/character.bmp");
+		GamePang->spritesheetbullet = CImage_LoadImage("pang/weapon.bmp");
+	 	GamePang->spritesheetball = CImage_LoadImage("pang/ball.bmp");
 	}
 	
 	
@@ -598,7 +601,7 @@ void CGamePang_UpdateLogic(CGamePang* GamePang)
 	GamePang->GameBase->UpdateLogic(GamePang->GameBase);
 	GamePang->UpdateObjects(GamePang, SubGameState == SGGame);
 	if(SubGameState == SGGame)
-		CSprites_UpdateSprites(Renderer);
+		CSprites_UpdateSprites();
 }
 
 bool CGamePang_DrawObjects(CGamePang* GamePang)
@@ -614,7 +617,7 @@ void CGamePang_Draw(CGamePang* GamePang)
 {
 	GamePang->DrawBackground(GamePang);
 	if (GamePang->DrawObjects(GamePang))
-		CSprites_DrawSprites(Renderer);
+		CSprites_DrawSprites();
 	GamePang->GameBase->DrawScoreBar(GamePang->GameBase);
 	GamePang->GameBase->DrawSubStateText(GamePang->GameBase);
 }

@@ -1,4 +1,4 @@
-#include <SDL.h>
+#include <pd_api.h>
 #include <string.h>
 #include <stdbool.h>
 #include "CGame.h"
@@ -14,10 +14,12 @@
 #include "games/CGamePang.h"
 #include "games/CGameRamIt.h"
 #include "games/CGameSnake.h"
+#include "pd_helperfuncs.h"
+#include "SDL_HelperTypes.h"
 
 bool wasnewhighscorecarousel;
 bool wasnewhighscoregame;
-int prevretrocarouselscore;
+long long int prevretrocarouselscore;
 
 void InitSubScoreScreen()
 {
@@ -52,8 +54,8 @@ void SubScoreScreen()
 		InitSubScoreScreen();
 		GameState -= initDiff;
 	}
-
-	SDL_SetRenderTarget(Renderer, TexOffScreen);
+	//SDL_SetRenderTarget(TexOffScreen);
+	//pd->graphics->pushContext(TexOffScreen);
 	switch (ActiveGameGameStateId)
 	{
 		case GSSnake:
@@ -81,8 +83,8 @@ void SubScoreScreen()
 			GameBlockStacker->Draw(GameBlockStacker);
 			break;
 	}
-	// SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 128);
-	// SDL_RenderFillRect(Renderer, NULL);
+	// SDL_SetRenderDrawColor(0, 0, 0, 128);
+	// SDL_RenderFillRect(NULL);
 
 	if (SubGameState == SGFrame)
 	{
@@ -95,108 +97,126 @@ void SubScoreScreen()
 	//so we can can copy the transparant part with the blue and text from this image
 	SDL_Point pos = {ScreenWidth / 2, ScreenHeight / 2};
 	Vec2F Scale = {SubStateCounter / 4*xscale, (0.0f > SubStateCounter-3.2f ? 0.0f:SubStateCounter-3.2f)*yscale};
-	CImage_DrawImageFuze(Renderer, GFXFrameID, true, &pos, 0, &Scale, 255, 255, 255, 240);
-	char Text[1000];
-	SDL_Color color = {255,255,255,255};
+	CImage_DrawImageFuze(GFXFrameID, true, &pos, 0, &Scale, 255, 255, 255, 240);
+	char* TextTmp;
+	//SDL_Color color = {255,255,255,255};
 	SDL_Point MedalTz = CImage_ImageSize(GFXMedal);
 	Vec2F MedalScale = {50.0f/MedalTz.y*xscale, 50.0f/MedalTz.y*yscale};
 	if (SubGameState == SGCalcScore)
 	{
 		if ((Game == Games -1) && (GameMode == GMRetroCarousel))
 		{
-			strcpy(Text, "Final Results");
-			int Texw = CFont_TextWidth("Roboto-Regular", 80*yscale, Text, strlen(Text));
-			CFont_WriteText(Renderer, "Roboto-Regular", 80*yscale, Text, strlen(Text), (ScreenWidth-Texw)/2, 50*yscale, 0, color);
-			strcpy(Text,"-------------------------");
-			Texw = CFont_TextWidth("Roboto-Regular", 80*yscale, Text, strlen(Text));
-			CFont_WriteText(Renderer, "Roboto-Regular", 80*yscale, Text, strlen(Text), (ScreenWidth-Texw)/2, 85*yscale, 0, color);
+			pd->system->formatString(&TextTmp, "Final Results");
+			int Texw = CFont_TextWidth("Roboto-Regular", (int)(80.0f*yscale), TextTmp, strlen(TextTmp));
+			CFont_WriteText("Roboto-Regular", (int)(80.0f*yscale), TextTmp, strlen(TextTmp),(int)((ScreenWidth-Texw)/2.0f), (int)(50.0f*yscale), 0, kColorWhite);
+			pd->system->realloc(TextTmp, 0);
+
+			pd->system->formatString(&TextTmp, "-------------------------");
+			Texw = CFont_TextWidth("Roboto-Regular", (int)(80.0f*yscale), TextTmp, strlen(TextTmp));
+			CFont_WriteText("Roboto-Regular", (int)(80.0f*yscale), TextTmp, strlen(TextTmp), (int)((ScreenWidth-Texw)/2.0f), (int)(85.0f*yscale), 0, kColorWhite);
+			pd->system->realloc(TextTmp, 0);
 		}
 		else
 		{
-			strcpy(Text,"Results");
-			int Texw = CFont_TextWidth("Roboto-Regular", 80*yscale, Text, strlen(Text));
-			CFont_WriteText(Renderer, "Roboto-Regular", 80*yscale, Text, strlen(Text), (ScreenWidth-Texw)/2, 50*yscale, 0, color);
-			strcpy(Text, "----------------");
-			Texw = CFont_TextWidth("Roboto-Regular", 80*yscale, Text, strlen(Text));
-			CFont_WriteText(Renderer, "Roboto-Regular", 80*yscale, Text, strlen(Text), (ScreenWidth-Texw)/2, 85*yscale, 0, color);
+			pd->system->formatString(&TextTmp, "Results");
+			int Texw = CFont_TextWidth("Roboto-Regular", (int)(80.0f*yscale), TextTmp, strlen(TextTmp));
+			CFont_WriteText("Roboto-Regular", (int)(80.0f*yscale), TextTmp, strlen(TextTmp), (int)((ScreenWidth-Texw)/2.0f), (int)(50.0f*yscale), 0, kColorWhite);
+			pd->system->realloc(TextTmp, 0);
+			
+			pd->system->formatString(&TextTmp, "----------------");
+			Texw = CFont_TextWidth("Roboto-Regular", (int)(80.0f*yscale), TextTmp, strlen(TextTmp));
+			CFont_WriteText("Roboto-Regular", (int)(80.0f*yscale), TextTmp, strlen(TextTmp), (int)((ScreenWidth-Texw)/2.0f), (int)(85.0f*yscale), 0, kColorWhite);
+			pd->system->realloc(TextTmp, 0);
 		}
-		sprintf(Text, "Game: %s", GSGames[Game].name);
-		CFont_WriteText(Renderer, "Roboto-Regular", 50*yscale, Text, strlen(Text), 150*xscale, 180*yscale, 0, color);
-		sprintf(Text, "Game Mode: %s", GMModes[GameMode].name);
-		CFont_WriteText(Renderer, "Roboto-Regular", 50*yscale, Text, strlen(Text), 150*xscale, 225*yscale, 0, color);
-
+		
+		pd->system->formatString(&TextTmp, "Game: %s", GSGames[Game].name);
+		CFont_WriteText("Roboto-Regular", (int)(50.0f*yscale), TextTmp, strlen(TextTmp), (int)(150.0f*xscale), (int)(180.0f*yscale), 0, kColorWhite);
+		pd->system->realloc(TextTmp, 0);
+		pd->system->formatString(&TextTmp, "Game Mode: %s", GMModes[GameMode].name);
+		CFont_WriteText("Roboto-Regular", (int)(50.0f*yscale), TextTmp, strlen(TextTmp), (int)(150.0f*xscale), (int)(225.0f*yscale), 0, kColorWhite);
+		pd->system->realloc(TextTmp, 0);
 		if (GameMode == GMRetroCarousel)
 		{
-			sprintf(Text, "Previous Rounds Score: %d", prevretrocarouselscore);
-			CFont_WriteText(Renderer, "Roboto-Regular", 50*yscale, Text, strlen(Text), 150*xscale, 285*yscale, 0, color);
+			pd->system->formatString(&TextTmp, "Previous Rounds Score: %d", prevretrocarouselscore);
+			CFont_WriteText("Roboto-Regular", (int)(50.0f*yscale), TextTmp, strlen(TextTmp), (int)(150.0f*xscale),(int)(285.0f*yscale), 0, kColorWhite);
+			pd->system->realloc(TextTmp, 0);
 
-			sprintf(Text, "Game Score: %llu", Scores[Game][GameMode]);
-			CFont_WriteText(Renderer, "Roboto-Regular", 50*yscale, Text, strlen(Text), 150*xscale, 330*yscale, 0, color);
+			pd->system->formatString(&TextTmp, "Game Score: %llu", Scores[Game][GameMode]);
+			CFont_WriteText("Roboto-Regular", (int)(50.0f*yscale), TextTmp, strlen(TextTmp), (int)(150.0f*xscale),(int)(330.0f*yscale), 0, kColorWhite);
+			pd->system->realloc(TextTmp, 0);
 
 			if (Game < Games -1)
-				sprintf(Text, "New Total Rounds Score: %llu", RetroCarouselScore);
+				pd->system->formatString(&TextTmp, "New Total Rounds Score: %llu", RetroCarouselScore);
 			else
-				sprintf(Text, "Final Total Rounds Score: %llu", RetroCarouselScore);
-			CFont_WriteText(Renderer, "Roboto-Regular", 50*yscale, Text, strlen(Text), 150*xscale, 375*yscale, 0, color);
+				pd->system->formatString(&TextTmp, "Final Total Rounds Score: %llu", RetroCarouselScore);
+			CFont_WriteText("Roboto-Regular", (int)(50.0f*yscale), TextTmp, strlen(TextTmp),(int)(150.0f*xscale), (int)(375.0f*yscale), 0, kColorWhite);
+			pd->system->realloc(TextTmp, 0);
 
 			if (wasnewhighscoregame)
 			{
-				sprintf(Text, "New Game High Score: %llu", HighScores[Game][GameMode]);
-				CFont_WriteText(Renderer, "Roboto-Regular", 50*yscale, Text, strlen(Text), 150*xscale, 425*yscale, 0, color);
-				SDL_Point pos = {(int)(120*xscale),(int) (425*yscale)};
-				CImage_DrawImageFuze(Renderer, GFXMedal, false, &pos, 0, &MedalScale, 255, 255, 255, 255);
+				pd->system->formatString(&TextTmp, "New Game High Score: %llu", HighScores[Game][GameMode]);
+				CFont_WriteText("Roboto-Regular", (int)(50.0f*yscale), TextTmp, strlen(TextTmp), (int)(150.0f*xscale),(int)(425.0f*yscale), 0, kColorWhite);
+				pd->system->realloc(TextTmp, 0);
+				SDL_Point pos = {(int)(120.0f*xscale),(int) (425.0f*yscale)};
+				CImage_DrawImageFuze(GFXMedal, false, &pos, 0, &MedalScale, 255, 255, 255, 255);
 			}
 			else
 			{
-				sprintf(Text, "Game High Score: %llu", HighScores[Game][GameMode]);
-				CFont_WriteText(Renderer, "Roboto-Regular", 50*yscale, Text, strlen(Text), 150*xscale, 425*yscale, 0, color);
+				pd->system->formatString(&TextTmp, "Game High Score: %llu", HighScores[Game][GameMode]);
+				CFont_WriteText("Roboto-Regular", (int)(50.0f*yscale), TextTmp, strlen(TextTmp), (int)(150.0f*xscale), (int)(425.0f*yscale), 0, kColorWhite);
+				pd->system->realloc(TextTmp, 0);
 			}
 
 			if (wasnewhighscorecarousel)
 			{
-				sprintf(Text, "New All Rounds High Score: %llu", RetroCarouselHighScore);
-				CFont_WriteText(Renderer, "Roboto-Regular", 50*yscale, Text, strlen(Text), 150*xscale, 470*yscale, 0, color);
-				SDL_Point pos = {(int)(120*xscale),(int)( 470*yscale)};
-				CImage_DrawImageFuze(Renderer, GFXMedal, false, &pos, 0, &MedalScale, 255, 255, 255, 255);
+				pd->system->formatString(&TextTmp, "New All Rounds High Score: %llu", RetroCarouselHighScore);
+				CFont_WriteText("Roboto-Regular", (int)(50.0f*yscale), TextTmp, strlen(TextTmp), (int)(150.0f*xscale), (int)(470.0f*yscale), 0, kColorWhite);
+				pd->system->realloc(TextTmp, 0);
+				SDL_Point pos = {(int)(120.0f*xscale),(int)( 470.0f*yscale)};
+				CImage_DrawImageFuze(GFXMedal, false, &pos, 0, &MedalScale, 255, 255, 255, 255);
 			}
 			else
 			{
-				sprintf(Text, "All Rounds High Score: %llu", RetroCarouselHighScore);
-				CFont_WriteText(Renderer, "Roboto-Regular", 50*yscale, Text, strlen(Text), 150*xscale, 470*yscale, 0, color);
+				pd->system->formatString(&TextTmp, "All Rounds High Score: %llu", RetroCarouselHighScore);
+				CFont_WriteText("Roboto-Regular", (int)(50.0f*yscale), TextTmp, strlen(TextTmp), (int)(150.0f*xscale), (int)(470.0f*yscale), 0, kColorWhite);
+				pd->system->realloc(TextTmp, 0);
 			}
 
 			if (Game < Games -1)
-				sprintf(Text, "Press (A) for next game: %s", GSGames[Game+1].name);
+				pd->system->formatString(&TextTmp, "Press (A) for next game: %s", GSGames[Game+1].name);
 			else
-				strcpy(Text, "Press (A) for titlescreen");
-			int Texw = CFont_TextWidth("Roboto-Regular", 34*yscale, Text, strlen(Text));
-			CFont_WriteText(Renderer, "Roboto-Regular", 34*yscale, Text, strlen(Text), (ScreenWidth-Texw)/2, 630*yscale, 0, color);
+				pd->system->formatString(&TextTmp, "Press (A) for titlescreen");
+			int Texw = CFont_TextWidth("Roboto-Regular", (int)(34.0f*yscale), TextTmp, strlen(TextTmp));
+			CFont_WriteText("Roboto-Regular", (int)(34.0f*yscale), TextTmp, strlen(TextTmp), (int)((ScreenWidth-Texw)/2.0f), (int)(630.0f*yscale), 0, kColorWhite);
+			pd->system->realloc(TextTmp, 0);
 		}
 		else
 		{
-			sprintf(Text, "Game Score: %llu", Scores[Game][GameMode]);
-			CFont_WriteText(Renderer, "Roboto-Regular", 50*yscale, Text, strlen(Text), 150*xscale, 285*yscale, 0, color);
+			pd->system->formatString(&TextTmp, "Game Score: %llu", Scores[Game][GameMode]);
+			CFont_WriteText("Roboto-Regular", (int)(50.0f*yscale), TextTmp, strlen(TextTmp), (int)(150.0f*xscale), (int)(285.0f*yscale), 0, kColorWhite);
+			pd->system->realloc(TextTmp, 0);
 
 			if (wasnewhighscoregame)
 			{
-				sprintf(Text, "New Game High Score: %llu", HighScores[Game][GameMode]);
-				CFont_WriteText(Renderer, "Roboto-Regular", 50*yscale, Text, strlen(Text), 150*xscale, 330*yscale, 0, color);
-				SDL_Point pos = {(int)(120*xscale),(int)(330*yscale)};
-				CImage_DrawImageFuze(Renderer, GFXMedal, false, &pos, 0, &MedalScale, 255, 255, 255, 255);
+				pd->system->formatString(&TextTmp, "New Game High Score: %llu", HighScores[Game][GameMode]);
+				CFont_WriteText("Roboto-Regular", (int)(50.0f*yscale), TextTmp, strlen(TextTmp), (int)(150.0f*xscale), (int)(330.0f*yscale), 0, kColorWhite);
+				pd->system->realloc(TextTmp, 0);
+				SDL_Point pos = {(int)(120.0f*xscale),(int)(330.0f*yscale)};
+				CImage_DrawImageFuze(GFXMedal, false, &pos, 0, &MedalScale, 255, 255, 255, 255);
+
 			}
 			else
 			{
-				sprintf(Text, "Game High Score: %llu", HighScores[Game][GameMode]);
-				CFont_WriteText(Renderer, "Roboto-Regular", 50*yscale, Text, strlen(Text), 150*xscale, 330*yscale, 0, color);
+				pd->system->formatString(&TextTmp, "Game High Score: %llu", HighScores[Game][GameMode]);
+				CFont_WriteText("Roboto-Regular", (int)(50.0f*yscale), TextTmp, strlen(TextTmp), (int)(150.0f*xscale), (int)(330.0f*yscale), 0, kColorWhite);
+				pd->system->realloc(TextTmp, 0);
 			}
-			strcpy(Text, "Press (A) for titlescreen");
-			int Texw = CFont_TextWidth("Roboto-Regular", 34*yscale, Text, strlen(Text));
-			CFont_WriteText(Renderer, "Roboto-Regular", 34*yscale, Text, strlen(Text), (ScreenWidth-Texw)/2, 630*yscale, 0, color);
+			pd->system->formatString(&TextTmp, "Press (A) for titlescreen");
+			int Texw = CFont_TextWidth("Roboto-Regular", (int)(34.0f*yscale), TextTmp, strlen(TextTmp));
+			CFont_WriteText("Roboto-Regular", (int)(34.0f*yscale), TextTmp, strlen(TextTmp), (int)((ScreenWidth-Texw)/2.0f),(int)(630.0f*yscale), 0, kColorWhite);
+			pd->system->realloc(TextTmp, 0);
 		}
 	}
-
-	SDL_SetRenderTarget(Renderer, TexScreen);
-	SDL_RenderCopy(Renderer, TexOffScreen, NULL, NULL);
 
 	if ((!CInput_PrevButtons.ButA && CInput_Buttons.ButA) ||
 		(!CInput_PrevButtons.ButBack && CInput_Buttons.ButBack) ||

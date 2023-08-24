@@ -1,18 +1,17 @@
 #ifndef CFONT_H
 #define CFONT_H
 
-#include <SDL.h>
-#include <SDL_ttf.h>
+#include <pd_api.h>
 #include <stdbool.h>
 #include <string.h>
-#include "Platform.h"
+#include "SDL_HelperTypes.h"
 
 
-
-void CFont_Init(char* AssetsPath, bool DebugInfo);
+void CFont_Init(bool DebugInfo);
 void CFont_DeInit();
 int CFont_TextWidth(char* Font, int FontSize, char* Tekst, size_t NrOfChars);
 SDL_Point CFont_TextSize(char* Font, int FontSize, char* Tekst, size_t NrOfChars, int YSpacing);
-void CFont_WriteText(SDL_Renderer *Renderer, char* Font, int FontSize, char* Tekst, size_t NrOfChars, int X, int Y, int YSpacing, SDL_Color ColorIn);
+void CFont_WriteText(char* Font, int FontSize, char* Tekst, size_t NrOfChars, int X, int Y, int YSpacing, LCDColor ColorIn);
+void CFont_WriteTextBitmap(bool IgnoreRenderer, LCDBitmap* Renderer, char* Font, int FontSize, char* Tekst, size_t NrOfChars, int X, int Y, int YSpacing, LCDColor ColorIn);
 
 #endif

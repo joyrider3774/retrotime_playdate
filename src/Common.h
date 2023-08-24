@@ -2,14 +2,15 @@
 #define COMMON_H
 
 #include <string.h>
-#include <SDL.h>
+#include <pd_api.h>
 #include <stdbool.h>
 
-#define debugInfo true
+#define debugInfo false
 #define debugShowCollisionShapes false
 #define dumpScaledBitmaps false
 #define useDefaultColorAssets false
 #define loadDumpedScaledBitmaps true
+#define BatteryMonitoring false
 
 #define epsilion 0.0001f
 
@@ -26,11 +27,9 @@
 #define xscale (ScreenWidth / 1280.0f)
 #define yscale (ScreenHeight / 720.0f)
 
-#define PixelFormat SDL_PIXELFORMAT_ARGB8888
+#define DesiredFps 0
 
-#define DesiredFps 60.0
-
-#define ScoreBarHeight (24*yscale)
+#define ScoreBarHeight (int)(24*yscale)
 
 //GameStates
 #define initDiff 50
@@ -152,6 +151,10 @@ struct OptionMenusDesc {
 };
 typedef struct OptionMenusDesc OptionMenusDesc;
 
+extern unsigned int prevLogTime;
+extern unsigned int FrameTime, Frames;
+extern float CurrentMs;
+
 extern GameDesc GSGames[Games];
 extern ModeDesc GMModes[Modes];
 extern MainMenusDesc MMMainMenus[MainMenus];
@@ -159,14 +162,5 @@ extern OptionMenusDesc OMOptionMenus[OptionMenus];
 extern GPGamePauseMenusDesc GPGamePauseMenus[Games];
 extern PauseMenuDesc PMPauseMenus[PauseMenus];
 extern OptionMenusDesc OMOptionMenus[OptionMenus];
-
-extern Uint32 ColorToUint(int R, int G, int B);
-extern SDL_Colour UintToColor(Uint32 colour);
-
-extern void ditherTarget(SDL_Renderer* aRenderer, SDL_Texture *Tex, SDL_Rect* Rect,uint8_t bayerver, uint8_t whiteThreasHold);
-extern void ditherSurface(SDL_Surface* Surface, SDL_Rect* Rect, uint8_t bayerver, uint8_t whiteThreasHold);
-extern Uint32 SDL_GetPixel(SDL_Surface *surface, int x, int y);
-extern void SDL_PutPixel(SDL_Surface *surface, int x, int y, Uint32 pixel);
-extern void SDL_SaveBMPTextureScaled(SDL_Renderer *Renderer, const char *File, SDL_Texture* Tex, float ScaleX, float ScaleY, bool ApplyDither,int ditherversion, int whiteThresHold);
 
 #endif

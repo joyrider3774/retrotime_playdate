@@ -1,13 +1,11 @@
 #ifndef CGAMEBREAKOUT_H
 #define CGAMEBREAKOUT_H
 
-#include <SDL.h>
+#include <pd_api.h>
 #include <stdbool.h>
 #include "CGameBase.h"
 #include "CSpriteObject.h"
-#include "../CGame.h"
 #include "../CTween.h"
-#include "../Platform.h"
 #include "../Common.h"
 
 #define CGameBreakOut_tweenblockpositions 0
@@ -21,7 +19,8 @@
 #define CGameBreakOut_blockyoffset (80.0f*yscale)
 #define CGameBreakOut_blockrows 10
 #define CGameBreakOut_blockcols 17
-#define CGameBreakOut_numblocks 170 //blockrows * blockcols;
+//blockrows * blockcols;
+#define CGameBreakOut_numblocks 170 
 
 struct sblockinfo
 {
@@ -31,7 +30,12 @@ struct sblockinfo
 };
 typedef struct sblockinfo sblockinfo;
 
-struct CGameBreakOut {
+
+typedef struct CGameBreakOut CGameBreakOut;
+
+struct CGameBreakOut
+{
+
 	CGameBase *GameBase;
 
 	Vec2F spritescale; 
@@ -71,7 +75,7 @@ struct CGameBreakOut {
 	void (*Draw)(CGameBreakOut* GameBreakOut);
 	void (*UpdateLogic)(CGameBreakOut* GameBreakOut);
 };
-typedef struct CGameBreakout CGameBreakout;
+
 
 void CGameBreakOut_UpdateLogic(CGameBreakOut* GameBreakOut);
 void CGameBreakOut_UpdateObjects(CGameBreakOut* GameBreakOut, bool IsGameState);

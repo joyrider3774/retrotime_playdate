@@ -1,13 +1,11 @@
 #ifndef CGAMERAMIT_H
 #define CGAMERAMIT_H
 
-#include <SDL.h>
+#include <pd_api.h>
 #include <stdbool.h>
 #include "CGameBase.h"
-#include "../CGame.h"
-#include "../Platform.h"
 #include "../Common.h"
-
+#include "../SDL_HelperTypes.h"
 
 
 #define CGameRamIt_bulletsteps 8
@@ -17,7 +15,7 @@
 #define CGameRamIt_numblocks 16
 #define CGameRamIt_blocksegments 20
 #define CGameRamIt_sides 2
-#define CGameRamIt_blockspacing (5*yscale)
+#define CGameRamIt_blockspacing (int)(5*yscale)
 #define CGameRamIt_ticksidle 50
 #define CGameRamIt_tickslevelmul 5
 
@@ -25,9 +23,11 @@ struct ramitblock
 {
 	int maxsegments;
 	int segments;
-	SDL_Color color;
+	//SDL_Color color;
 };
 typedef struct ramitblock ramitblock;
+
+typedef struct CGameRamIt CGameRamIt;
 
 struct CGameRamIt {
 
@@ -64,7 +64,6 @@ struct CGameRamIt {
 	void (*UpdateLogic)(CGameRamIt* GameRamIt);
 };
 
-typedef struct CGameRamIt CGameRamIt;
 
 void CGameRamIt_Draw(CGameRamIt* GameRamIt);
 bool CGameRamIt_DrawObjects(CGameRamIt* GameRamIt);

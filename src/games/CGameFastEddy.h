@@ -1,12 +1,10 @@
 #ifndef CGAMEFASTEDDY_H
 #define CGAMEFASTEDDY_H
 
-#include <SDL.h>
+#include <pd_api.h>
 #include <stdbool.h>
 #include "CGameBase.h"
 #include "CSpriteObject.h"
-#include "../CGame.h"
-#include "../Platform.h"
 #include "../Common.h"
 
 #define GameFastEddy_playerstateunknown -1
@@ -29,8 +27,10 @@
 #define GameFastEddy_collectablestateidle 2
 
 #define GameFastEddy_laddersfitrows 10
-#define GameFastEddy_rowfloorsizex (400.0f * xscale) //tilesize / 2 oroginals are 64x64 was 32x32 but i tried to divide by 3 but actually divided by 3.2
-#define GameFastEddy_rowfloorsizey (32.0f * yscale) //tilesize / 2 oroginals are 64x64 was 32x32 but i tried to divide by 3 but actually divided by 3.2
+//tilesize / 2 oroginals are 64x64 was 32x32 but i tried to divide by 3 but actually divided by 3.2
+#define GameFastEddy_rowfloorsizex (400.0f * xscale)
+//tilesize / 2 oroginals are 64x64 was 32x32 but i tried to divide by 3 but actually divided by 3.2
+#define GameFastEddy_rowfloorsizey (32.0f * yscale)
 #define GameFastEddy_rows 5
 
 #define GameFastEddy_playerspeed (6.4f*xscale)
@@ -41,9 +41,12 @@
 #define GameFastEddy_maxenemies 10
 #define GameFastEddy_maxcollectables 2
 
-#define GameFastEddy_maxladders 8 //(rows - 1) * 2;
-#define GameFastEddy_maxfloors 16 //(int)(ScreenWidth / rowfloorsizex * rows)
+//(rows - 1) * 2;
+#define GameFastEddy_maxladders 8
+//(int)(ScreenWidth / rowfloorsizex * rows)
+#define GameFastEddy_maxfloors 16 
 
+typedef struct CGameFastEddy CGameFastEddy;
 struct CGameFastEddy {
 	CGameBase *GameBase;
 	 
@@ -60,18 +63,18 @@ struct CGameFastEddy {
 	float collectableheight;
 	float keyheight;
 
-	int spritesheet;// = loadImage("EderMuniz/SnowyForestTiles")
-	int spritesheetladder;// = loadImage("EderMuniz/SnowyForestLadder")
-	int spritesheetplayerclimb;// = loadImage("Ravenmore/characterClimb")
-	int spritesheetplayerrun;// = loadImage("Ravenmore/characterRun")
-	int spritesheetplayeridle;// = loadImage("Ravenmore/characterIdle")
-	int spritesheetplayerjump;// = loadImage("Ravenmore/characterJumpUp")
-	int spritesheetenemy;// = loadImage("Pipo/char59")
-	int spritesheetenemy2;// = loadImage("Pipo/char59") 
-	int spritesheetcollectable;// = loadImage("Ravenmore/platformPickups")
-	int spritesheetkey;// = loadImage("Ravenmore/PlatformDefaultProps")
-	int background;// = loadImage("EderMuniz/SnowyForestBackA")
-	SDL_Point backgroundtz;// = imageSize(febackground)
+	int spritesheet;
+	int spritesheetladder;
+	int spritesheetplayerclimb;
+	int spritesheetplayerrun;
+	int spritesheetplayeridle;
+	int spritesheetplayerjump;
+	int spritesheetenemy;
+	int spritesheetenemy2;
+	int spritesheetcollectable;
+	int spritesheetkey;
+	int background;
+	SDL_Point backgroundtz;
 
 	int MusMusic, SfxSucces, SfxCollect, SfxDie;
 
@@ -115,7 +118,7 @@ struct CGameFastEddy {
 	void (*Draw)(CGameFastEddy* GameFastEddy);
 	void (*UpdateLogic)(CGameFastEddy* GameFastEddy);
 };
-typedef struct CGameFastEddy CGameFastEddy;
+
 
 void CGameFastEddy_Draw(CGameFastEddy* GameFastEddy);
 void CGameFastEddy_UpdateLogic(CGameFastEddy* GameFastEddy);

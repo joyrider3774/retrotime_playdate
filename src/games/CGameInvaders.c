@@ -1,11 +1,11 @@
-#include <SDL.h>
+#include <pd_api.h>
 #include <math.h>
 #include <stdbool.h>
 #include "CGameInvaders.h"
 #include "../CGame.h"
 #include "../Common.h"
 #include "../Vec2F.h"
-
+#include "../SDL_HelperTypes.h"
 
 
 CGameInvaders* Create_CGameInvaders()
@@ -141,8 +141,8 @@ void CGameInvaders_createexplosion(CGameInvaders* GameInvaders, Vec2F pos)
 		if (!GameInvaders->explosions[i].alive)
 		{
 			GameInvaders->explosions[i].spr = CSprites_CreateSprite();
-			CSprites_SetSpriteImageTiles(Renderer,GameInvaders->explosions[i].spr, &GameInvaders->spritesheetExplosion, 7, 1);
-			CSprites_SetSpriteScale(Renderer,GameInvaders->explosions[i].spr, GameInvaders->enemyscale);
+			CSprites_SetSpriteImageTiles(GameInvaders->explosions[i].spr, &GameInvaders->spritesheetExplosion, 7, 1);
+			CSprites_SetSpriteScale(GameInvaders->explosions[i].spr, GameInvaders->enemyscale);
 			CSprites_SetSpriteDepth(GameInvaders->explosions[i].spr, 1);
 			CSprites_SetSpriteAnimation(GameInvaders->explosions[i].spr,2, 6, 15);
 			CSprites_SetSpriteLocation(GameInvaders->explosions[i].spr, pos);
@@ -177,14 +177,14 @@ void CGameInvaders_createnemybullet(CGameInvaders* GameInvaders, Vec2F pos)
 		if (!GameInvaders->enemybullets[i].alive)
 		{
 			GameInvaders->enemybullets[i].spr = CSprites_CreateSprite();
-			CSprites_SetSpriteImageTiles(Renderer,GameInvaders->enemybullets[i].spr, &GameInvaders->spritesheetBullet, 2, 1);
-			CSprites_SetSpriteColour(GameInvaders->enemybullets[i].spr, 0.75,0.65,0.65,1);
+			CSprites_SetSpriteImageTiles(GameInvaders->enemybullets[i].spr, &GameInvaders->spritesheetBullet, 2, 1);
+			CSprites_SetSpriteColour(GameInvaders->enemybullets[i].spr, 0.75f,0.65f,0.65f,1);
 			CSprites_SetSpriteAnimation(GameInvaders->enemybullets[i].spr, 1, 1, 0);
-			CSprites_SetSpriteScale(Renderer,GameInvaders->enemybullets[i].spr, GameInvaders->enemyscale);
+			CSprites_SetSpriteScale(GameInvaders->enemybullets[i].spr, GameInvaders->enemyscale);
 			CSprites_SetSpriteDepth(GameInvaders->enemybullets[i].spr, -1);
 			GameInvaders->enemybullets[i].tz = CSprites_TileSize(GameInvaders->enemybullets[i].spr);
-			GameInvaders->enemybullets[i].tz.x = GameInvaders->enemybullets[i].tz.x * GameInvaders->enemyscale.x;
-			GameInvaders->enemybullets[i].tz.y = GameInvaders->enemybullets[i].tz.y * GameInvaders->enemyscale.y;
+			GameInvaders->enemybullets[i].tz.x = (int)(GameInvaders->enemybullets[i].tz.x * GameInvaders->enemyscale.x);
+			GameInvaders->enemybullets[i].tz.y = (int)(GameInvaders->enemybullets[i].tz.y * GameInvaders->enemyscale.y);
 			GameInvaders->enemybullets[i].pos = pos;
 			GameInvaders->enemybullets[i].vel.x = 0;
 			GameInvaders->enemybullets[i].vel.y = CGameInvaders_bulletspeed;
@@ -293,14 +293,14 @@ void CGameInvaders_createasteroids(CGameInvaders* GameInvaders)
 		GameInvaders->asteroids[i].spr = CSprites_CreateSprite();
 		GameInvaders->asteroids[i].healthpoints = CGameInvaders_asteroidmaxhealthpoints;
 		GameInvaders->asteroids[i].alive = true;
-		CSprites_SetSpriteImage(Renderer,GameInvaders->asteroids[i].spr, &GameInvaders->spritesheetAsteroid);
+		CSprites_SetSpriteImage(GameInvaders->asteroids[i].spr, &GameInvaders->spritesheetAsteroid);
 		CSprites_SetSpriteAnimation(GameInvaders->asteroids[i].spr, 0, 0, 0);
 		Vec2F pos = {(float)i * (GameInvaders->GameBase->screenright - GameInvaders->GameBase->screenleft) / (CGameInvaders_maxasteroids-1), (float)GameInvaders->GameBase->screenbottom - CGameInvaders_asteroidsoffset};
 		CSprites_SetSpriteLocation(GameInvaders->asteroids[i].spr, pos);
 		Vec2F scale = {CGameInvaders_asteroidscale, CGameInvaders_asteroidscale};
-		CSprites_SetSpriteScale(Renderer,GameInvaders->asteroids[i].spr, scale);
+		CSprites_SetSpriteScale(GameInvaders->asteroids[i].spr, scale);
 		CSprites_SetSpriteCollisionShape(GameInvaders->asteroids[i].spr, SHAPE_BOX, 45,45,0, 0 , 2);
-		CSprites_SetSpriteRotation(GameInvaders->asteroids[i].spr, rand() % (360));
+		CSprites_SetSpriteRotation(GameInvaders->asteroids[i].spr, (float)(rand() % (360)));
 	}
 }
 
@@ -312,7 +312,7 @@ void CGameInvaders_updateasteroids(CGameInvaders* GameInvaders)
 		{
 			Vec2F scale = {CGameInvaders_asteroidscale - ((CGameInvaders_asteroidscale / CGameInvaders_asteroidmaxhealthpoints) * (CGameInvaders_asteroidmaxhealthpoints - GameInvaders->asteroids[i].healthpoints)),
 				CGameInvaders_asteroidscale - ((CGameInvaders_asteroidscale / CGameInvaders_asteroidmaxhealthpoints) * (CGameInvaders_asteroidmaxhealthpoints - GameInvaders->asteroids[i].healthpoints))};
-			CSprites_SetSpriteScale(Renderer,GameInvaders->asteroids[i].spr,scale);
+			CSprites_SetSpriteScale(GameInvaders->asteroids[i].spr,scale);
 			CSprites_SetSpriteRotation(GameInvaders->asteroids[i].spr, GameInvaders->asteroids[i].spr->rotation + 0.5f);
 		}
 	}
@@ -325,13 +325,13 @@ void CGameInvaders_createbullet(CGameInvaders* GameInvaders)
 	if (!GameInvaders->bullet.alive)
 	{
 		GameInvaders->bullet.spr = CSprites_CreateSprite();
-		CSprites_SetSpriteImageTiles(Renderer,GameInvaders->bullet.spr, &GameInvaders->spritesheetBullet, 2, 1);
+		CSprites_SetSpriteImageTiles(GameInvaders->bullet.spr, &GameInvaders->spritesheetBullet, 2, 1);
 		CSprites_SetSpriteAnimation(GameInvaders->bullet.spr, 1, 1, 0);
-		CSprites_SetSpriteScale(Renderer,GameInvaders->bullet.spr, GameInvaders->enemyscale);
+		CSprites_SetSpriteScale(GameInvaders->bullet.spr, GameInvaders->enemyscale);
 		CSprites_SetSpriteDepth(GameInvaders->bullet.spr, -1);
 		GameInvaders->bullet.tz = CSprites_TileSize(GameInvaders->bullet.spr);
-		GameInvaders->bullet.tz.x = GameInvaders->bullet.tz.x * GameInvaders->enemyscale.x;
-		GameInvaders->bullet.tz.y = GameInvaders->bullet.tz.y * GameInvaders->enemyscale.y;
+		GameInvaders->bullet.tz.x = (int)(GameInvaders->bullet.tz.x * GameInvaders->enemyscale.x);
+		GameInvaders->bullet.tz.y = (int)(GameInvaders->bullet.tz.y * GameInvaders->enemyscale.y);
 		GameInvaders->bullet.pos = GameInvaders->player.pos ;
 		GameInvaders->bullet.vel.x = 0;
 		GameInvaders->bullet.vel.y = -CGameInvaders_bulletspeed;
@@ -411,9 +411,9 @@ void CGameInvaders_updateenemyinfo(CGameInvaders* GameInvaders)
 	GameInvaders->enemyinfo.mostright = -1;
 	GameInvaders->enemyinfo.mostbottom = -1;
 
-	float x1 = GameInvaders->GameBase->screenright + 1;
-	float x2 = GameInvaders->GameBase->screenleft - 1;
-	float y = GameInvaders->GameBase->screentop - 1;
+	float x1 = (float)GameInvaders->GameBase->screenright + 1;
+	float x2 = (float)GameInvaders->GameBase->screenleft - 1;
+	float y = (float)GameInvaders->GameBase->screentop - 1;
 	for(int i = 0; i < CGameInvaders_maxenemies; i++)
 	{
 		if (GameInvaders->enemies[i].alive)
@@ -476,7 +476,7 @@ void CGameInvaders_createinvaders(CGameInvaders* GameInvaders, bool setposition)
 	{
 		for (int y = 0; y < CGameInvaders_enemyrows; y++)
 		{
-			GameInvaders->tweens[x + y * CGameInvaders_enemycols][CGameInvaders_tweenenemypositions] = createtween(CGameInvaders_tweenenemypositions, 1+ (rand() % ((int)DesiredFps))/100, funcsmoothstop, 1, true, DesiredFps);
+			GameInvaders->tweens[x + y * CGameInvaders_enemycols][CGameInvaders_tweenenemypositions] = createtween(CGameInvaders_tweenenemypositions, 1.0f+ (rand() % (DesiredFps ==  0 ? 60 : (int)DesiredFps))/100.0f, funcsmoothstop, 1, true, DesiredFps == 0 ? 60 : DesiredFps);
 			GameInvaders->enemies[x + y * CGameInvaders_enemycols].alive = true;
 			GameInvaders->enemies[x + y * CGameInvaders_enemycols].spr = CSprites_CreateSprite();
 			GameInvaders->enemies[x + y * CGameInvaders_enemycols].pos.x = (float) x * (CGameInvaders_enemyspacing + CGameInvaders_enemyhorzspacing) + CGameInvaders_enemystartxoffset;
@@ -486,35 +486,35 @@ void CGameInvaders_createinvaders(CGameInvaders* GameInvaders, bool setposition)
 			SDL_Point tz = {1,1};
 			if (y < 1)
 			{
-				CSprites_SetSpriteImageTiles(Renderer,GameInvaders->enemies[x + y * CGameInvaders_enemycols].spr, &GameInvaders->spritesheetEnemy3, 4, 1);
-				CSprites_SetSpriteScale(Renderer,GameInvaders->enemies[x + y * CGameInvaders_enemycols].spr, GameInvaders->enemyscale);
+				CSprites_SetSpriteImageTiles(GameInvaders->enemies[x + y * CGameInvaders_enemycols].spr, &GameInvaders->spritesheetEnemy3, 4, 1);
+				CSprites_SetSpriteScale(GameInvaders->enemies[x + y * CGameInvaders_enemycols].spr, GameInvaders->enemyscale);
 				CSprites_SetSpriteAnimation(GameInvaders->enemies[x + y * CGameInvaders_enemycols].spr, 0, 3, 5);
 				tz = CSprites_TileSize(GameInvaders->enemies[x + y * CGameInvaders_enemycols].spr);
-				CSprites_SetSpriteCollisionShape(GameInvaders->enemies[x + y * CGameInvaders_enemycols].spr, SHAPE_BOX, tz.x-8, tz.y - 26,0, 0 , 6);
+				CSprites_SetSpriteCollisionShape(GameInvaders->enemies[x + y * CGameInvaders_enemycols].spr, SHAPE_BOX, tz.x-8.0f, tz.y - 26.0f,0, 0 , 6);
 			}
 			else
 			{
 				if (y < 3 )
 				{
-					CSprites_SetSpriteImageTiles(Renderer,GameInvaders->enemies[x + y * CGameInvaders_enemycols].spr, &GameInvaders->spritesheetEnemy2, 4, 1);
-					CSprites_SetSpriteScale(Renderer,GameInvaders->enemies[x + y * CGameInvaders_enemycols].spr, GameInvaders->enemyscale);
+					CSprites_SetSpriteImageTiles(GameInvaders->enemies[x + y * CGameInvaders_enemycols].spr, &GameInvaders->spritesheetEnemy2, 4, 1);
+					CSprites_SetSpriteScale(GameInvaders->enemies[x + y * CGameInvaders_enemycols].spr, GameInvaders->enemyscale);
 
 					CSprites_SetSpriteAnimation(GameInvaders->enemies[x + y * CGameInvaders_enemycols].spr, 0, 3, 5);
 					tz = CSprites_TileSize(GameInvaders->enemies[x + y * CGameInvaders_enemycols].spr);
-					CSprites_SetSpriteCollisionShape(GameInvaders->enemies[x + y * CGameInvaders_enemycols].spr, SHAPE_BOX, tz.x-15, tz.y - 18,0, 0 , -2);
+					CSprites_SetSpriteCollisionShape(GameInvaders->enemies[x + y * CGameInvaders_enemycols].spr, SHAPE_BOX, tz.x-15.0f, tz.y - 18.0f,0, 0 , -2);
 				}
 				else
 				{
-					CSprites_SetSpriteImageTiles(Renderer,GameInvaders->enemies[x + y * CGameInvaders_enemycols].spr, &GameInvaders->spritesheetEnemy1, 5, 1);
-					CSprites_SetSpriteScale(Renderer,GameInvaders->enemies[x + y * CGameInvaders_enemycols].spr, GameInvaders->enemyscale);
+					CSprites_SetSpriteImageTiles(GameInvaders->enemies[x + y * CGameInvaders_enemycols].spr, &GameInvaders->spritesheetEnemy1, 5, 1);
+					CSprites_SetSpriteScale(GameInvaders->enemies[x + y * CGameInvaders_enemycols].spr, GameInvaders->enemyscale);
 
 					CSprites_SetSpriteAnimation(GameInvaders->enemies[x + y * CGameInvaders_enemycols].spr,0, 4, 5);
 					tz = CSprites_TileSize(GameInvaders->enemies[x + y * CGameInvaders_enemycols].spr);
-					CSprites_SetSpriteCollisionShape(GameInvaders->enemies[x + y * CGameInvaders_enemycols].spr, SHAPE_BOX, tz.x-17, tz.y - 12,0, 0 , -2);
+					CSprites_SetSpriteCollisionShape(GameInvaders->enemies[x + y * CGameInvaders_enemycols].spr, SHAPE_BOX, tz.x-17.0f, tz.y - 12.0f,0, 0 , -2);
 				}
 			}
-			GameInvaders->enemies[x + y * CGameInvaders_enemycols].tz.x = tz.x * GameInvaders->enemyscale.x;
-			GameInvaders->enemies[x + y * CGameInvaders_enemycols].tz.y = tz.y * GameInvaders->enemyscale.y;
+			GameInvaders->enemies[x + y * CGameInvaders_enemycols].tz.x = (int)(tz.x * GameInvaders->enemyscale.x);
+			GameInvaders->enemies[x + y * CGameInvaders_enemycols].tz.y = (int)(tz.y * GameInvaders->enemyscale.y);
 		}
 	}
 }
@@ -636,13 +636,13 @@ void CGameInvaders_destroyplayer(CGameInvaders* GameInvaders)
 void CGameInvaders_createplayer(CGameInvaders* GameInvaders)
 {
 	GameInvaders->player.spr = CSprites_CreateSprite();
-	CSprites_SetSpriteImageTiles(Renderer,GameInvaders->player.spr, &GameInvaders->spritesheetPlayer, 5,1);
+	CSprites_SetSpriteImageTiles(GameInvaders->player.spr, &GameInvaders->spritesheetPlayer, 5,1);
 	CSprites_SetSpriteAnimation(GameInvaders->player.spr, 0, 0, 0);
-	CSprites_SetSpriteScale(Renderer,GameInvaders->player.spr, GameInvaders->enemyscale);
+	CSprites_SetSpriteScale(GameInvaders->player.spr, GameInvaders->enemyscale);
 	GameInvaders->player.tz = CSprites_TileSize(GameInvaders->player.spr);
-	CSprites_SetSpriteCollisionShape(GameInvaders->player.spr, SHAPE_BOX, GameInvaders->player.tz.x-10, GameInvaders->player.tz.y - 6,0, 0, 12);
-	GameInvaders->player.tz.x = GameInvaders->player.tz.x * GameInvaders->enemyscale.x;
-	GameInvaders->player.tz.y = GameInvaders->player.tz.y * GameInvaders->enemyscale.y;
+	CSprites_SetSpriteCollisionShape(GameInvaders->player.spr, SHAPE_BOX, GameInvaders->player.tz.x-10.0f, GameInvaders->player.tz.y - 6.0f,0, 0, 12);
+	GameInvaders->player.tz.x =(int)(GameInvaders->player.tz.x * GameInvaders->enemyscale.x);
+	GameInvaders->player.tz.y =(int)(GameInvaders->player.tz.y * GameInvaders->enemyscale.y);
 	GameInvaders->player.pos.x = (float)(GameInvaders->GameBase->screenright - GameInvaders->GameBase->screenleft) / 2;
 	GameInvaders->player.pos.y = (float)GameInvaders->GameBase->screenbottom - GameInvaders->player.tz.y / 2;
 	GameInvaders->GameBase->HealthPoints = 3;
@@ -664,7 +664,7 @@ void CGameInvaders_updateplayer(CGameInvaders* GameInvaders)
 			if (GameInvaders->player.pos.x - GameInvaders->player.tz.x / 2 - CGameInvaders_playerspeed > GameInvaders->GameBase->screenleft)
 				GameInvaders->player.pos.x -= CGameInvaders_playerspeed;
 			else
-				GameInvaders->player.pos.x = GameInvaders->GameBase->screenleft + GameInvaders->player.tz.x / 2;
+				GameInvaders->player.pos.x = (float)(GameInvaders->GameBase->screenleft + GameInvaders->player.tz.x / 2.0f);
 			CSprites_SetSpriteAnimation(GameInvaders->player.spr, 1, 1, 0);
 		}
 
@@ -675,7 +675,7 @@ void CGameInvaders_updateplayer(CGameInvaders* GameInvaders)
 			if ( GameInvaders->player.pos.x + GameInvaders->player.tz.x / 2 + CGameInvaders_playerspeed < GameInvaders->GameBase->screenright)
 				GameInvaders->player.pos.x += CGameInvaders_playerspeed;
 			else
-				GameInvaders->player.pos.x = GameInvaders->GameBase->screenright - GameInvaders->player.tz.x / 2;
+				GameInvaders->player.pos.x = (float)(GameInvaders->GameBase->screenright - GameInvaders->player.tz.x / 2.0f);
 			CSprites_SetSpriteAnimation(GameInvaders->player.spr, 4, 4, 0);
 		}
 		CSprites_SetSpriteLocation(GameInvaders->player.spr, GameInvaders->player.pos);
@@ -697,7 +697,7 @@ void CGameInvaders_updateplayer(CGameInvaders* GameInvaders)
 
 void CGameInvaders_DrawBackground(CGameInvaders* GameInvaders)
 {
-	CImage_DrawImage(Renderer, GameInvaders->background, NULL, NULL);
+	CImage_DrawImage( GameInvaders->background, NULL, NULL);
 }
 
 //init - deinit ----------------------------------------------------------------------------------------------------------------
@@ -738,13 +738,13 @@ void CGameInvaders_deinit(CGameInvaders* GameInvaders)
 
 void CGameInvaders_LoadSound(CGameInvaders* GameInvaders)
 {
-	GameInvaders->SfxDie = CAudio_LoadSound("common/die.wav");
-	GameInvaders->SfxPlayerShoot = CAudio_LoadSound("invaders/playershoot.wav");
-	GameInvaders->SfxPlayerDeath = CAudio_LoadSound("invaders/playerdeath.wav");
-	GameInvaders->SfxEnemyShoot = CAudio_LoadSound("invaders/enemyshoot.wav");
-	GameInvaders->SfxEnemyDeath = CAudio_LoadSound("invaders/enemydeath.wav");
-	GameInvaders->SfxSucces = CAudio_LoadSound("common/succes.wav");
-	GameInvaders->MusMusic = CAudio_LoadMusic("invaders/music.ogg");
+	GameInvaders->SfxDie = CAudio_LoadSound("common/die");
+	GameInvaders->SfxPlayerShoot = CAudio_LoadSound("invaders/playershoot");
+	GameInvaders->SfxPlayerDeath = CAudio_LoadSound("invaders/playerdeath");
+	GameInvaders->SfxEnemyShoot = CAudio_LoadSound("invaders/enemyshoot");
+	GameInvaders->SfxEnemyDeath = CAudio_LoadSound("invaders/enemydeath");
+	GameInvaders->SfxSucces = CAudio_LoadSound("common/succes");
+	GameInvaders->MusMusic = CAudio_LoadMusic("invaders/music");
 }
 
 void CGameInvaders_UnLoadSound(CGameInvaders* GameInvaders)
@@ -762,35 +762,35 @@ void CGameInvaders_UnLoadSound(CGameInvaders* GameInvaders)
 
 void CGameInvaders_LoadGraphics(CGameInvaders* GameInvaders)
 {
-	GameInvaders->background = CImage_LoadImage(Renderer, "invaders/background.png");
+	GameInvaders->background = CImage_LoadImage( "invaders/background.png");
 
-	GameInvaders->spritesheetBullet = CImage_LoadImageEx(Renderer, "invaders/bullet.png", 0, 100, dumpScaledBitmaps);
-	GameInvaders->spritesheetExplosion = CImage_LoadImageEx(Renderer, "invaders/explosion.png", 0, 100, dumpScaledBitmaps);
-	GameInvaders->spritesheetAsteroid = CImage_LoadImageEx(Renderer, "invaders/asteroid-01.png", 0, 75, dumpScaledBitmaps);
-	GameInvaders->spritesheetEnemy1 = CImage_LoadImageEx(Renderer, "invaders/enemy1.png",0, 80, dumpScaledBitmaps); //bottom
-	GameInvaders->spritesheetEnemy2 = CImage_LoadImageEx(Renderer, "invaders/enemy2.png",0, 80, dumpScaledBitmaps); //middle
-	GameInvaders->spritesheetEnemy3 = CImage_LoadImageEx(Renderer, "invaders/enemy3.png",0, 80, dumpScaledBitmaps); //top
-	GameInvaders->spritesheetPlayer = CImage_LoadImageEx(Renderer, "invaders/player.png",0, 80, dumpScaledBitmaps); //top
+	GameInvaders->spritesheetBullet = CImage_LoadImageEx( "invaders/bullet.png", 0, 100, dumpScaledBitmaps);
+	GameInvaders->spritesheetExplosion = CImage_LoadImageEx( "invaders/explosion.png", 0, 100, dumpScaledBitmaps);
+	GameInvaders->spritesheetAsteroid = CImage_LoadImageEx( "invaders/asteroid-01.png", 0, 75, dumpScaledBitmaps);
+	GameInvaders->spritesheetEnemy1 = CImage_LoadImageEx( "invaders/enemy1.png",0, 80, dumpScaledBitmaps); //bottom
+	GameInvaders->spritesheetEnemy2 = CImage_LoadImageEx( "invaders/enemy2.png",0, 80, dumpScaledBitmaps); //middle
+	GameInvaders->spritesheetEnemy3 = CImage_LoadImageEx( "invaders/enemy3.png",0, 80, dumpScaledBitmaps); //top
+	GameInvaders->spritesheetPlayer = CImage_LoadImageEx( "invaders/player.png",0, 80, dumpScaledBitmaps); //top
 	
-	// SDL_SaveBMPTextureScaled(Renderer, "./retrotimefs/graphics/invaders/bullet.bmp", CImage_GetImage(GameInvaders->spritesheetBullet), 1,1, true, 0, 100);
-	// SDL_SaveBMPTextureScaled(Renderer, "./retrotimefs/graphics/invaders/explosion.bmp", CImage_GetImage(GameInvaders->spritesheetExplosion), 1,1,true, 0, 100);
-	// SDL_SaveBMPTextureScaled(Renderer, "./retrotimefs/graphics/invaders/asteroid-01.bmp", CImage_GetImage(GameInvaders->spritesheetAsteroid), 1,1,true, 0, 75);
-	// SDL_SaveBMPTextureScaled(Renderer, "./retrotimefs/graphics/invaders/enemy1.bmp", CImage_GetImage(GameInvaders->spritesheetEnemy1), 1,1,true, 0, 80);
-	// SDL_SaveBMPTextureScaled(Renderer, "./retrotimefs/graphics/invaders/enemy2.bmp", CImage_GetImage(GameInvaders->spritesheetEnemy2), 1,1,true, 0, 80);
-	// SDL_SaveBMPTextureScaled(Renderer, "./retrotimefs/graphics/invaders/enemy3.bmp", CImage_GetImage(GameInvaders->spritesheetEnemy3), 1,1,true, 0, 80);
-	// SDL_SaveBMPTextureScaled(Renderer, "./retrotimefs/graphics/invaders/player.bmp", CImage_GetImage(GameInvaders->spritesheetPlayer), 1,1,true, 0, 80);
+	// SDL_SaveBMPTextureScaled( "./retrotimefs/graphics/invaders/bullet.bmp", CImage_GetImage(GameInvaders->spritesheetBullet), 1,1, true, 0, 100);
+	// SDL_SaveBMPTextureScaled( "./retrotimefs/graphics/invaders/explosion.bmp", CImage_GetImage(GameInvaders->spritesheetExplosion), 1,1,true, 0, 100);
+	// SDL_SaveBMPTextureScaled( "./retrotimefs/graphics/invaders/asteroid-01.bmp", CImage_GetImage(GameInvaders->spritesheetAsteroid), 1,1,true, 0, 75);
+	// SDL_SaveBMPTextureScaled( "./retrotimefs/graphics/invaders/enemy1.bmp", CImage_GetImage(GameInvaders->spritesheetEnemy1), 1,1,true, 0, 80);
+	// SDL_SaveBMPTextureScaled( "./retrotimefs/graphics/invaders/enemy2.bmp", CImage_GetImage(GameInvaders->spritesheetEnemy2), 1,1,true, 0, 80);
+	// SDL_SaveBMPTextureScaled( "./retrotimefs/graphics/invaders/enemy3.bmp", CImage_GetImage(GameInvaders->spritesheetEnemy3), 1,1,true, 0, 80);
+	// SDL_SaveBMPTextureScaled( "./retrotimefs/graphics/invaders/player.bmp", CImage_GetImage(GameInvaders->spritesheetPlayer), 1,1,true, 0, 80);
 	
 	if(!useDefaultColorAssets)
 	{
     	GameInvaders->UnloadGraphics(GameInvaders);
-		GameInvaders->background = CImage_LoadImage(Renderer, "invaders/background.png");
-		GameInvaders->spritesheetBullet = CImage_LoadImage(Renderer, "invaders/bullet.bmp");
-		GameInvaders->spritesheetExplosion = CImage_LoadImage(Renderer, "invaders/explosion.bmp");
-		GameInvaders->spritesheetAsteroid = CImage_LoadImage(Renderer, "invaders/asteroid-01.bmp");
-		GameInvaders->spritesheetEnemy1 = CImage_LoadImage(Renderer, "invaders/enemy1.bmp"); //bottom
-		GameInvaders->spritesheetEnemy2 = CImage_LoadImage(Renderer, "invaders/enemy2.bmp"); //middle
-		GameInvaders->spritesheetEnemy3 = CImage_LoadImage(Renderer, "invaders/enemy3.bmp"); //top
-		GameInvaders->spritesheetPlayer = CImage_LoadImage(Renderer, "invaders/player.bmp"); //top
+		GameInvaders->background = CImage_LoadImage( "invaders/background.png");
+		GameInvaders->spritesheetBullet = CImage_LoadImage( "invaders/bullet.bmp");
+		GameInvaders->spritesheetExplosion = CImage_LoadImage( "invaders/explosion.bmp");
+		GameInvaders->spritesheetAsteroid = CImage_LoadImage( "invaders/asteroid-01.bmp");
+		GameInvaders->spritesheetEnemy1 = CImage_LoadImage( "invaders/enemy1.bmp"); //bottom
+		GameInvaders->spritesheetEnemy2 = CImage_LoadImage( "invaders/enemy2.bmp"); //middle
+		GameInvaders->spritesheetEnemy3 = CImage_LoadImage( "invaders/enemy3.bmp"); //top
+		GameInvaders->spritesheetPlayer = CImage_LoadImage( "invaders/player.bmp"); //top
 	}
 	GameInvaders->backgroundtz = CImage_ImageSize(GameInvaders->background);
 }
@@ -826,7 +826,7 @@ void CGameInvaders_UpdateLogic(CGameInvaders* GameInvaders)
 	GameInvaders->GameBase->UpdateLogic(GameInvaders->GameBase);
 	GameInvaders->UpdateObjects(GameInvaders,SubGameState == SGGame);
 	if(SubGameState == SGGame)
-		CSprites_UpdateSprites(Renderer);
+		CSprites_UpdateSprites();
 }
 
 bool CGameInvaders_DrawObjects(CGameInvaders* GameInvaders)
@@ -841,7 +841,7 @@ void CGameInvaders_Draw(CGameInvaders* GameInvaders)
 {
 	GameInvaders->DrawBackground(GameInvaders);
 	if (GameInvaders->DrawObjects(GameInvaders))
-		CSprites_DrawSprites(Renderer);
+		CSprites_DrawSprites();
 	GameInvaders->GameBase->DrawScoreBar(GameInvaders->GameBase);
 	GameInvaders->GameBase->DrawSubStateText(GameInvaders->GameBase);
 }

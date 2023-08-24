@@ -1,18 +1,14 @@
 #ifndef CGAMEFROG_H
 #define CGAMEFROG_H
 
-#include <SDL.h>
+#include <pd_api.h>
 #include <stdbool.h>
 #include "CGameBase.h"
 #include "CSpriteObject.h"
-#include "../CGame.h"
-#include "../Platform.h"
 #include "../Common.h"
 
-
-
-#define CEILING(x,y) (((x) + (y) + 1) / (y))
-#define FLOORING(x,y) (((x) + (y) - 1) / (y))
+//#define CEILING(x,y) (((x) + (y) + 1) / (y))
+//#define FLOORING(x,y) (((x) + (y) - 1) / (y))
 
 struct SRowType {
 	int type;
@@ -73,9 +69,12 @@ typedef struct SObjectInfo SObjectInfo;
 #define CGameFrog_numcols 14
 #define CGameFrog_generatorrows 1
 #define CGameFrog_maxrowsbeforesafetyrow 4
-#define CGameFrog_visiblerows 16 //(int)CEILING(ScreenHeight, (int)CGameFrog_playerspeed) or screensheight / playerspeed ceiled
-#define CGameFrog_numrows 17 //CGameFrog_visiblerows + CGameFrog_generatorrows
-#define CGameFrog_playerstartrow 7 //(int)FLOORING(CGameFrog_visiblerows, 2) or visible rows / 2 floored
+//(int)CEILING(ScreenHeight, (int)CGameFrog_playerspeed) or screensheight / playerspeed ceiled
+#define CGameFrog_visiblerows 16
+//CGameFrog_visiblerows + CGameFrog_generatorrows
+#define CGameFrog_numrows 17
+//(int)FLOORING(CGameFrog_visiblerows, 2) or visible rows / 2 floored
+#define CGameFrog_playerstartrow 7
 
 #define CGameFrog_speeddeviation 0.25f*yscale
 
@@ -87,6 +86,7 @@ typedef struct SObjectInfo SObjectInfo;
 
 #define CGameFrog_lenrowtypes 9
 
+typedef struct CGameFrog CGameFrog;
 struct CGameFrog {
 
 	CGameBase *GameBase;
@@ -151,7 +151,7 @@ struct CGameFrog {
 	void (*UnLoadSound)(CGameFrog* GameFrog);
 	void (*DrawBackground)(CGameFrog* GameFrog);
 };
-typedef struct CGameFrog CGameFrog;
+
 
 void CGameFrog_Draw(CGameFrog* GameFrog);
 void CGameFrog_UpdateLogic(CGameFrog* GameFrog);

@@ -1,5 +1,4 @@
-#include <SDL.h>
-#include <SDL2_gfxPrimitives.h>
+#include <pd_api.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include "CGameBlockStacker.h"
@@ -7,8 +6,8 @@
 #include "../CGame.h"
 #include "../Common.h"
 #include "../Vec2F.h"
-
-
+#include "../pd_helperfuncs.h"
+#include "../SDL_HelperTypes.h"
 
 CGameBlockStacker* Create_CGameBlockStacker()
 {
@@ -259,7 +258,7 @@ void CGameBlockStacker_updateplayfield(CGameBlockStacker* BlockStacker, bool for
 
 void CGameBlockStacker_drawplayfieldcell(CGameBlockStacker* BlockStacker, int x, int y, int piece)
 {
-	SDL_Color color = {255,255,255,240};
+	//SDL_Color color = {255,255,255,240};
 
 	if (piece != -1)
 	{
@@ -291,15 +290,17 @@ void CGameBlockStacker_drawplayfieldcell(CGameBlockStacker* BlockStacker, int x,
 		// 	color = {0xFF, 0xFF, 0xFF, 0xFF};
 
 		SDL_Rect r = {BlockStacker->GameBase->screenleft + x * CGameBlockStacker_blocksize, BlockStacker->GameBase->screentop + y * CGameBlockStacker_blocksize, CGameBlockStacker_blocksize, CGameBlockStacker_blocksize};
-		SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 255);
-		SDL_RenderFillRect(Renderer, &r);
+		//SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 255);
+		//SDL_RenderFillRect(Renderer, &r);
+		pd->graphics->fillRect(r.x, r.y, r.w, r.h, kColorBlack);
 
 		r.x = BlockStacker->GameBase->screenleft +1 + x * CGameBlockStacker_blocksize;
 		r.y = BlockStacker->GameBase->screentop +1 + y * CGameBlockStacker_blocksize;
 		r.w = CGameBlockStacker_blocksize-2;
 		r.h = CGameBlockStacker_blocksize-2;
-		SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
-		SDL_RenderFillRect(Renderer, &r);
+		//SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
+		//SDL_RenderFillRect(Renderer, &r);
+		pd->graphics->fillRect(r.x, r.y, r.w, r.h, kColorWhite);
 	}
 }
 
@@ -326,14 +327,14 @@ void CGameBlockStacker_drawplayfield(CGameBlockStacker* BlockStacker)
 
 void CGameBlockStacker_DrawBackground(CGameBlockStacker* BlockStacker)
 {
-	CImage_DrawImage(Renderer, BlockStacker->background, NULL, NULL);
+	CImage_DrawImage(BlockStacker->background, NULL, NULL);
 }
 
 void CGameBlockStacker_Draw(CGameBlockStacker* BlockStacker)
 {
 	BlockStacker->DrawBackground(BlockStacker);
 	if (BlockStacker->DrawObjects(BlockStacker))
-		CSprites_DrawSprites(Renderer);
+		CSprites_DrawSprites();
 	BlockStacker->GameBase->DrawScoreBar(BlockStacker->GameBase);
 	BlockStacker->GameBase->DrawSubStateText(BlockStacker->GameBase);
 }
@@ -363,7 +364,7 @@ void CGameBlockStacker_init(CGameBlockStacker* BlockStacker)
 
 void CGameBlockStacker_LoadGraphics(CGameBlockStacker* BlockStacker)
 {
-	BlockStacker->background = CImage_LoadImage(Renderer, "blockstacker/background.png");
+	BlockStacker->background = CImage_LoadImage("blockstacker/background.png");
 	BlockStacker->backgroundtz = CImage_ImageSize(BlockStacker->background);
 }
 
@@ -374,11 +375,11 @@ void CGameBlockStacker_UnloadGraphics(CGameBlockStacker* BlockStacker)
 
 void CGameBlockStacker_LoadSound(CGameBlockStacker* BlockStacker)
 {
-	BlockStacker->SfxLineClear = CAudio_LoadSound("blockstacker/lineclear.ogg");
-	BlockStacker->SfxDrop = CAudio_LoadSound("blockstacker/drop.wav");
-	BlockStacker->SfxRotate = CAudio_LoadSound("blockstacker/rotate.wav");
-	BlockStacker->MusMusic = CAudio_LoadMusic("blockstacker/music.ogg");
-	BlockStacker->SfxDie = CAudio_LoadSound("common/die.wav");
+	BlockStacker->SfxLineClear = CAudio_LoadSound("blockstacker/lineclear");
+	BlockStacker->SfxDrop = CAudio_LoadSound("blockstacker/drop");
+	BlockStacker->SfxRotate = CAudio_LoadSound("blockstacker/rotate");
+	BlockStacker->MusMusic = CAudio_LoadMusic("blockstacker/music");
+	BlockStacker->SfxDie = CAudio_LoadSound("common/die");
 }
 
 void CGameBlockStacker_UnLoadSound(CGameBlockStacker* BlockStacker)
@@ -408,7 +409,7 @@ void CGameBlockStacker_UpdateLogic(CGameBlockStacker* BlockStacker)
 	BlockStacker->GameBase->UpdateLogic(BlockStacker->GameBase);
 	BlockStacker->UpdateObjects(BlockStacker, SubGameState == SGGame);
 	if(SubGameState == SGGame)
-		CSprites_UpdateSprites(Renderer);
+		CSprites_UpdateSprites();
 }
 
 void CGameBlockStacker_UpdateObjects(CGameBlockStacker* BlockStacker, bool IsGameState)

@@ -1,25 +1,30 @@
 #ifndef CGAMESNAKE_H
 #define CGAMESNAKE_H
 
-#include <SDL.h>
+#include <pd_api.h>
 #include <stdbool.h>
 #include "CGameBase.h"
-#include "../CGame.h"
 #include "../Common.h"
+#include "../SDL_HelperTypes.h"
 
-
-#define CGameSnake_snakesize 10 //floor(35 * yscale)
-#define CGameSnake_rows 22 //(int)(ScreenHeight / snakesize) -1;
-#define CGameSnake_cols 38 //(int)(ScreenWidth / snakesize) -1;
+//floor(35 * yscale)
+#define CGameSnake_snakesize 10
+//(int)(ScreenHeight / snakesize) -1;
+#define CGameSnake_rows 22
+//(int)(ScreenWidth / snakesize) -1;
+#define CGameSnake_cols 38
 #define CGameSnake_updateticks 8
-#define CGameSnake_totalcells 836 //rows*cols
+//rows*cols
+#define CGameSnake_totalcells 836
 
+typedef struct CGameSnake CGameSnake;
 
 struct CGameSnake {
+
 	CGameBase *GameBase;
-	SDL_Color snakeheadcolor;
+	/*SDL_Color snakeheadcolor;
 	SDL_Color snakebodycolor;
-	SDL_Color snakefoodcolor;
+	SDL_Color snakefoodcolor;*/
 
 	bool movedone;
 	int snakelength;
@@ -49,8 +54,6 @@ struct CGameSnake {
 	void (*Draw)(CGameSnake* GameSnake);
 	void (*UpdateLogic)(CGameSnake* GameSnake);
 };
-
-typedef struct CGameSnake CGameSnake;
 
 void CGameSnake_Draw(CGameSnake* GameSnake);
 bool CGameSnake_DrawObjects(CGameSnake* GameSnake);

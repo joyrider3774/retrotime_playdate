@@ -1,11 +1,10 @@
-#include <SDL.h>
-#include <SDL2_gfxPrimitives.h>
+#include <pd_api.h>
 #include <stdbool.h>
 #include "CGameRamIt.h"
 #include "../CGame.h"
 #include "../Common.h"
-
-
+#include "../SDL_HelperTypes.h"
+#include "../pd_helperfuncs.h"
 
 CGameRamIt* Create_CGameRamIt()
 {
@@ -19,9 +18,9 @@ CGameRamIt* Create_CGameRamIt()
 	GameRamIt->SfxDie = -1;
 	GameRamIt->SfxSucces = -1;
 	GameRamIt->MusMusic = -1;
-	GameRamIt->riblocksize = (int)(ScreenHeight / (CGameRamIt_numblocks+1)) - 2 * CGameRamIt_blockspacing;
-	GameRamIt->riblocksizespacing = GameRamIt->riblocksize + 2 * CGameRamIt_blockspacing;
-	GameRamIt->GameBase->playfieldwidth = ScreenWidth - 1 * GameRamIt->riblocksize;
+	GameRamIt->riblocksize = (int)((ScreenHeight / (CGameRamIt_numblocks+1)) - 2 * CGameRamIt_blockspacing);
+	GameRamIt->riblocksizespacing =(int)(GameRamIt->riblocksize + 2 * CGameRamIt_blockspacing);
+	GameRamIt->GameBase->playfieldwidth = (ScreenWidth - 1 * GameRamIt->riblocksize);
 	GameRamIt->segmentwidth = (int)(((GameRamIt->GameBase->playfieldwidth / 2) / CGameRamIt_blocksegments));
 	GameRamIt->GameBase->playfieldheight = CGameRamIt_numblocks * GameRamIt->riblocksizespacing;
 	GameRamIt->GameBase->screenleft = (ScreenWidth - GameRamIt->GameBase->playfieldwidth) / 2;
@@ -67,7 +66,7 @@ bool CGameRamIt_createbullet(CGameRamIt* GameRamIt)
 	{
 		GameRamIt->bulletalive = true;
 		GameRamIt->bulletpos = GameRamIt->playerpos;
-		GameRamIt->bulletvel.x = GameRamIt->playerdx * CGameRamIt_bulletspeed;
+		GameRamIt->bulletvel.x = (int)(GameRamIt->playerdx * CGameRamIt_bulletspeed);
 		GameRamIt->bulletvel.y = 0;
 		result = true;
 	}
@@ -149,8 +148,9 @@ void CGameRamIt_drawbullet(CGameRamIt* GameRamIt)
 	if (GameRamIt->bulletalive)
 	{
 		SDL_Rect r = {GameRamIt->bulletpos.x - GameRamIt->riblocksize / 2, GameRamIt->bulletpos.y - GameRamIt->riblocksize / 6, GameRamIt->riblocksize, GameRamIt->riblocksize / 3};
-		SDL_SetRenderDrawColor(Renderer, 255, 255, 255, 255);
-		SDL_RenderFillRect(Renderer, &r);
+		//SDL_SetRenderDrawColor(Renderer, 255, 255, 255, 255);
+		//SDL_RenderFillRect(Renderer, &r);
+		pd->graphics->fillRect(r.x, r.y, r.w, r.h, kColorWhite);
 	}
 }
 
@@ -166,22 +166,18 @@ void CGameRamIt_createplayer(CGameRamIt* GameRamIt)
 void CGameRamIt_drawplayer(CGameRamIt* GameRamIt)
 {
 	SDL_Rect r;
-
-	SDL_SetRenderDrawColor(Renderer, 0x80, 0x80, 0x80, 0xFF);
-	r.x = GameRamIt->GameBase->screenleft + (GameRamIt->GameBase->screenright - GameRamIt->GameBase->screenleft -CGameRamIt_playerrailwidth) / 2;
+	r.x = (int)(GameRamIt->GameBase->screenleft + (GameRamIt->GameBase->screenright - GameRamIt->GameBase->screenleft -CGameRamIt_playerrailwidth) / 2);
 	r.y = GameRamIt->GameBase->screentop;
-	r.w = CGameRamIt_playerrailwidth;
+	r.w = (int)CGameRamIt_playerrailwidth;
 	r.h = GameRamIt->GameBase->screenbottom - GameRamIt->GameBase->screentop;
-	SDL_RenderFillRect(Renderer, &r);
+	pd->graphics->fillRect(r.x, r.y, r.w, r.h, kColorWhite);
 
-	SDL_SetRenderDrawColor(Renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	r.x = GameRamIt->playerpos.x - GameRamIt->riblocksize / 2;
 	r.y = GameRamIt->playerpos.y - GameRamIt->riblocksize / 2;
 	r.w = GameRamIt->riblocksize;
 	r.h = GameRamIt->riblocksize;
-	SDL_RenderFillRect(Renderer, &r);
+	pd->graphics->fillRect(r.x, r.y, r.w, r.h, kColorWhite);
 
-	SDL_SetRenderDrawColor(Renderer, 0xFF, 0x40, 0x40, 0xFF);
 	if (GameRamIt->playerdx == 1)
 	{
 		r.x = GameRamIt->playerpos.x + GameRamIt->riblocksize / 2;
@@ -196,7 +192,7 @@ void CGameRamIt_drawplayer(CGameRamIt* GameRamIt)
 		r.w = GameRamIt->riblocksize / 2;
 		r.h = GameRamIt->riblocksize / 2;
 	}
-	SDL_RenderFillRect(Renderer, &r);
+	pd->graphics->fillRect(r.x, r.y, r.w, r.h, kColorWhite);
 }
 
 void CGameRamIt_updateplayer(CGameRamIt* GameRamIt)
@@ -216,7 +212,7 @@ void CGameRamIt_updateplayer(CGameRamIt* GameRamIt)
 		(CInput_Buttons.ButDpadDown))
 	{
 		if (GameRamIt->playerpos.y + GameRamIt->riblocksize / 2 + CGameRamIt_playerspeed < GameRamIt->GameBase->screenbottom)
-			GameRamIt->playerpos.y += CGameRamIt_playerspeed;
+			GameRamIt->playerpos.y += (int)CGameRamIt_playerspeed;
 		else
 			GameRamIt->playerpos.y = GameRamIt->GameBase->screenbottom - GameRamIt->riblocksize / 2;
 	}
@@ -226,7 +222,7 @@ void CGameRamIt_updateplayer(CGameRamIt* GameRamIt)
 		(CInput_Buttons.ButDpadUp))
 	{
 		if (GameRamIt->playerpos.y - GameRamIt->riblocksize / 2 - CGameRamIt_playerspeed > GameRamIt->GameBase->screentop)
-			GameRamIt->playerpos.y -= CGameRamIt_playerspeed;
+			GameRamIt->playerpos.y -= (int)CGameRamIt_playerspeed;
 		else
 			GameRamIt->playerpos.y = GameRamIt->GameBase->screentop + GameRamIt->riblocksize / 2;
 	}
@@ -244,7 +240,7 @@ void CGameRamIt_createplayfield(CGameRamIt* GameRamIt)
 {
 	int prevpiece = -1;
 	int piece = -1;
-	SDL_Color color = {0xFF, 0xFf, 0xFF, 0xFF};
+	//SDL_Color color = {0xFF, 0xFf, 0xFF, 0xFF};
 	for (int side = 0 ; side < CGameRamIt_sides; side++)
 	{
 		for (int block = 0; block < CGameRamIt_numblocks; block++)
@@ -305,7 +301,7 @@ void CGameRamIt_createplayfield(CGameRamIt* GameRamIt)
 			// if (piece == 16)
 			// 	color = {0xD9, 0x96, 0x7A, 0xFF};
 
-			GameRamIt->playfield[side][block].color = color;
+			//GameRamIt->playfield[side][block].color = color;
 			GameRamIt->playfield[side][block].segments = 2;
 			GameRamIt->playfield[side][block].maxsegments = 2;
 		}
@@ -383,20 +379,21 @@ void CGameRamIt_drawplayfield(CGameRamIt* GameRamIt)
 			if (side == 0)
 			{
 				r.x = GameRamIt->GameBase->screenleft;
-				r.y = GameRamIt->GameBase->screentop + block * GameRamIt->riblocksizespacing + CGameRamIt_blockspacing;
+				r.y = (int)(GameRamIt->GameBase->screentop + block * GameRamIt->riblocksizespacing + CGameRamIt_blockspacing);
 				r.w = GameRamIt->playfield[side][block].segments * GameRamIt->segmentwidth;
 				r.h =GameRamIt->riblocksize;
 			}
 			else
 			{
 				r.x = GameRamIt->GameBase->screenright - GameRamIt->playfield[side][block].segments * GameRamIt->segmentwidth;
-				r.y = GameRamIt->GameBase->screentop + block * GameRamIt->riblocksizespacing + CGameRamIt_blockspacing;
+				r.y = (int)(GameRamIt->GameBase->screentop + block * GameRamIt->riblocksizespacing + CGameRamIt_blockspacing);
 				r.w = GameRamIt->playfield[side][block].segments * GameRamIt->segmentwidth;
 				r.h = GameRamIt->riblocksize;
 			}
-			SDL_SetRenderDrawColor(Renderer, GameRamIt->playfield[side][block].color.r, GameRamIt->playfield[side][block].color.g, GameRamIt->playfield[side][block].color.b,
-					GameRamIt->playfield[side][block].color.a);
-			SDL_RenderFillRect(Renderer, &r);
+			//SDL_SetRenderDrawColor(Renderer, GameRamIt->playfield[side][block].color.r, GameRamIt->playfield[side][block].color.g, GameRamIt->playfield[side][block].color.b,
+			//		GameRamIt->playfield[side][block].color.a);
+			//SDL_RenderFillRect(Renderer, &r);
+			pd->graphics->fillRect(r.x, r.y, r.w, r.h, kColorWhite);
 		}
 }
 
@@ -404,11 +401,17 @@ void CGameRamIt_drawplayfield(CGameRamIt* GameRamIt)
 
 void CGameRamIt_DrawBackground(CGameRamIt* GameRamIt)
 {
+	/*
 	SDL_SetRenderDrawColor(Renderer, 150, 150, 150, 255);
 	SDL_RenderClear(Renderer);
 	SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 255);
 	SDL_Rect r = {GameRamIt->GameBase->screenleft, GameRamIt->GameBase->screentop, GameRamIt->GameBase->playfieldwidth, GameRamIt->GameBase->playfieldheight};
 	SDL_RenderFillRect(Renderer, &r);
+	*/
+	pd->graphics->clear(kColorWhite);
+	SDL_Rect r = {GameRamIt->GameBase->screenleft, GameRamIt->GameBase->screentop, GameRamIt->GameBase->playfieldwidth, GameRamIt->GameBase->playfieldheight};
+	pd->graphics->fillRect(r.x, r.y, r.w, r.h, kColorBlack);
+	
 }
 
 //init - deinit ----------------------------------------------------------------------------------------------------------------
@@ -437,11 +440,11 @@ void CGameRamIt_deinit(CGameRamIt* GameRamIt)
 
 void CGameRamIt_LoadSound(CGameRamIt* GameRamIt)
 {
-	GameRamIt->SfxShoot = CAudio_LoadSound("ramit/shoot.wav");
-	GameRamIt->SfxHit = CAudio_LoadSound("ramit/hit.wav");
-	GameRamIt->SfxDie = CAudio_LoadSound("common/die.wav");
-	GameRamIt->SfxSucces = CAudio_LoadSound("common/succes.wav");
-	GameRamIt->MusMusic = CAudio_LoadMusic("ramit/music.ogg");
+	GameRamIt->SfxShoot = CAudio_LoadSound("ramit/shoot");
+	GameRamIt->SfxHit = CAudio_LoadSound("ramit/hit");
+	GameRamIt->SfxDie = CAudio_LoadSound("common/die");
+	GameRamIt->SfxSucces = CAudio_LoadSound("common/succes");
+	GameRamIt->MusMusic = CAudio_LoadMusic("ramit/music");
 }
 
 void CGameRamIt_UnLoadSound(CGameRamIt* GameRamIt)
@@ -473,7 +476,7 @@ void CGameRamIt_UpdateObjects(CGameRamIt* GameRamIt, bool IsGameState)
 
 			if (GameRamIt->GameBase->HealthPoints > 0)
 			{
-				SDL_Delay(500);
+				pdDelay(500);
 				GameRamIt->createplayfield(GameRamIt);
 			}
 			GameRamIt->playerdeath = false;
@@ -486,7 +489,7 @@ void CGameRamIt_UpdateLogic(CGameRamIt* GameRamIt)
 	GameRamIt->GameBase->UpdateLogic(GameRamIt->GameBase);
 	GameRamIt->UpdateObjects(GameRamIt, SubGameState == SGGame);
 	if(SubGameState == SGGame)
-		CSprites_UpdateSprites(Renderer);
+		CSprites_UpdateSprites();
 }
 
 bool CGameRamIt_DrawObjects(CGameRamIt* GameRamIt)
@@ -503,7 +506,7 @@ void CGameRamIt_Draw(CGameRamIt* GameRamIt)
 {
 	GameRamIt->DrawBackground(GameRamIt);
 	if (GameRamIt->DrawObjects(GameRamIt))
-		CSprites_DrawSprites(Renderer);
+		CSprites_DrawSprites();
 	GameRamIt->GameBase->DrawScoreBar(GameRamIt->GameBase);
 	GameRamIt->GameBase->DrawSubStateText(GameRamIt->GameBase);
 }

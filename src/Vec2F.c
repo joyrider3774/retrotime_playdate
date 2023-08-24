@@ -16,5 +16,5 @@ Vec2F clampVec2F(Vec2F value, Vec2F min, Vec2F max)
 
 float length(Vec2F value)
 {
-	return sqrt(value.x*value.x + value.y*value.y);
+	return (float)sqrt(value.x*value.x + value.y*value.y);
 }

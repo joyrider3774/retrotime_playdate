@@ -1,11 +1,10 @@
 #ifndef CGAMEBASE_H
 #define CGAMEBASE_H
 
-#include <SDL.h>
+#include <pd_api.h>
 #include <stdbool.h>
-#include "../CGame.h"
-#include "../Common.h"
 
+typedef struct CGameBase CGameBase;
 struct CGameBase {
 	char SubStateText[500];
 	bool UsesLevels;
@@ -18,7 +17,7 @@ struct CGameBase {
 	void (*PauseMenu)(CGameBase* GameBase);
 	bool (*UpdateLogic)(CGameBase* GameBase);
 };
-typedef struct CGameBase CGameBase;
+
 
 CGameBase* Create_CGameBase(int aGameStateID, bool aUsesLevels);	
 void Destroy_CGameBase(CGameBase* GameBase);

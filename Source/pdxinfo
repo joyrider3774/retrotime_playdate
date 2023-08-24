@@ -1,0 +1,7 @@
+name=Retro Time
+author=Willems Davy aka Joyrider3774
+description=A game containing 8 retro based games, playable in 3 game modes
+bundleID=com.joyrider3774.retrotime
+version=1.0
+imagePath=metadata
+buildNumber=1

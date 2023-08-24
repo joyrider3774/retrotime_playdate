@@ -1,10 +1,11 @@
-#include <SDL.h>
-#include <SDL2_gfxPrimitives.h>
+#include <pd_api.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include "CSprites.h"
 #include "Vec2F.h"
 #include "Common.h"
+#include "pd_helperfuncs.h"
+#include "SDL_HelperTypes.h"
 
 #define SPR_Max 1000
 
@@ -126,7 +127,7 @@ void CSprites_RemoveSprite(CSprite* Spr)
 	if(!loadDumpedScaledBitmaps)
 		if(CSprites_Sprites[Spr->index]->Img != NULL)
 		{
-			SDL_DestroyTexture(CSprites_Sprites[Spr->index]->Img);
+			pd->graphics->freeBitmap(CSprites_Sprites[Spr->index]->Img);
 			CSprites_Sprites[Spr->index]->Img = NULL;
 		}
 	
@@ -135,7 +136,7 @@ void CSprites_RemoveSprite(CSprite* Spr)
 	free(Spr);
 }
 
-void CSprites_UpdateSprites(SDL_Renderer* renderer)
+void CSprites_UpdateSprites()
 {
 	CSprites_SortSprites();
 	for (int i = 0; i < SPR_Max; i++)
@@ -145,7 +146,7 @@ void CSprites_UpdateSprites(SDL_Renderer* renderer)
 
 		if (CSprites_Sprites[i]->animSpeed != 0)
 		{
-			if (SDL_GetTicks() > CSprites_Sprites[i]->animTimer)
+			if (pd->system->getCurrentTimeMilliseconds() > CSprites_Sprites[i]->animTimer)
 			{
 				CSprites_Sprites[i]->animTile += CSprites_Sprites[i]->animInc;
 				if (CSprites_Sprites[i]->animInc > 0)
@@ -161,7 +162,7 @@ void CSprites_UpdateSprites(SDL_Renderer* renderer)
 							CSprites_Sprites[i]->animTile = CSprites_Sprites[i]->animStartTile;
 					}
 				}
-				CSprites_Sprites[i]->animTimer = SDL_GetTicks() + (int)floor(1000 / CSprites_Sprites[i]->animSpeed);
+				CSprites_Sprites[i]->animTimer = pd->system->getCurrentTimeMilliseconds() + (int)floor(1000 / CSprites_Sprites[i]->animSpeed);
 			}
 		}
 
@@ -174,7 +175,7 @@ void CSprites_UpdateSprites(SDL_Renderer* renderer)
 		CSprites_Sprites[i]->collisionWidth += CSprites_Sprites[i]->xscale_speed;
 		CSprites_Sprites[i]->collisionHeight += CSprites_Sprites[i]->yscale_speed;
 
-		CSprites_UpdateImage(renderer, CSprites_Sprites[i]);
+		CSprites_UpdateImage(CSprites_Sprites[i]);
 	}
 }
 
@@ -203,7 +204,7 @@ void CSprites_SortSprites()
 	}
 }
 
-void CSprites_DrawSprite(SDL_Renderer* Renderer, CSprite* Spr)
+void CSprites_DrawSprite(CSprite* Spr)
 {
 	if (Spr == NULL)
 		return;
@@ -224,24 +225,23 @@ void CSprites_DrawSprite(SDL_Renderer* Renderer, CSprite* Spr)
 		int x = AnimTile - (y * Spr->tilesX);
 		
 		SDL_Rect SrcRect = {(int)(x * Spr->tileSizeX* (float)fabs(Spr->sxscale)), (int)(y* Spr->tileSizeY* (float)fabs(Spr->syscale)), (int)(Spr->tileSizeX* (float)fabs(Spr->sxscale)),(int)(Spr->tileSizeY* (float)fabs(Spr->syscale))};
-		CImage_DrawImageFuzeSrcRectTintFloatTex(Renderer, Spr->Img, &SrcRect, true, &pos, Spr->rotation, &scale, Spr->r, Spr->g, Spr->b, Spr->a);
+		CImage_DrawImageFuzeSrcRectTintFloatTex(Spr->Img, &SrcRect, true, &pos, Spr->rotation, &scale, Spr->r, Spr->g, Spr->b, Spr->a);
 		
 
 		if (Spr->show_collision_shape || CSprites_ForceShowCollisionShape)
 		{
-			SDL_SetRenderDrawColor(Renderer, 255, 0, 255, 255);
 			switch(Spr->collisionShape)
 			{
 				case SHAPE_BOX:
 				{
 					const SDL_Rect rect = {(int)(Spr->x + Spr->collisionxoffset - (Spr->collisionWidth * (Spr->sxscale) / 2)), (int)(Spr->y + Spr->collisionyoffset - (Spr->collisionHeight * (Spr->syscale) / 2)), (int)(Spr->collisionWidth * (Spr->sxscale)), (int)(Spr->collisionHeight * (Spr->syscale))};
-					SDL_RenderDrawRect(Renderer, &rect);
+					pd->graphics->drawRect(rect.x, rect.y, rect.w, rect.h, kColorBlack);
 					break;
 				}
 				case SHAPE_CIRCLE:
 				{
 					if ((Spr->collisionWidth == Spr->collisionHeight) && (Spr->sxscale == Spr->syscale))
-						circleRGBA(Renderer, Spr->x + Spr->collisionxoffset, Spr->y + Spr->collisionyoffset,(int) ((Spr->collisionWidth * Spr->sxscale) / 2), 255, 0, 255, 255);
+						pd->graphics->drawEllipse((int)(Spr->x + Spr->collisionxoffset),(int)(Spr->y + Spr->collisionyoffset),(int) ((Spr->collisionWidth * Spr->sxscale) / 2), (int)((Spr->collisionWidth * Spr->syscale) / 2.0f),1,0,360, kColorBlack);
 					break;
 				}
 				default:
@@ -265,7 +265,7 @@ void CSprites_ResetDrawTargets()
 	}
 }
 
-void CSprites_DrawSprites(SDL_Renderer* Renderer)
+void CSprites_DrawSprites()
 {
 	CSprites_SpritesDrawn = 0;
 	for (int i = 0; i < SPR_Max; i++)
@@ -273,11 +273,11 @@ void CSprites_DrawSprites(SDL_Renderer* Renderer)
 		if (CSprites_Sprites[i] == NULL)
 			continue;
 
-		CSprites_DrawSprite(Renderer, CSprites_Sprites[i]);
+		CSprites_DrawSprite(CSprites_Sprites[i]);
 	}
 }
 
-void SetSpriteRotationSpeed(CSprite* Spr, float rotationSpeed)
+void CSprites_SetSpriteRotationSpeed(CSprite* Spr, float rotationSpeed)
 {
 	Spr->rotation_speed = rotationSpeed;
 }
@@ -301,12 +301,12 @@ Vec2F CSprites_GetSpriteLocation(CSprite* Spr)
 	return Result;
 }
 
-void CSprites_SetSpriteImage(SDL_Renderer* renderer, CSprite* Spr, int *AImageID)
+void CSprites_SetSpriteImage(CSprite* Spr, int *AImageID)
 {
-	CSprites_SetSpriteImageTiles(renderer, Spr, AImageID, 1, 1);
+	CSprites_SetSpriteImageTiles(Spr, AImageID, 1, 1);
 }
 
-void CSprites_UpdateImage(SDL_Renderer* renderer, CSprite* Spr) 
+void CSprites_UpdateImage(CSprite* Spr) 
 {
 	if(Spr == NULL)
 		return;
@@ -321,7 +321,7 @@ void CSprites_UpdateImage(SDL_Renderer* renderer, CSprite* Spr)
 	if(loadDumpedScaledBitmaps)
 	{
 		Vec2F Scale = {Spr->sxscale,Spr->syscale};
-		Spr->Img = CImage_LoadScaledImage(renderer, *Spr->imageID, Scale);
+		Spr->Img = CImage_LoadScaledImage(*Spr->imageID, Scale);
 		//remember current scale
 		Spr->prevyscale = Spr->syscale;
 		Spr->prevxscale = Spr->sxscale;
@@ -329,91 +329,43 @@ void CSprites_UpdateImage(SDL_Renderer* renderer, CSprite* Spr)
 	}
 	else
 	{
-		SDL_Texture *tex = CImage_GetImage(*Spr->imageID);
+		LCDBitmap *tex = CImage_GetImage(*Spr->imageID);
 
 		if (tex == NULL)
 			return;
 
-		Uint32 format;
+
 		int w, h;
-		SDL_BlendMode blendmode;
-		SDL_Texture* renderTarget;
 
-		// Get all properties from the texture we are duplicating
-		SDL_QueryTexture(tex, &format, NULL, &w, &h);
-		SDL_GetTextureBlendMode(tex, &blendmode);
+		pd->graphics->getBitmapData(tex, &w,&h, NULL, NULL, NULL);
 
-		// Save the current rendering target (will be NULL if it is the current window)
-		renderTarget = SDL_GetRenderTarget(renderer);
-
-		if(Spr->Img != NULL)
-			SDL_DestroyTexture(Spr->Img);
+		if (Spr->Img != NULL)
+			pd->graphics->freeBitmap(Spr->Img);
 
 		// Create a new texture with the same properties as the one we are duplicating
-		Spr->Img = SDL_CreateTexture(renderer, format, SDL_TEXTUREACCESS_TARGET, w* (float)fabs(Spr->sxscale), h * (float)fabs(Spr->syscale));
+		Spr->Img = pd->graphics->newBitmap((int)(w * (float)fabs(Spr->sxscale)),(int)(h * (float)fabs(Spr->syscale)), kColorClear);
 
-		// Set its blending mode and make it the render target
-		SDL_SetTextureBlendMode(Spr->Img, SDL_BLENDMODE_NONE);
-		SDL_SetRenderTarget(renderer, Spr->Img);
-
-		//clear with transparant color
-		uint8_t r,g,b,a;
-		SDL_GetRenderDrawColor(renderer, &r,&g,&b,&a);
-		SDL_SetRenderDrawColor(renderer,0,0,0,0);
-		SDL_RenderClear(renderer);
-		SDL_SetRenderDrawColor(renderer, r,g,b,a);
-
+		
+		
 		//calculate dest size
 		SDL_Rect TmpR;
 		TmpR.x = 0;
 		TmpR.y = 0;
-		TmpR.w = w * (float)fabs(Spr->sxscale);
-		TmpR.h = h * (float)fabs(Spr->syscale);
+		TmpR.w = (int)(w * (float)fabs(Spr->sxscale));
+		TmpR.h = (int)(h * (float)fabs(Spr->syscale));
 
-		
-		// Render the full original texture onto the new one
-		SDL_RenderCopy(renderer, tex, NULL, &TmpR);
-
-		// Change the blending mode of the new texture to the same as the original one
-		SDL_SetTextureBlendMode(Spr->Img, blendmode);
-
-		// Restore the render target
-		SDL_SetRenderTarget(renderer, renderTarget);
-
+		pd->graphics->pushContext(Spr->Img);
+		DrawBitmapScaledSrcRec(tex, (float)TmpR.w / w,(float)TmpR.h / h, 0, 0, 0, 0, w, h);
+		pd->graphics->popContext();
 		//remember current scale
 		Spr->prevyscale = Spr->syscale;
 		Spr->prevxscale = Spr->sxscale;
 		CSprites_UpdateImageResets++;
 		
-		Vec2F Vec2FScale = {(float)fabs(Spr->sxscale), (float)fabs(Spr->syscale)};
-		
-		if (SavedScalingsCount < SavedScalingsMax)
-		{
-			bool bfound = false;
-			for (int i = 0; i < SavedScalingsCount; i++)
-			{
-				if ((CSprites_SavedScalings[i].gfxid == *Spr->imageID) &&
-					(CSprites_SavedScalings[i].scale.x == Vec2FScale.x) &&
-					(CSprites_SavedScalings[i].scale.y == Vec2FScale.y))
-					{
-						bfound = true;
-						break;
-					}
-			}
-
-			if(!bfound)
-			{
-				SavedScalingsCount++;
-				CSprites_SavedScalings[SavedScalingsCount].gfxid = *Spr->imageID;
-				CSprites_SavedScalings[SavedScalingsCount].scale.x = Vec2FScale.x;
-				CSprites_SavedScalings[SavedScalingsCount].scale.y = Vec2FScale.y;
-				CImage_SaveImage(renderer, *Spr->imageID, Vec2FScale);
-			}
-		}
 	}
 }
 
-void CSprites_SetSpriteImageTiles(SDL_Renderer* renderer, CSprite* Spr, int *AImageID, int TilesX, int TilesY)
+void CSprites_SetSpriteImageTiles(CSprite* Spr, int *AImageID, int TilesX, int TilesY)
 {
 	bool needCSprites_UpdateImage = Spr->imageID != AImageID;
 	Spr->imageID = AImageID;
@@ -423,7 +375,7 @@ void CSprites_SetSpriteImageTiles(SDL_Renderer* renderer, CSprite* Spr, int *AIm
 		//to force an update
 		Spr->prevyscale = 0;
 		Spr->prevxscale = 0;
-		CSprites_UpdateImage(renderer, Spr);
+		CSprites_UpdateImage(Spr);
 	}
 	Spr->tileSizeX = (int)floor(Tz.x / TilesX);
 	Spr->tileSizeY = (int)floor(Tz.y / TilesY);
@@ -431,16 +383,16 @@ void CSprites_SetSpriteImageTiles(SDL_Renderer* renderer, CSprite* Spr, int *AIm
 	Spr->tilesY = TilesY;
 	if ((Spr->collisionHeight == 0) && (Spr->collisionWidth == 0))
 	{
-		Spr->collisionHeight = Spr->tileSizeY;
-		Spr->collisionWidth = Spr->tileSizeX;
+		Spr->collisionHeight = (float)Spr->tileSizeY;
+		Spr->collisionWidth = (float)Spr->tileSizeX;
 	}
 }
 
-void CSprites_SetSpriteScale(SDL_Renderer* renderer, CSprite* Spr, Vec2F AScale)
+void CSprites_SetSpriteScale(CSprite* Spr, Vec2F AScale)
 {
 	Spr->sxscale = AScale.x;
 	Spr->syscale = AScale.y;
-	CSprites_UpdateImage(renderer, Spr);
+	CSprites_UpdateImage(Spr);
 }
 
 void CSprites_SetSpriteRotation(CSprite* Spr, float AAngle)
@@ -458,7 +410,7 @@ void CSprites_SetSpriteAnimation(CSprite* Spr, int StartTile, int EndTile, int a
 	Spr->animTile = StartTile;
 	if (animSpeed != 0)
 	{
-		Spr->animTimer = SDL_GetTicks() + (int)floor(1000 / animSpeed);
+		Spr->animTimer = pd->system->getCurrentTimeMilliseconds() + (int)floor(1000 / animSpeed);
 
 		if(EndTile < StartTile)
 			Spr->animInc = -1;

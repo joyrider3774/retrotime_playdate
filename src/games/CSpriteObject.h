@@ -1,10 +1,12 @@
 #ifndef CSPRITEOBJECT_H
 #define CSPRITEOBJECT_H
 
-#include <SDL.h>
-#include "../CSprites.h"
+#include <pd_api.h>
 #include <stdbool.h>
+#include "../CSprites.h"
 #include "../Vec2F.h"
+
+typedef struct CSpriteObject CSpriteObject;
 struct CSpriteObject
 {
 		bool alive;
@@ -29,7 +31,7 @@ struct CSpriteObject
 		int group;
 		int row;
 };
-typedef struct CSpriteObject CSpriteObject;
+
 
 void Initialize_CSpriteObject(CSpriteObject *SpriteObject);
 #endif

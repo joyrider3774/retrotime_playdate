@@ -1,16 +1,11 @@
 #ifndef CAUDIO_H
 #define CAUDIO_H
 
-#include <SDL.h>
-#include <SDL_mixer.h>
+#include <pd_api.h>
 #include <string.h>
 #include <stdbool.h>
-#include "Platform.h"
 
-#define SND_Max 100
-#define MUS_Max 20
-
-void CAudio_Init(char* AssetsPath, bool ADebugInfo);
+void CAudio_Init(bool ADebugInfo);
 void CAudio_DeInit();
 void CAudio_IncVolumeMusic();
 void CAudio_DecVolumeMusic();

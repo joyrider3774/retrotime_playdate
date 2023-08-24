@@ -1,12 +1,10 @@
 #ifndef CGAMEINVADERS_H
 #define CGAMEINVADERS_H
 
-#include <SDL.h>
+#include <pd_api.h>
 #include <stdbool.h>
 #include "CGameBase.h"
 #include "CSpriteObject.h"
-#include "../CGame.h"
-#include "../Platform.h"
 #include "../Common.h"
 #include "../CTween.h"
 #include "../Vec2F.h"
@@ -45,7 +43,7 @@ struct senemyinfo
 };
 typedef struct senemyinfo senemyinfo;
 
-
+typedef struct CGameInvaders CGameInvaders;
 struct CGameInvaders {
 
 	CGameBase *GameBase;
@@ -119,7 +117,7 @@ struct CGameInvaders {
 	void (*Draw)(CGameInvaders* GameInvaders);
 	void (*UpdateLogic)(CGameInvaders* GameInvaders);
 };
-typedef struct CGameInvaders CGameInvaders;
+
 
 void CGameInvaders_Draw(CGameInvaders* GameInvaders);
 bool CGameInvaders_DrawObjects(CGameInvaders* GameInvaders);

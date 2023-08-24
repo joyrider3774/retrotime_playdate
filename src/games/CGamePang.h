@@ -1,12 +1,10 @@
 #ifndef CGAMEPANG_H
 #define CGAMEPANG_H
 
-#include <SDL.h>
+#include <pd_api.h>
 #include <stdbool.h>
 #include "CGameBase.h"
 #include "CSpriteObject.h"
-#include "../CGame.h"
-#include "../Platform.h"
 #include "../Common.h"
 #include "../Vec2F.h"
 
@@ -27,9 +25,13 @@
 #define CGamePang_ballsmall 1
 
 #define CGamePang_maxbigballs 6
-#define CGamePang_maxballs 42 //maxbigballs * 7
+//maxbigballs * 7
+#define CGamePang_maxballs 42 
 
-struct CGamePang {
+typedef struct CGamePang CGamePang;
+
+struct CGamePang 
+{
 
 	CGameBase *GameBase;
 
@@ -85,8 +87,6 @@ struct CGamePang {
 	void (*Draw)(CGamePang* GamePang);
 	void (*UpdateLogic)(CGamePang* GamePang);
 };
-
-typedef struct CGamePang CGamePang;
 
 void CGamePang_Draw(CGamePang* GamePang);
 bool CGamePang_DrawObjects(CGamePang* GamePang);

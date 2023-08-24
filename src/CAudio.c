@@ -1,39 +1,25 @@
-#include <SDL_mixer.h>
+#include <pd_api.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
 #include "CAudio.h"
-#include "Platform.h"
+#include "pd_helperfuncs.h"
+
+#define SND_Max 100
+#define MUS_Max 20
 
 bool CAudio_DebugInfo;
 int CAudio_VolumeMusic, CAudio_VolumeSound;
-Mix_Chunk* CAudio_Sounds[SND_Max];
-Mix_Music* CAudio_Music[MUS_Max];
-char CAudio_DataPath[500];
+SamplePlayer* CAudio_Sounds[SND_Max];
+FilePlayer* CAudio_Music[MUS_Max];
 bool CAudio_GlobalSoundEnabled = true;
 
-void CAudio_Init(char* AssetsPath, bool ADebugInfo)
+void CAudio_Init(bool ADebugInfo)
 {
-	strcpy(CAudio_DataPath, AssetsPath);
 	CAudio_DebugInfo = ADebugInfo;
-	if (SDL_Init(SDL_INIT_AUDIO) == 0)
-	{
-		if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024) < 0)
-		{
-			CAudio_GlobalSoundEnabled = false;
-			SDL_Log("Failed to initialise sound: %s\n", Mix_GetError());
-		}
-		else
-		{
-			SDL_Log("Audio Succesfully initialised!\n");
-		}
-	}
-	else
-	{
-		CAudio_GlobalSoundEnabled = false;
-		SDL_Log("Failed to initialise sound: %s\n", SDL_GetError());
-	}
-
+	CAudio_GlobalSoundEnabled = true;
+	pd->system->logToConsole("Audio Succesfully initialised!\n");
+	
 	for (int i=0; i < SND_Max; i++)
 		CAudio_Sounds[i] = NULL;
 
@@ -46,7 +32,8 @@ void CAudio_DeInit()
 	CAudio_UnloadSounds();
 	CAudio_UnloadMusics();
 	if (CAudio_GlobalSoundEnabled)
-		Mix_CloseAudio();
+		CAudio_GlobalSoundEnabled = false;
+		
 }
 
 // set the volume of the music
@@ -55,7 +42,9 @@ void CAudio_SetVolumeMusic(const int VolumeIn)
 	if (CAudio_GlobalSoundEnabled)
 	{
 		CAudio_VolumeMusic = VolumeIn;
-		Mix_VolumeMusic(VolumeIn);
+		for (int i = 0; i < MUS_Max; i++)
+			if (CAudio_Music[i])
+				pd->sound->fileplayer->setVolume(CAudio_Music[i], (float)VolumeIn / 128.0f, (float)VolumeIn / 128.0f);
 	}
 }
 
@@ -65,7 +54,9 @@ void CAudio_SetVolumeSound(const int VolumeIn)
 	if (CAudio_GlobalSoundEnabled)
 	{
 		CAudio_VolumeSound = VolumeIn;
-		Mix_Volume(-1, VolumeIn);
+		for (int i = 0; i < SND_Max; i++)
+			if (CAudio_Sounds[i])
+				pd->sound->sampleplayer->setVolume(CAudio_Sounds[i], (float)VolumeIn / 128.0f, (float)VolumeIn / 128.0f);
 	}
 }
 
@@ -123,8 +114,10 @@ void CAudio_DecVolumeSound()
 
 void CAudio_StopMusic()
 {
-	if(CAudio_GlobalSoundEnabled)
-		Mix_HaltMusic();
+	if (CAudio_GlobalSoundEnabled)
+		for (int i = 0; i < MUS_Max; i++)
+			if (CAudio_Music[i])
+				pd->sound->fileplayer->stop(CAudio_Music[i]);
 }
 
 bool CAudio_IsMusicPlaying()
@@ -132,7 +125,12 @@ bool CAudio_IsMusicPlaying()
 	if(!CAudio_GlobalSoundEnabled)
 		return false;
 
-	return (Mix_PlayingMusic() > 0);
+	bool result = false;
+	for (int i = 0; i < MUS_Max; i++)
+		if (CAudio_Music[i])
+			result = result || pd->sound->fileplayer->isPlaying(CAudio_Music[i]);
+
+	return result;
 }
 
 void CAudio_UnLoadMusic(int MusicdID)
@@ -145,7 +143,8 @@ void CAudio_UnLoadMusic(int MusicdID)
 
 	else
 	{
-		Mix_FreeMusic(CAudio_Music[MusicdID]);
+		pd->sound->fileplayer->stop(CAudio_Music[MusicdID]);
+		pd->sound->fileplayer->freePlayer(CAudio_Music[MusicdID]);
 		CAudio_Music[MusicdID] = NULL;
 	}
 }
@@ -159,27 +158,39 @@ void CAudio_UnloadMusics()
 
 int CAudio_LoadMusic(char* FileName)
 {
-	if(!CAudio_GlobalSoundEnabled)
-		return -1;
-
-	char FullFileName[700];
-	sprintf(FullFileName, "%smusic/%s",CAudio_DataPath,FileName);
-	for (int i=0; i < MUS_Max; i++)
-		if(CAudio_Music[i] == NULL)
-		{
-			Mix_Music* Tmp = Mix_LoadMUS(FullFileName);
-			if(!Tmp)
-				SDL_Log("Failed Loading Music %s\n", FullFileName);
-			else
+	int result = -1;
+	
+	char * FullFileName;
+	pd->system->formatString(&FullFileName, "music/%s",FileName);
+	if (CAudio_GlobalSoundEnabled)
+		for (int i=0; i < MUS_Max; i++)
+			if(CAudio_Music[i] == NULL)
 			{
-				CAudio_Music[i] = Tmp;
-				if(CAudio_DebugInfo)
-					SDL_Log("Loaded Music %s\n", FullFileName);
-				return i;
+				FilePlayer* Tmp = pd->sound->fileplayer->newPlayer();
+				if (Tmp)
+				{
+					if (pd->sound->fileplayer->loadIntoPlayer(Tmp, FullFileName) == 1)
+					{
+						pd->sound->fileplayer->setVolume(Tmp, (float)CAudio_VolumeMusic / 128.0f, (float)CAudio_VolumeMusic / 128.0f);
+						CAudio_Music[i] = Tmp;
+						if (CAudio_DebugInfo)
+							pd->system->logToConsole("Loaded Music %s\n", FullFileName);
+						result = i;
+					}
+					else
+					{
+						pd->sound->fileplayer->freePlayer(Tmp);
+					}
+				}
+				break;
 			}
-
-		}
-	return -1;
+	
+	if(result == -1)
+		pd->system->logToConsole("Failed Loading Music %s", FullFileName);
+	
+	pd->system->realloc(FullFileName, 0);
+	
+	return result;
 }
 
 int CAudio_MusicSlotsUsed()
@@ -204,7 +215,7 @@ void CAudio_PlayMusic(int MusicID, int loops)
 		return;
 
 	// Mix_VolumeMusic(VolumeMusic);
-	Mix_PlayMusic(CAudio_Music[MusicID], loops);
+	pd->sound->fileplayer->play(CAudio_Music[MusicID], loops +1);
 }
 
 int CAudio_GetVolumeMusic()
@@ -233,32 +244,48 @@ void CAudio_PlaySound(int SoundID, int loops)
 {
 	if ((SoundID < 0) || (SoundID > SND_Max) || !CAudio_GlobalSoundEnabled)
 		return;
-	//Mix_Volume(-1, VolumeSound);
-	Mix_PlayChannel(-1, CAudio_Sounds[SoundID], loops);
+
+	pd->sound->sampleplayer->play(CAudio_Sounds[SoundID], loops +1, 1.0f);
 }
 
 int CAudio_LoadSound(char* FileName)
 {
-	if(!CAudio_GlobalSoundEnabled)
-		return -1;
+	int result = -1;
 
-	char FullFileName[700];
-	sprintf(FullFileName, "%ssound/%s",CAudio_DataPath,FileName);
-	for (int i=0; i < SND_Max; i++)
-		if(CAudio_Sounds[i] == NULL)
-		{
-			Mix_Chunk *Tmp = Mix_LoadWAV(FullFileName);
-			if(!Tmp)
-				SDL_Log("Failed Loading Sound %s\n", FullFileName);
-			else
+	char* FullFileName;
+	pd->system->formatString(&FullFileName, "sound/%s", FileName);
+
+	if(CAudio_GlobalSoundEnabled)
+		for (int i=0; i < SND_Max; i++)
+			if(CAudio_Sounds[i] == NULL)
 			{
-				CAudio_Sounds[i] = Tmp;
-				if(CAudio_DebugInfo)
-					SDL_Log("Loaded Sound %s\n", FullFileName);
-				return i;
+				SamplePlayer* Tmp = pd->sound->sampleplayer->newPlayer();
+				if(Tmp)
+				{
+					AudioSample* Sample = pd->sound->sample->load(FullFileName);
+					if (Sample)
+					{
+						pd->sound->sampleplayer->setSample(Tmp, Sample);
+						pd->sound->sampleplayer->setVolume(Tmp, (float)CAudio_VolumeSound / 128.0f, (float)CAudio_VolumeSound / 128.0f);
+						CAudio_Sounds[i] = Tmp;
+						if (CAudio_DebugInfo)
+							pd->system->logToConsole("Loaded Sound %s\n", FullFileName);
+						result = i;
+					}
+					else
+					{
+						pd->sound->sampleplayer->freePlayer(Tmp);
+					}
+				}
+				break;
 			}
-		}
-	return -1;
+
+	if (result == -1)
+		pd->system->logToConsole("Failed Loading Sound %s\n", FullFileName);
+	
+	pd->system->realloc(FullFileName, 0);
+	
+	return result;
 }
 
 void CAudio_UnLoadSound(int SoundID)
@@ -270,7 +297,8 @@ void CAudio_UnLoadSound(int SoundID)
 		return;
 	else
 	{
-		Mix_FreeChunk(CAudio_Sounds[SoundID]);
+		pd->sound->sampleplayer->stop(CAudio_Sounds[SoundID]);
+		pd->sound->sampleplayer->freePlayer(CAudio_Sounds[SoundID]);
 		CAudio_Sounds[SoundID] = NULL;
 	}
 }
@@ -291,5 +319,7 @@ int CAudio_GetVolumeSound()
 void CAudio_StopSound()
 {
 	if(CAudio_GlobalSoundEnabled)
-		Mix_HaltChannel(-1);
+		for (int i = 0; i < SND_Max; i++)
+			if (CAudio_Sounds[i] != NULL)
+				pd->sound->sampleplayer->stop(CAudio_Sounds[i]);
 }

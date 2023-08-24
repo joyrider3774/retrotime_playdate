@@ -1,37 +1,31 @@
-#include <SDL.h>
-#include <SDL_ttf.h>
+#include <pd_api.h>
 #include <string.h>
 #include <stdbool.h>
+#include "pd_helperfuncs.h"
 #include "CFont.h"
-#include "Platform.h"
-
-
 
 #define FontCacheMax 50
-char CFont_DataPath[500];
+#define MaxLines 20
+#define MaxCharsPerLine 255
+
 bool CFont_DebugInfo = false;
 bool CFont_GlobalFontEnabled = true;
 
 int fontCacheItems = 0;
 
 struct FontCacheItem {
-	TTF_Font* Font;
-	char Filename[1000];
+	LCDFont* Font;
+	char Filename[100];
 };
 
 typedef struct FontCacheItem FontCacheItem;
 
 FontCacheItem CFont_FontCache[FontCacheMax];
 
-void CFont_Init(char* AssetsPath, bool DebugInfo)
+void CFont_Init(bool DebugInfo)
 {
-	strcpy(CFont_DataPath, AssetsPath);
 	CFont_DebugInfo = DebugInfo;
-	CFont_GlobalFontEnabled = (TTF_Init() == 0);
-	if (CFont_GlobalFontEnabled)
-		SDL_Log("Succesfully initialized TTF\n");
-	else
-		SDL_Log("Failed initializing SDL_ttf %s\n", SDL_GetError());
+	CFont_GlobalFontEnabled = true;
 
 	for (int i = 0; i < FontCacheMax; i++)
 	{
@@ -45,9 +39,8 @@ void CFont_DeInit()
 {
 	if(CFont_GlobalFontEnabled)
 	{
-		for (int i = 0; i < fontCacheItems; i++)
-			TTF_CloseFont(CFont_FontCache[i].Font);
-		TTF_Quit();
+		/*for (int i = 0; i < fontCacheItems; i++)
+			TTF_CloseFont(CFont_FontCache[i].Font);*/
 	}
 }
 
@@ -63,9 +56,12 @@ SDL_Point CFont_TextSize(char* Font, int FontSize, char* Tekst, size_t NrOfChars
 	if(!CFont_GlobalFontEnabled || (NrOfChars == 0))
 		return Result;
 
-	TTF_Font *FontIn;
-	char FontNameSize[1000];
-	sprintf(FontNameSize, "%s_%d", Font, FontSize);
+	LCDFont* FontIn = NULL;
+	char FontNameSize[100];
+	char* TmpFormat;
+	pd->system->formatString(&TmpFormat, "%s_%d", Font, FontSize);
+	strcpy(FontNameSize, TmpFormat);
+	pd->system->realloc(TmpFormat, 0);
 	
 	bool bfound = false;
 	for (int i = 0; i < fontCacheItems; i++)
@@ -80,17 +76,17 @@ SDL_Point CFont_TextSize(char* Font, int FontSize, char* Tekst, size_t NrOfChars
 	{
 		if(!bfound)
 		{
-			char Filename[1000];
-			sprintf(Filename, "%sfonts/%s.ttf", CFont_DataPath, Font);
-			FontIn = TTF_OpenFont(Filename, FontSize);
+			char *Filename;
+			pd->system->formatString(&Filename, "fonts/%s", FontNameSize);
+			FontIn = loadFontAtPath(Filename);
+			pd->system->realloc(Filename, 0);
 			if (!FontIn)
 			{
-				SDL_Log("Failed Loading Font %s %d\n", SDL_GetError(), FontSize);
+				pd->system->logToConsole("Failed Loading Font %s\n", Filename);
 				return Result;
 			}
 			if(CFont_DebugInfo)
-				SDL_Log("Loaded Font %s %d\n", Filename, FontSize);
-			TTF_SetFontStyle(FontIn, TTF_STYLE_NORMAL);
+				pd->system->logToConsole("Loaded Font %s\n", Filename);
 
 			CFont_FontCache[fontCacheItems].Font = FontIn;
 			strcpy(CFont_FontCache[fontCacheItems].Filename, FontNameSize);
@@ -98,15 +94,15 @@ SDL_Point CFont_TextSize(char* Font, int FontSize, char* Tekst, size_t NrOfChars
 		}
 	}
 
-	char List[100][255];
+	char List[MaxLines][MaxCharsPerLine];
 	size_t Lines, Teller, Chars;
 	Lines = 0;
 	Chars = 0;
 	for (Teller = 0; Teller < NrOfChars; Teller++)
 	{
-		if (Lines > 100)
+		if (Lines > MaxLines)
 			break;
-		if ((Tekst[Teller] == '\n') || (Chars == 255))
+		if ((Tekst[Teller] == '\n') || (Chars == MaxCharsPerLine))
 		{
 			List[Lines][Chars] = '\0';
 			Lines++;
@@ -119,94 +115,92 @@ SDL_Point CFont_TextSize(char* Font, int FontSize, char* Tekst, size_t NrOfChars
 		}
 	}
 	List[Lines][Chars] = '\0';
-	int w,h;
-	Result.y = (Lines)*TTF_FontLineSkip(FontIn) + (Lines * YSpacing);
+	int w;
+	Result.y = (int)((Lines * pd->graphics->getFontHeight(FontIn)) + (Lines * YSpacing));
 	for (Teller = 0; Teller <= Lines; Teller++)
 	{
-		TTF_SizeText(FontIn, List[Teller], &w, &h);
+		w = pd->graphics->getTextWidth(FontIn, List[Teller], strlen(List[Teller]), kASCIIEncoding, 0);
 		if (w > Result.x)
 			Result.x = w;
 	}
 	return Result;
 }
 
-void CFont_WriteText(SDL_Renderer *Renderer, char* Font, int FontSize, char* Tekst, size_t NrOfChars, int X, int Y, int YSpacing, SDL_Color ColorIn)
+void CFont_WriteText(char* Font, int FontSize, char* Tekst, size_t NrOfChars, int X, int Y, int YSpacing, LCDColor ColorIn)
+{
+	CFont_WriteTextBitmap(true, NULL, Font, FontSize, Tekst, NrOfChars, X, Y, YSpacing, ColorIn);
+}
+
+void CFont_WriteTextBitmap(bool IgnoreRenderer, LCDBitmap *Renderer, char* Font, int FontSize, char* Tekst, size_t NrOfChars, int X, int Y, int YSpacing, LCDColor ColorIn)
 {
 	if(!CFont_GlobalFontEnabled || (NrOfChars == 0))
 		return;
-	TTF_Font *FontIn;
-	char FontNameSize[1000];
-	sprintf(FontNameSize,"%s_%d", Font, FontSize);
+	LCDFont* FontIn = NULL;
+	char FontNameSize[100];
+	char* TmpFormat;
+	pd->system->formatString(&TmpFormat, "%s_%d", Font, FontSize);
+	strcpy(FontNameSize, TmpFormat);
+	pd->system->realloc(TmpFormat, 0);
+
 	bool bfound = false;
 	for (int i = 0; i < fontCacheItems; i++)
-		if(strcmp(CFont_FontCache[i].Filename, FontNameSize) == 0)
+		if (strcmp(CFont_FontCache[i].Filename, FontNameSize) == 0)
 		{
-			FontIn = CFont_FontCache[i].Font; 
+			FontIn = CFont_FontCache[i].Font;
 			bfound = true;
 			break;
 		}
+
 	if (fontCacheItems < FontCacheMax)
 	{
-		if(!bfound)
+		if (!bfound)
 		{
-			char Filename[1000];
-			sprintf(Filename,"%sfonts/%s.ttf", CFont_DataPath, Font);
-			FontIn = TTF_OpenFont(Filename, FontSize);
+			char* Filename;
+			pd->system->formatString(&Filename, "fonts/%s", FontNameSize);
+			FontIn = loadFontAtPath(Filename);
+			pd->system->realloc(Filename, 0);
 			if (!FontIn)
 			{
-				SDL_Log("Failed Loading Font %s %d\n", Filename, FontSize);
-				return;
+				pd->system->logToConsole("Failed Loading Font %s\n", Filename);
 			}
-			if(CFont_DebugInfo)
-				SDL_Log("Loaded Font %s %d\n", Filename, FontSize);
-			TTF_SetFontStyle(FontIn, TTF_STYLE_NORMAL);
+			if (CFont_DebugInfo)
+				pd->system->logToConsole("Loaded Font %s\n", Filename);
 
 			CFont_FontCache[fontCacheItems].Font = FontIn;
 			strcpy(CFont_FontCache[fontCacheItems].Filename, FontNameSize);
 			fontCacheItems++;
 		}
 	}
-
-	char List[100][255];
-	size_t Lines, Teller, Chars;
-	SDL_Rect DstRect;
-	SDL_Surface *TextureBuffer1Surface1;
-	SDL_Texture *TextureBuffer1Texture;
-	Lines = 0;
-	Chars = 0;
-	for (Teller = 0; Teller < NrOfChars; Teller++)
+	if (FontIn)
 	{
-		if (Lines > 100)
-			break;
-		if ((Tekst[Teller] == '\n') || (Chars == 255))
+		char List[MaxLines][MaxCharsPerLine];
+		size_t Lines, Teller, Chars;
+		Lines = 0;
+		Chars = 0;
+		for (Teller = 0; Teller < NrOfChars; Teller++)
 		{
-			List[Lines][Chars] = '\0';
-			Lines++;
-			Chars = 0;
-		}
-		else
-		{
-			List[Lines][Chars] = Tekst[Teller];
-			Chars++;
-		}
-	}
-	List[Lines][Chars] = '\0';
-	for (Teller = 0; Teller <= Lines; Teller++)
-	{
-		if (strlen(List[Teller]) > 0)
-		{
-			TextureBuffer1Surface1 = TTF_RenderText_Blended(FontIn, List[Teller], ColorIn);
-			if (TextureBuffer1Surface1)
+			if (Lines > MaxLines)
+				break;
+			if ((Tekst[Teller] == '\n') || (Chars == MaxCharsPerLine))
 			{
-				TextureBuffer1Texture = SDL_CreateTextureFromSurface(Renderer, TextureBuffer1Surface1);
-				DstRect.x = X;
-				DstRect.y = Y + (Teller)*TTF_FontLineSkip(FontIn) + (Teller * YSpacing);
-				DstRect.w = TextureBuffer1Surface1->w;
-				DstRect.h = TextureBuffer1Surface1->h;
+				List[Lines][Chars] = '\0';
+				Lines++;
+				Chars = 0;
+			}
+			else
+			{
+				List[Lines][Chars] = Tekst[Teller];
+				Chars++;
+			}
+		}
+		List[Lines][Chars] = '\0';
+		int fontheight = pd->graphics->getFontHeight(FontIn);
 
-				SDL_RenderCopy(Renderer, TextureBuffer1Texture, NULL, &DstRect);
-				SDL_DestroyTexture(TextureBuffer1Texture);
-				SDL_FreeSurface(TextureBuffer1Surface1);
+		for (Teller = 0; Teller <= Lines; Teller++)
+		{
+			if (strlen(List[Teller]) > 0)
+			{
+				drawTextColor(IgnoreRenderer, Renderer, FontIn, List[Teller], strlen(List[Teller]), kASCIIEncoding, X, (int)(Y + (Teller)*fontheight + (Teller * YSpacing)), ColorIn, false);
 			}
 		}
 	}

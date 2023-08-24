@@ -1,11 +1,12 @@
-#include <SDL.h>
+#include <pd_api.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include "CGameFrog.h"
 #include "../CGame.h"
 #include "../Common.h"
 #include "../Vec2F.h"
-
+#include "../SDL_HelperTypes.h"
+#include "../pd_helperfuncs.h"
 
 
 
@@ -18,8 +19,8 @@ CGameFrog* Create_CGameFrog()
 	GameFrog->SfxCollect = -1;
 	GameFrog->SfxPlayerMove = -1;
 	GameFrog->prevrowtype = -1;
-	GameFrog->GameBase->playfieldwidth = CGameFrog_numcols * CGameFrog_playerspeed;
-	GameFrog->GameBase->playfieldheight = CGameFrog_numrows * CGameFrog_playerspeed;
+	GameFrog->GameBase->playfieldwidth = (int)(CGameFrog_numcols * CGameFrog_playerspeed);
+	GameFrog->GameBase->playfieldheight = (int)(CGameFrog_numrows * CGameFrog_playerspeed);
 	GameFrog->GameBase->screenleft = (ScreenWidth - GameFrog->GameBase->playfieldwidth) / 2;
 	GameFrog->GameBase->screenright = GameFrog->GameBase->screenleft + GameFrog->GameBase->playfieldwidth;
 	GameFrog->GameBase->screentop = ScreenHeight - GameFrog->GameBase->playfieldheight;
@@ -325,7 +326,7 @@ int CGameFrog_createobject(CGameFrog* GameFrog, int rownr, int col, int id, int 
 			{
 				tilenr = GameFrog->rowtypes[arowtype].backgroundtile;
 				endtilenr = GameFrog->rowtypes[arowtype].backgroundtileend;
-				CSprites_SetSpriteImageTiles(Renderer,object->spr, &GameFrog->spritesheetbackground,5,3);
+				CSprites_SetSpriteImageTiles(object->spr, &GameFrog->spritesheetbackground,5,3);
 				tz = CSprites_TileSize(object->spr);
 				CSprites_SetSpriteAnimation(object->spr, tilenr, endtilenr, 6);
 				CSprites_SetSpriteDepth(object->spr, 0);
@@ -343,14 +344,14 @@ int CGameFrog_createobject(CGameFrog* GameFrog, int rownr, int col, int id, int 
 				scale.x = 1.0f;
 				scale.y = 1.0f;
 				visualscale = scale;
-				object->tz.x = tz.x * scale.x;
-				object->tz.y = tz.y * scale.y;
+				object->tz.x = (int)(tz.x * scale.x);
+				object->tz.y = (int)(tz.y * scale.y);
 			}
 
 			if (id == CGameFrog_idenemyplant)
 			{
 				tilenr = 1;
-				CSprites_SetSpriteImageTiles(Renderer,object->spr, &GameFrog->spritesheetplant, 2, 1);
+				CSprites_SetSpriteImageTiles(object->spr, &GameFrog->spritesheetplant, 2, 1);
 				tz = CSprites_TileSize(object->spr);
 
 				CSprites_SetSpriteAnimation(object->spr, tilenr, tilenr, 0);
@@ -361,8 +362,8 @@ int CGameFrog_createobject(CGameFrog* GameFrog, int rownr, int col, int id, int 
 				visualscale = scale;
 				object->vel.x = dir*speed;
 				object->vel.y = 0.0f;
-				object->tz.x = tz.x * scale.x;
-				object->tz.y = tz.y * scale.y;
+				object->tz.x = (int)(tz.x * scale.x);
+				object->tz.y = (int)(tz.y * scale.y);
 			}
 
 			if (id == CGameFrog_idenemycar1)
@@ -371,7 +372,7 @@ int CGameFrog_createobject(CGameFrog* GameFrog, int rownr, int col, int id, int 
 				if (dir == -1)
 					tilenr = 1;
 
-				CSprites_SetSpriteImageTiles(Renderer,object->spr, &GameFrog->spritesheetcar1, 2, 1);
+				CSprites_SetSpriteImageTiles(object->spr, &GameFrog->spritesheetcar1, 2, 1);
 				tz = CSprites_TileSize(object->spr);
 				CSprites_SetSpriteAnimation(object->spr, tilenr, tilenr, 0);
 				CSprites_SetSpriteDepth(object->spr, 3);
@@ -380,8 +381,8 @@ int CGameFrog_createobject(CGameFrog* GameFrog, int rownr, int col, int id, int 
 				scale.x = (CGameFrog_playerspeed - (CGameFrog_playerspeed / 6)) / tz.x;
 				scale.y = (CGameFrog_playerspeed - (CGameFrog_playerspeed / 6)) / tz.y;
 				visualscale = scale;
-				object->tz.x = tz.x * scale.x;
-				object->tz.y = tz.y * scale.y;
+				object->tz.x = (int)(tz.x * scale.x);
+				object->tz.y = (int)(tz.y * scale.y);
 			}
 
 			if (id == CGameFrog_idenemycar2)
@@ -390,7 +391,7 @@ int CGameFrog_createobject(CGameFrog* GameFrog, int rownr, int col, int id, int 
 				if (dir == -1)
 					tilenr = 1;
 
-				CSprites_SetSpriteImageTiles(Renderer,object->spr, &GameFrog->spritesheetcar2, 2, 1);
+				CSprites_SetSpriteImageTiles(object->spr, &GameFrog->spritesheetcar2, 2, 1);
 				tz = CSprites_TileSize(object->spr);
 				CSprites_SetSpriteAnimation(object->spr, tilenr, tilenr, 0);
 				CSprites_SetSpriteDepth(object->spr, 3);
@@ -399,8 +400,8 @@ int CGameFrog_createobject(CGameFrog* GameFrog, int rownr, int col, int id, int 
 				scale.x = (CGameFrog_playerspeed - (CGameFrog_playerspeed / 6)) / tz.x;
 				scale.y = (CGameFrog_playerspeed - (CGameFrog_playerspeed / 6)) / tz.y;
 				visualscale = scale;
-				object->tz.x = tz.x * scale.x;
-				object->tz.y = tz.y * scale.y;
+				object->tz.x = (int)(tz.x * scale.x);
+				object->tz.y = (int)(tz.y * scale.y);
 			}
 
 			if (id == CGameFrog_idenemycar3)
@@ -409,7 +410,7 @@ int CGameFrog_createobject(CGameFrog* GameFrog, int rownr, int col, int id, int 
 				if (dir == -1)
 					tilenr = 1;
 
-				CSprites_SetSpriteImageTiles(Renderer,object->spr, &GameFrog->spritesheetcar3, 2, 1);
+				CSprites_SetSpriteImageTiles(object->spr, &GameFrog->spritesheetcar3, 2, 1);
 				tz = CSprites_TileSize(object->spr);
 				CSprites_SetSpriteAnimation(object->spr, tilenr, tilenr, 0);
 				CSprites_SetSpriteDepth(object->spr, 3);
@@ -418,8 +419,8 @@ int CGameFrog_createobject(CGameFrog* GameFrog, int rownr, int col, int id, int 
 				scale.x = (CGameFrog_playerspeed - (CGameFrog_playerspeed / 6)) / tz.x;
 				scale.y = (CGameFrog_playerspeed - (CGameFrog_playerspeed / 6)) / tz.y;
 				visualscale = scale;
-				object->tz.x = tz.x * scale.x;
-				object->tz.y = tz.y * scale.y;
+				object->tz.x = (int)(tz.x * scale.x);
+				object->tz.y = (int)(tz.y * scale.y);
 			}
 
 			if (id == CGameFrog_idenemycar4)
@@ -428,7 +429,7 @@ int CGameFrog_createobject(CGameFrog* GameFrog, int rownr, int col, int id, int 
 				if (dir == -1)
 					tilenr = 1;
 
-				CSprites_SetSpriteImageTiles(Renderer,object->spr, &GameFrog->spritesheetcar4, 2, 1);
+				CSprites_SetSpriteImageTiles(object->spr, &GameFrog->spritesheetcar4, 2, 1);
 				tz = CSprites_TileSize(object->spr);
 				CSprites_SetSpriteAnimation(object->spr, tilenr, tilenr, 0);
 				CSprites_SetSpriteDepth(object->spr, 3);
@@ -437,8 +438,8 @@ int CGameFrog_createobject(CGameFrog* GameFrog, int rownr, int col, int id, int 
 				scale.x = (CGameFrog_playerspeed - (CGameFrog_playerspeed / 6)) / tz.x;
 				scale.y = (CGameFrog_playerspeed - (CGameFrog_playerspeed / 6)) / tz.y;
 				visualscale = scale;
-				object->tz.x = tz.x * scale.x;
-				object->tz.y = tz.y * scale.y;
+				object->tz.x = (int)(tz.x * scale.x);
+				object->tz.y = (int)(tz.y * scale.y);
 			}
 
 			if (id == CGameFrog_idenemycar5)
@@ -447,7 +448,7 @@ int CGameFrog_createobject(CGameFrog* GameFrog, int rownr, int col, int id, int 
 				if (dir == -1)
 					tilenr = 1;
 
-				CSprites_SetSpriteImageTiles(Renderer,object->spr, &GameFrog->spritesheetcar5, 2, 1);
+				CSprites_SetSpriteImageTiles(object->spr, &GameFrog->spritesheetcar5, 2, 1);
 				tz = CSprites_TileSize(object->spr);
 				CSprites_SetSpriteAnimation(object->spr, tilenr, tilenr, 0);
 				CSprites_SetSpriteDepth(object->spr, 3);
@@ -456,8 +457,8 @@ int CGameFrog_createobject(CGameFrog* GameFrog, int rownr, int col, int id, int 
 				scale.x = (CGameFrog_playerspeed - (CGameFrog_playerspeed / 6)) / tz.x;
 				scale.y = (CGameFrog_playerspeed - (CGameFrog_playerspeed / 6)) / tz.y;
 				visualscale = scale;
-				object->tz.x = tz.x * scale.x;
-				object->tz.y = tz.y * scale.y;
+				object->tz.x = (int)(tz.x * scale.x);
+				object->tz.y = (int)(tz.y * scale.y);
 			}
 
 
@@ -465,7 +466,7 @@ int CGameFrog_createobject(CGameFrog* GameFrog, int rownr, int col, int id, int 
 			{
 				tilenr = 0;
 
-				CSprites_SetSpriteImage(Renderer,object->spr, &GameFrog->spritesheetfruit1);
+				CSprites_SetSpriteImage(object->spr, &GameFrog->spritesheetfruit1);
 				tz = CSprites_TileSize(object->spr);
 				CSprites_SetSpriteAnimation(object->spr, tilenr, tilenr, 0);
 				object->vel.x = dir*speed;
@@ -481,7 +482,7 @@ int CGameFrog_createobject(CGameFrog* GameFrog, int rownr, int col, int id, int 
 			{
 				tilenr = 0;
 
-				CSprites_SetSpriteImage(Renderer,object->spr, &GameFrog->spritesheetfruit2);
+				CSprites_SetSpriteImage(object->spr, &GameFrog->spritesheetfruit2);
 				tz = CSprites_TileSize(object->spr);
 				CSprites_SetSpriteAnimation(object->spr, tilenr, tilenr, 0);
 				object->vel.x = dir*speed;
@@ -497,7 +498,7 @@ int CGameFrog_createobject(CGameFrog* GameFrog, int rownr, int col, int id, int 
 			{
 				tilenr = 0;
 
-				CSprites_SetSpriteImage(Renderer,object->spr, &GameFrog->spritesheetfruit3);
+				CSprites_SetSpriteImage(object->spr, &GameFrog->spritesheetfruit3);
 				tz = CSprites_TileSize(object->spr);
 				CSprites_SetSpriteAnimation(object->spr, tilenr, tilenr, 0);
 				object->vel.x = dir*speed;
@@ -509,14 +510,14 @@ int CGameFrog_createobject(CGameFrog* GameFrog, int rownr, int col, int id, int 
 				CSprites_SetSpriteDepth(object->spr, 3);
 			}
 			//setSpriteRotation(GameFrog->object->s[i].spr, 0)
-			CSprites_SetSpriteScale(Renderer,object->spr, visualscale);
-			object->tz.x = tz.x * scale.x;
-			object->tz.y = tz.y * scale.y;
+			CSprites_SetSpriteScale(object->spr, visualscale);
+			object->tz.x =(int)(tz.x * scale.x);
+			object->tz.y =(int)(tz.y * scale.y);
 			object->pos.x = GameFrog->GameBase->screenleft + (col * CGameFrog_playerspeed) + (CGameFrog_playerspeed / 2);
 			object->pos.y = GameFrog->GameBase->screenbottom - ((rownr+1) * CGameFrog_playerspeed) + (CGameFrog_playerspeed / 2);
 			//CSprites_SetSpriteLocation(object->spr, object->pos)
-			object->spr->x = (int)object->pos.x;
-			object->spr->y = (int)object->pos.y;
+			object->spr->x = (float)((int)object->pos.x);
+			object->spr->y = (float)((int)object->pos.y);
 			object->rowtype = arowtype;
 			object->id = id;
 			object->alive = true;
@@ -604,10 +605,10 @@ void CGameFrog_updateobjects(CGameFrog* GameFrog)
 	GameFrog->objectinfo.mostbottom = -1;
 	GameFrog->objectinfo.mosttop = -1;
 
-	int x1 = GameFrog->GameBase->screenright + 1;
-	int x2 = GameFrog->GameBase->screenleft - 1;
-	int y1 = GameFrog->GameBase->screentop - 1;
-	int y2 = GameFrog->GameBase->screenbottom + 1;
+	float x1 = (float)(GameFrog->GameBase->screenright + 1);
+	float x2 = (float)(GameFrog->GameBase->screenleft - 1);
+	float y1 = (float)(GameFrog->GameBase->screentop - 1);
+	float y2 = (float)(GameFrog->GameBase->screenbottom + 1);
 	bool playermoved = false;
 	int id = -1;
 	bool plantcol = false;
@@ -637,8 +638,8 @@ void CGameFrog_updateobjects(CGameFrog* GameFrog)
 						(GameFrog->player.pos.x + GameFrog->player.tz.x / 4 >= GameFrog->objects[i].pos.x - GameFrog->objects[i].tz.x / 2))
 						{
 							GameFrog->player.pos = GameFrog->objects[i].pos;
-							GameFrog->player.spr->x = (int)GameFrog->player.pos.x;
-							GameFrog->player.spr->y = (int)GameFrog->player.pos.y;
+							GameFrog->player.spr->x = (float)((int)GameFrog->player.pos.x);
+							GameFrog->player.spr->y = (float)((int)GameFrog->player.pos.y);
 							if ((GameFrog->player.pos.x < GameFrog->GameBase->screenleft) || (GameFrog->player.pos.x > GameFrog->GameBase->screenright))
 								GameFrog->playerdeath = true;
 
@@ -728,8 +729,8 @@ void CGameFrog_updateobjects(CGameFrog* GameFrog)
 						if (GameFrog->objects[i].pos.x - GameFrog->objects[i].tz.x / 2 > GameFrog->GameBase->screenright)
 							GameFrog->objects[i].pos.x = GameFrog->GameBase->screenleft + (GameFrog->objects[i].pos.x - GameFrog->GameBase->screenright) - GameFrog->objects[i].tz.x / 2 - GameFrog->objects[i].tz.x / 2;
 					}
-					GameFrog->objects[i].spr->x = (int)GameFrog->objects[i].pos.x;
-					GameFrog->objects[i].spr->y = (int)GameFrog->objects[i].pos.y;
+					GameFrog->objects[i].spr->x = (float)((int)GameFrog->objects[i].pos.x);
+					GameFrog->objects[i].spr->y = (float)((int)GameFrog->objects[i].pos.y);
 
 					if ((GameFrog->objects[i].id == CGameFrog_idwater) || (GameFrog->objects[i].id == CGameFrog_idroad) || (GameFrog->objects[i].id == CGameFrog_idgrass))
 					{
@@ -798,14 +799,14 @@ void CGameFrog_createplayer(CGameFrog* GameFrog)
 {
 	GameFrog->player.spr = CSprites_CreateSprite();
 	CSprites_SetSpriteDepth(GameFrog->player.spr, 2);
-	CSprites_SetSpriteImageTiles(Renderer,GameFrog->player.spr, &GameFrog->spritesheetfrog, 3, 4);
+	CSprites_SetSpriteImageTiles(GameFrog->player.spr, &GameFrog->spritesheetfrog, 3, 4);
 	CSprites_SetSpriteAnimation(GameFrog->player.spr, 11, 11, 10);
 	SDL_Point tz = CSprites_TileSize(GameFrog->player.spr);
 	Vec2F scale = {((CGameFrog_playerspeed -8*xscale)) / tz.x, ((CGameFrog_playerspeed -8*yscale)) / tz.y};
-	CSprites_SetSpriteScale(Renderer,GameFrog->player.spr, scale);
+	CSprites_SetSpriteScale(GameFrog->player.spr, scale);
 	CSprites_SetSpriteCollisionShape(GameFrog->player.spr, SHAPE_BOX, (int)(CGameFrog_playerspeed / 3.0f), (int)(CGameFrog_playerspeed/3.0f), 0, 0, (int)(CGameFrog_playerspeed/12.0f));
-	GameFrog->player.tz.x = tz.x * scale.x;
-	GameFrog->player.tz.y = tz.y * scale.y;
+	GameFrog->player.tz.x = (int)(tz.x * scale.x);
+	GameFrog->player.tz.y = (int)(tz.y * scale.y);
 	GameFrog->player.pos.x = GameFrog->GameBase->screenleft + (CGameFrog_numcols / 2) * CGameFrog_playerspeed + CGameFrog_playerspeed / 2;
 	GameFrog->player.pos.y = GameFrog->GameBase->screenbottom - CGameFrog_playerstartrow * CGameFrog_playerspeed + CGameFrog_playerspeed / 2;
 	GameFrog->GameBase->HealthPoints = 3;
@@ -895,8 +896,8 @@ void CGameFrog_updateplayer(CGameFrog* GameFrog)
 //		CSprites_SetSpriteLocation(GameFrog->player.spr, GameFrog->player.pos)
 //		GameFrog->player.spr.x = int(GameFrog->player.spr.x)
 //		GameFrog->player.spr.y = int(GameFrog->player.spr.y)
-		GameFrog->player.spr->x = (int)GameFrog->player.pos.x;
-		GameFrog->player.spr->y = (int)GameFrog->player.pos.y;
+		GameFrog->player.spr->x = (float)((int)(GameFrog->player.pos.x));
+		GameFrog->player.spr->y = (float)((int)(GameFrog->player.pos.y));
 
 		if (GameFrog->player.pos.y >= GameFrog->GameBase->screenbottom)
 			GameFrog->playerdeath = true;
@@ -914,7 +915,7 @@ void CGameFrog_updateplayer(CGameFrog* GameFrog)
 
 void CGameFrog_DrawBackground(CGameFrog* GameFrog)
 {
-	CImage_DrawImage(Renderer, GameFrog->background, NULL, NULL);
+	CImage_DrawImage( GameFrog->background, NULL, NULL);
 }
 
 //init - deinit ----------------------------------------------------------------------------------------------------------------
@@ -948,10 +949,10 @@ void CGameFrog_deinit(CGameFrog* GameFrog)
 
 void CGameFrog_LoadSound(CGameFrog* GameFrog)
 {
-	GameFrog->SfxDie = CAudio_LoadSound("common/die.wav");
-	GameFrog->SfxCollect = CAudio_LoadSound("common/coin.wav");
-	GameFrog->SfxPlayerMove = CAudio_LoadSound("frog/move.wav");
-	GameFrog->MusMusic = CAudio_LoadMusic("frog/music.ogg");
+	GameFrog->SfxDie = CAudio_LoadSound("common/die");
+	GameFrog->SfxCollect = CAudio_LoadSound("common/coin");
+	GameFrog->SfxPlayerMove = CAudio_LoadSound("frog/move");
+	GameFrog->MusMusic = CAudio_LoadMusic("frog/music");
 }
 
 void CGameFrog_UnLoadSound(CGameFrog* GameFrog)
@@ -966,49 +967,49 @@ void CGameFrog_UnLoadSound(CGameFrog* GameFrog)
 
 void CGameFrog_LoadGraphics(CGameFrog* GameFrog)
 {
-	GameFrog->background = CImage_LoadImage(Renderer, "frog/background.png");
+	GameFrog->background = CImage_LoadImage( "frog/background.png");
 	GameFrog->backgroundtz = CImage_ImageSize(GameFrog->background);
 
 
-	GameFrog->spritesheetfrog = CImage_LoadImageEx(Renderer, "frog/player.png", 0, 128, dumpScaledBitmaps);
-	GameFrog->spritesheetbackground = CImage_LoadImageEx(Renderer, "frog/watergrass.png", 0, 128, dumpScaledBitmaps);
-	GameFrog->spritesheetcar1 = CImage_LoadImageEx(Renderer, "frog/carblue.png", 0, 80, dumpScaledBitmaps);
-	GameFrog->spritesheetcar2 = CImage_LoadImageEx(Renderer, "frog/garbagetruck.png", 0, 80, dumpScaledBitmaps);
-	GameFrog->spritesheetcar3 = CImage_LoadImageEx(Renderer, "frog/ambulance.png", 0, 80, dumpScaledBitmaps);
-	GameFrog->spritesheetcar4 = CImage_LoadImageEx(Renderer, "frog/taxi.png", 0, 80, dumpScaledBitmaps);
-	GameFrog->spritesheetcar5 = CImage_LoadImageEx(Renderer, "frog/police.png", 0, 80, dumpScaledBitmaps);
-	GameFrog->spritesheetplant = CImage_LoadImageEx(Renderer, "frog/waterplant.png", 0, 140, dumpScaledBitmaps);
-	GameFrog->spritesheetfruit1 = CImage_LoadImageEx(Renderer, "frog/apple.png",0, 10, dumpScaledBitmaps);
-	GameFrog->spritesheetfruit2 = CImage_LoadImageEx(Renderer, "frog/lemon.png",0, 10, dumpScaledBitmaps);
-	GameFrog->spritesheetfruit3 = CImage_LoadImageEx(Renderer, "frog/cherry.png",0, 10, dumpScaledBitmaps);
+	GameFrog->spritesheetfrog = CImage_LoadImageEx( "frog/player.png", 0, 128, dumpScaledBitmaps);
+	GameFrog->spritesheetbackground = CImage_LoadImageEx( "frog/watergrass.png", 0, 128, dumpScaledBitmaps);
+	GameFrog->spritesheetcar1 = CImage_LoadImageEx( "frog/carblue.png", 0, 80, dumpScaledBitmaps);
+	GameFrog->spritesheetcar2 = CImage_LoadImageEx( "frog/garbagetruck.png", 0, 80, dumpScaledBitmaps);
+	GameFrog->spritesheetcar3 = CImage_LoadImageEx( "frog/ambulance.png", 0, 80, dumpScaledBitmaps);
+	GameFrog->spritesheetcar4 = CImage_LoadImageEx( "frog/taxi.png", 0, 80, dumpScaledBitmaps);
+	GameFrog->spritesheetcar5 = CImage_LoadImageEx( "frog/police.png", 0, 80, dumpScaledBitmaps);
+	GameFrog->spritesheetplant = CImage_LoadImageEx( "frog/waterplant.png", 0, 140, dumpScaledBitmaps);
+	GameFrog->spritesheetfruit1 = CImage_LoadImageEx( "frog/apple.png",0, 10, dumpScaledBitmaps);
+	GameFrog->spritesheetfruit2 = CImage_LoadImageEx( "frog/lemon.png",0, 10, dumpScaledBitmaps);
+	GameFrog->spritesheetfruit3 = CImage_LoadImageEx( "frog/cherry.png",0, 10, dumpScaledBitmaps);
 
-	// SDL_SaveBMPTextureScaled(Renderer, "./retrotimefs/graphics/frog/player.bmp", CImage_GetImage(GameFrog->spritesheetfrog), 1,1, true, 0, 128);
-	// SDL_SaveBMPTextureScaled(Renderer, "./retrotimefs/graphics/frog/watergrass.bmp", CImage_GetImage(GameFrog->spritesheetbackground), 1,1, true, 0, 128);
-	// SDL_SaveBMPTextureScaled(Renderer, "./retrotimefs/graphics/frog/carblue.bmp", CImage_GetImage(GameFrog->spritesheetcar1), 1,1, true, 0, 80);
-	// SDL_SaveBMPTextureScaled(Renderer, "./retrotimefs/graphics/frog/garbagetruck.bmp", CImage_GetImage(GameFrog->spritesheetcar2), 1,1, true, 0, 80);
-	// SDL_SaveBMPTextureScaled(Renderer, "./retrotimefs/graphics/frog/ambulance.bmp", CImage_GetImage(GameFrog->spritesheetcar3), 1,1, true,0,  80);
-	// SDL_SaveBMPTextureScaled(Renderer, "./retrotimefs/graphics/frog/taxi.bmp", CImage_GetImage(GameFrog->spritesheetcar4), 1,1, true, 0, 80);
-	// SDL_SaveBMPTextureScaled(Renderer, "./retrotimefs/graphics/frog/police.bmp", CImage_GetImage(GameFrog->spritesheetcar5), 1,1, true, 0, 80);
-	// SDL_SaveBMPTextureScaled(Renderer, "./retrotimefs/graphics/frog/waterplant.bmp", CImage_GetImage(GameFrog->spritesheetplant), 1,1, true,0, 140); //173
-	// SDL_SaveBMPTextureScaled(Renderer, "./retrotimefs/graphics/frog/apple.bmp", CImage_GetImage(GameFrog->spritesheetfruit1), 1,1, true,0, 10);
-	// SDL_SaveBMPTextureScaled(Renderer, "./retrotimefs/graphics/frog/lemon.bmp", CImage_GetImage(GameFrog->spritesheetfruit2), 1,1, true,0, 10);
-	// SDL_SaveBMPTextureScaled(Renderer, "./retrotimefs/graphics/frog/cherry.bmp", CImage_GetImage(GameFrog->spritesheetfruit3), 1,1, true,0, 10);
+	// SDL_SaveBMPTextureScaled( "./retrotimefs/graphics/frog/player.bmp", CImage_GetImage(GameFrog->spritesheetfrog), 1,1, true, 0, 128);
+	// SDL_SaveBMPTextureScaled( "./retrotimefs/graphics/frog/watergrass.bmp", CImage_GetImage(GameFrog->spritesheetbackground), 1,1, true, 0, 128);
+	// SDL_SaveBMPTextureScaled( "./retrotimefs/graphics/frog/carblue.bmp", CImage_GetImage(GameFrog->spritesheetcar1), 1,1, true, 0, 80);
+	// SDL_SaveBMPTextureScaled( "./retrotimefs/graphics/frog/garbagetruck.bmp", CImage_GetImage(GameFrog->spritesheetcar2), 1,1, true, 0, 80);
+	// SDL_SaveBMPTextureScaled( "./retrotimefs/graphics/frog/ambulance.bmp", CImage_GetImage(GameFrog->spritesheetcar3), 1,1, true,0,  80);
+	// SDL_SaveBMPTextureScaled( "./retrotimefs/graphics/frog/taxi.bmp", CImage_GetImage(GameFrog->spritesheetcar4), 1,1, true, 0, 80);
+	// SDL_SaveBMPTextureScaled( "./retrotimefs/graphics/frog/police.bmp", CImage_GetImage(GameFrog->spritesheetcar5), 1,1, true, 0, 80);
+	// SDL_SaveBMPTextureScaled( "./retrotimefs/graphics/frog/waterplant.bmp", CImage_GetImage(GameFrog->spritesheetplant), 1,1, true,0, 140); //173
+	// SDL_SaveBMPTextureScaled( "./retrotimefs/graphics/frog/apple.bmp", CImage_GetImage(GameFrog->spritesheetfruit1), 1,1, true,0, 10);
+	// SDL_SaveBMPTextureScaled( "./retrotimefs/graphics/frog/lemon.bmp", CImage_GetImage(GameFrog->spritesheetfruit2), 1,1, true,0, 10);
+	// SDL_SaveBMPTextureScaled( "./retrotimefs/graphics/frog/cherry.bmp", CImage_GetImage(GameFrog->spritesheetfruit3), 1,1, true,0, 10);
 	if(!useDefaultColorAssets)
 	{
 		GameFrog->UnloadGraphics(GameFrog);
-		GameFrog->background = CImage_LoadImage(Renderer, "frog/background.png");
+		GameFrog->background = CImage_LoadImage( "frog/background.png");
 		GameFrog->backgroundtz = CImage_ImageSize(GameFrog->background);
-		GameFrog->spritesheetfrog = CImage_LoadImage(Renderer, "frog/player.bmp");
-		GameFrog->spritesheetbackground = CImage_LoadImage(Renderer, "frog/watergrass.bmp");
-		GameFrog->spritesheetcar1 = CImage_LoadImage(Renderer, "frog/carblue.bmp");
-		GameFrog->spritesheetcar2 = CImage_LoadImage(Renderer, "frog/garbagetruck.bmp");
-		GameFrog->spritesheetcar3 = CImage_LoadImage(Renderer, "frog/ambulance.bmp");
-		GameFrog->spritesheetcar4 = CImage_LoadImage(Renderer, "frog/taxi.bmp");
-		GameFrog->spritesheetcar5 = CImage_LoadImage(Renderer, "frog/police.bmp");
-		GameFrog->spritesheetplant = CImage_LoadImage(Renderer, "frog/waterplant.bmp");
-		GameFrog->spritesheetfruit1 = CImage_LoadImage(Renderer, "frog/apple.bmp");
-		GameFrog->spritesheetfruit2 = CImage_LoadImage(Renderer, "frog/lemon.bmp");
-		GameFrog->spritesheetfruit3 = CImage_LoadImage(Renderer, "frog/cherry.bmp");
+		GameFrog->spritesheetfrog = CImage_LoadImage( "frog/player.bmp");
+		GameFrog->spritesheetbackground = CImage_LoadImage( "frog/watergrass.bmp");
+		GameFrog->spritesheetcar1 = CImage_LoadImage( "frog/carblue.bmp");
+		GameFrog->spritesheetcar2 = CImage_LoadImage( "frog/garbagetruck.bmp");
+		GameFrog->spritesheetcar3 = CImage_LoadImage( "frog/ambulance.bmp");
+		GameFrog->spritesheetcar4 = CImage_LoadImage( "frog/taxi.bmp");
+		GameFrog->spritesheetcar5 = CImage_LoadImage( "frog/police.bmp");
+		GameFrog->spritesheetplant = CImage_LoadImage( "frog/waterplant.bmp");
+		GameFrog->spritesheetfruit1 = CImage_LoadImage( "frog/apple.bmp");
+		GameFrog->spritesheetfruit2 = CImage_LoadImage( "frog/lemon.bmp");
+		GameFrog->spritesheetfruit3 = CImage_LoadImage( "frog/cherry.bmp");
 	}
 
 }
@@ -1057,7 +1058,7 @@ void CGameFrog_UpdateLogic(CGameFrog* GameFrog)
 		}
 
 		GameFrog->updateobjects(GameFrog);
-		CSprites_UpdateSprites(Renderer);
+		CSprites_UpdateSprites();
 
 
 		if (GameFrog->playerdeath)
@@ -1072,7 +1073,7 @@ void CGameFrog_UpdateLogic(CGameFrog* GameFrog)
 				GameFrog->createplayer(GameFrog);
 				GameFrog->GameBase->HealthPoints = GameFrog->GameBase->HealthPoints - 1;
 				SubGameState = SGReadyGo;
-				SubStateTime = SDL_GetTicks() + 500;
+				SubStateTime = pd->system->getCurrentTimeMilliseconds() + 500;
 			}
 			if(GameMode == GMGame)
 				GameFrog->GameBase->HealthPoints -= 1;
@@ -1082,7 +1083,7 @@ void CGameFrog_UpdateLogic(CGameFrog* GameFrog)
 
 void CGameFrog_Draw(CGameFrog* GameFrog)
 {
-	CSprites_DrawSprites(Renderer);
+	CSprites_DrawSprites();
 	GameFrog->DrawBackground(GameFrog);
 	GameFrog->GameBase->DrawScoreBar(GameFrog->GameBase);
 	GameFrog->GameBase->DrawSubStateText(GameFrog->GameBase);

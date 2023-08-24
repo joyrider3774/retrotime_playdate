@@ -1,7 +1,7 @@
 #ifndef CSPRITES_H
 #define CSPRITES_H
 
-#include <SDL.h>
+#include <pd_api.h>
 #include <stdbool.h>
 #include <string.h>
 #include "CImage.h"
@@ -17,9 +17,9 @@ enum ECollisionShape
 typedef enum ECollisionShape ECollisionShape;
 
 struct CSprite {
-		SDL_Texture *Img;
+		LCDBitmap *Img;
 		int animInc;
-		Uint32 animTimer;
+		uint32_t animTimer;
 		int index;
 		int* imageID;
 		float x;
@@ -64,20 +64,20 @@ bool CSprites_DetectRectCircleCollsion(CSprite* SprRect, CSprite* SprCircle);
 void CSprites_Init();
 void CSprites_DeInit();
 void CSprites_ResetDrawTargets();
-void CSprites_UpdateImage(SDL_Renderer* renderer, CSprite* Spr);
+void CSprites_UpdateImage(CSprite* Spr);
 CSprite* CSprites_CreateSprite();
 void CSprites_RemoveSprite(CSprite* Spr);
 Vec2F CSprites_GetSpriteLocation(CSprite* Spr);
 void CSprites_SetForceShowCollisionShape(bool val);
-void CSprites_UpdateSprites(SDL_Renderer* renderer);
-void CSprites_DrawSprite(SDL_Renderer* Renderer, CSprite* Spr);
-void CSprites_DrawSprites(SDL_Renderer* Renderer);
+void CSprites_UpdateSprites();
+void CSprites_DrawSprite(CSprite* Spr);
+void CSprites_DrawSprites();
 int CSprites_GetSpriteAnimFrame(CSprite* Spr);
 int CSprites_GetSpriteAnimFrameCount(CSprite* Spr);
-void CSprites_SetSpriteImage(SDL_Renderer* renderer, CSprite* Spr, int *AImageID);
-void CSprites_SetSpriteImageTiles(SDL_Renderer* renderer, CSprite* Spr, int *AImageID, int TilesX, int TilesY);
+void CSprites_SetSpriteImage(CSprite* Spr, int *AImageID);
+void CSprites_SetSpriteImageTiles(CSprite* Spr, int *AImageID, int TilesX, int TilesY);
 void CSprites_SetSpriteRotation(CSprite* Spr, float AAngle);
-void CSprites_SetSpriteScale(SDL_Renderer* renderer, CSprite* Spr, Vec2F AScale);
+void CSprites_SetSpriteScale(CSprite* Spr, Vec2F AScale);
 void CSprites_SetSpriteAnimation(CSprite* Spr, int StartTile, int EndTile, int animSpeed);
 void CSprites_SetSpriteCollisionShape(CSprite* Spr, ECollisionShape shape, float width, float height, float rotation, float xoffset, float yoffset);
 void CSprites_SetSpriteLocation(CSprite* Spr, Vec2F pos);

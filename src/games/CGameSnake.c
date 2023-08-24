@@ -1,6 +1,10 @@
-#include <SDL.h>
+#include <pd_api.h>
 #include <stdbool.h>
 #include "CGameSnake.h"
+#include "../CGame.h"
+#include "../SDL_HelperTypes.h"
+#include "../pd_helperfuncs.h"
+#include "../CInput.h"
 
 CGameSnake* Create_CGameSnake()
 {
@@ -15,20 +19,20 @@ CGameSnake* Create_CGameSnake()
 	GameSnake->GameBase->screenright = GameSnake->GameBase->screenleft + GameSnake->GameBase->playfieldwidth;
 	GameSnake->GameBase->screentop = (ScreenHeight - GameSnake->GameBase->playfieldheight) / 2;
 	GameSnake->GameBase->screenbottom = GameSnake->GameBase->screentop + GameSnake->GameBase->playfieldheight;
-	GameSnake->snakeheadcolor.r = 0xFF;
-	GameSnake->snakeheadcolor.g = 0x65;
-	GameSnake->snakeheadcolor.b = 0x65;
-	GameSnake->snakeheadcolor.a = 0xFF;
+	//GameSnake->snakeheadcolor.r = 0xFF;
+	//GameSnake->snakeheadcolor.g = 0x65;
+	//GameSnake->snakeheadcolor.b = 0x65;
+	//GameSnake->snakeheadcolor.a = 0xFF;
 
-	GameSnake->snakebodycolor.r = 0xFF;
-	GameSnake->snakebodycolor.g = 0xFF;
-	GameSnake->snakebodycolor.b = 0xFF;
-	GameSnake->snakebodycolor.a = 0xFF;
+	//GameSnake->snakebodycolor.r = 0xFF;
+	//GameSnake->snakebodycolor.g = 0xFF;
+	//GameSnake->snakebodycolor.b = 0xFF;
+	//GameSnake->snakebodycolor.a = 0xFF;
 
-	GameSnake->snakefoodcolor.r = 0x65;
-	GameSnake->snakefoodcolor.g = 0xFF;
-	GameSnake->snakefoodcolor.b = 0x65;
-	GameSnake->snakefoodcolor.a = 0xFF;
+	//GameSnake->snakefoodcolor.r = 0x65;
+	//GameSnake->snakefoodcolor.g = 0xFF;
+	//GameSnake->snakefoodcolor.b = 0x65;
+	//GameSnake->snakefoodcolor.a = 0xFF;
 	
 	GameSnake->createfood = CGameSnake_createfood;
 	GameSnake->drawfood = CGameSnake_drawfood;
@@ -74,9 +78,10 @@ void CGameSnake_createfood(CGameSnake* GameSnake)
 
 void CGameSnake_drawfood(CGameSnake* GameSnake)
 {
-	SDL_SetRenderDrawColor(Renderer, GameSnake->snakefoodcolor.r, GameSnake->snakefoodcolor.g, GameSnake->snakefoodcolor.b, GameSnake->snakefoodcolor.a);
+	//SDL_SetRenderDrawColor(Renderer, GameSnake->snakefoodcolor.r, GameSnake->snakefoodcolor.g, GameSnake->snakefoodcolor.b, GameSnake->snakefoodcolor.a);
 	SDL_Rect r = {GameSnake->food.x, GameSnake->food.y, CGameSnake_snakesize, CGameSnake_snakesize};
-	SDL_RenderFillRect(Renderer, &r);
+	//SDL_RenderFillRect(Renderer, &r);
+	pd->graphics->fillRect(r.x, r.y, r.w, r.h, kColorWhite);
 }
 
 void CGameSnake_updatefood(CGameSnake* GameSnake)
@@ -106,21 +111,23 @@ void CGameSnake_createsnake(CGameSnake* GameSnake)
 void CGameSnake_drawsnake(CGameSnake* GameSnake)
 {
 	SDL_Rect r;
-	SDL_SetRenderDrawColor(Renderer, GameSnake->snakebodycolor.r, GameSnake->snakebodycolor.g, GameSnake->snakebodycolor.b, GameSnake->snakebodycolor.a);
+	//SDL_SetRenderDrawColor(Renderer, GameSnake->snakebodycolor.r, GameSnake->snakebodycolor.g, GameSnake->snakebodycolor.b, GameSnake->snakebodycolor.a);
 	for (int i = 0; i < GameSnake->snakelength; i++)
 	{
 		r.x = GameSnake->body[i].x;
 		r.y = GameSnake->body[i].y;
 		r.w = CGameSnake_snakesize;
 		r.h = CGameSnake_snakesize;
-		SDL_RenderFillRect(Renderer, &r);
+		//SDL_RenderFillRect(Renderer, &r);
+		pd->graphics->fillRect(r.x, r.y, r.w, r.h, kColorWhite);
 	}
-	SDL_SetRenderDrawColor(Renderer, GameSnake->snakeheadcolor.r, GameSnake->snakeheadcolor.g, GameSnake->snakeheadcolor.b, GameSnake->snakeheadcolor.a);
+	//SDL_SetRenderDrawColor(Renderer, GameSnake->snakeheadcolor.r, GameSnake->snakeheadcolor.g, GameSnake->snakeheadcolor.b, GameSnake->snakeheadcolor.a);
 	r.x = GameSnake->head.x;
 	r.y = GameSnake->head.y;
 	r.w = CGameSnake_snakesize;
 	r.h = CGameSnake_snakesize;
-	SDL_RenderFillRect(Renderer, &r);
+	//SDL_RenderFillRect(Renderer, &r);
+	pd->graphics->fillRect(r.x, r.y, r.w, r.h, kColorWhite);
 }
 
 void CGameSnake_updatesnake(CGameSnake* GameSnake)
@@ -208,11 +215,18 @@ void CGameSnake_updatesnake(CGameSnake* GameSnake)
 
 void CGameSnake_DrawBackground(CGameSnake* GameSnake)
 {
-	SDL_SetRenderDrawColor(Renderer, 0x65, 0x65, 0xFF, 0xFF);
-	SDL_RenderClear(Renderer);
-	SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 255);
-	SDL_Rect r = {GameSnake->GameBase->screenleft, GameSnake->GameBase->screentop, GameSnake->GameBase->playfieldwidth, GameSnake->GameBase->playfieldheight};
-	SDL_RenderFillRect(Renderer, &r);
+	//SDL_SetRenderDrawColor(Renderer, 0x65, 0x65, 0xFF, 0xFF);
+	//SDL_RenderClear(Renderer);
+	//SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 255);
+	//SDL_Rect r = {GameSnake->GameBase->screenleft, GameSnake->GameBase->screentop, GameSnake->GameBase->playfieldwidth, GameSnake->GameBase->playfieldheight};
+	//SDL_RenderFillRect(Renderer, &r);
+
+
+//	SDL_SetRenderDrawColor(Renderer, 0x65, 0x65, 0xFF, 0xFF);
+	pd->graphics->clear(kColorWhite);
+	SDL_Rect r = { GameSnake->GameBase->screenleft, GameSnake->GameBase->screentop, GameSnake->GameBase->playfieldwidth, GameSnake->GameBase->playfieldheight };
+	//SDL_RenderFillRect(Renderer, &r);
+	pd->graphics->fillRect(r.x, r.y, r.w, r.h, kColorBlack);
 }
 
 //init - deinit ----------------------------------------------------------------------------------------------------------------
@@ -240,9 +254,9 @@ void CGameSnake_deinit(CGameSnake* GameSnake)
 
 void CGameSnake_LoadSound(CGameSnake* GameSnake)
 {
-	GameSnake->SfxFood = CAudio_LoadSound("snakey/food.wav");
-	GameSnake->SfxDie = CAudio_LoadSound("common/die.wav");
-	GameSnake->MusMusic = CAudio_LoadMusic("snakey/music.ogg");
+	GameSnake->SfxFood = CAudio_LoadSound("snakey/food");
+	GameSnake->SfxDie = CAudio_LoadSound("common/die");
+	GameSnake->MusMusic = CAudio_LoadMusic("snakey/music");
 }
 
 void CGameSnake_UnLoadSound(CGameSnake* GameSnake)
@@ -276,7 +290,7 @@ void CGameSnake_UpdateObjects(CGameSnake* GameSnake, bool IsGameState)
 			if (GameMode == GMGame)
 				GameSnake->GameBase->HealthPoints -= 1;
 			SubGameState = SGReadyGo;
-			SubStateTime = SDL_GetTicks() + 500;
+			SubStateTime = pd->system->getCurrentTimeMilliseconds() + 500;
 		}
 		else
 			if(GameMode == GMGame)
@@ -289,7 +303,7 @@ void CGameSnake_UpdateLogic(CGameSnake* GameSnake)
 	GameSnake->GameBase->UpdateLogic(GameSnake->GameBase);
 	GameSnake->UpdateObjects(GameSnake, SubGameState == SGGame);
 	if(SubGameState == SGGame)
-		CSprites_UpdateSprites(Renderer);
+		CSprites_UpdateSprites();
 }
 
 
@@ -305,7 +319,7 @@ void CGameSnake_Draw(CGameSnake* GameSnake)
 {
 	GameSnake->DrawBackground(GameSnake);
 	if (GameSnake->DrawObjects(GameSnake))
-		CSprites_DrawSprites(Renderer);
+		CSprites_DrawSprites();
 	GameSnake->GameBase->DrawScoreBar(GameSnake->GameBase);
 	GameSnake->GameBase->DrawSubStateText(GameSnake->GameBase);
 }

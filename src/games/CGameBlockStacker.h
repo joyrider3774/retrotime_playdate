@@ -1,12 +1,11 @@
 #ifndef CGAMEBLOCKSTACKER_H
 #define CGAMEBLOCKSTACKER_H
 
-#include <SDL.h>
+#include <pd_api.h>
 #include <stdbool.h>
 #include "CGameBase.h"
-#include "../CGame.h"
-#include "../Platform.h"
 #include "../Common.h"
+#include "../SDL_HelperTypes.h"
 
 
 
@@ -17,6 +16,7 @@
 #define CGameBlockStacker_ticksinputidle 4
 #define CGameBlockStacker_totalelements 216//numcols * numrows
 
+typedef struct CGameBlockStacker CGameBlockStacker;
 struct CGameBlockStacker {
 
 	CGameBase *GameBase;
@@ -45,7 +45,7 @@ struct CGameBlockStacker {
 	void (*UpdateObjects)(CGameBlockStacker* BlockStacker, bool IsGameState);
 	bool (*DrawObjects)(CGameBlockStacker* BlockStacker);
 };
-typedef struct CGameBlockStacker CGameBlockStacker;
+
 
 bool CGameBlockStacker_DrawObjects(CGameBlockStacker* BlockStacker);
 void CGameBlockStacker_UpdateObjects(CGameBlockStacker* BlockStacker, bool IsGameState);

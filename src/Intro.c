@@ -1,15 +1,17 @@
-#include <SDL.h>
+#include <pd_api.h>
 #include <string.h>
 #include "CGame.h"
 #include "Common.h"
 #include "Intro.h"
 #include "CTween.h"
 #include "Vec2F.h"
+#include "SDL_HelperTypes.h"
+#include "pd_helperfuncs.h"
 
 int maxticks = 240;
 int scene = 0;
 int sceneticks = 0;
-int tsize = 70*yscale;
+int tsize = (int)(70.0f*yscale);
 
 
 void Intro()
@@ -19,43 +21,51 @@ void Intro()
 		GameState -= initDiff;
 	}
 
-	SDL_Color ClWhite = {255, 255, 255, 255};
-	char s[100];
+	//SDL_Color ClWhite = {255, 255, 255, 255};
+	char *s;
 	int w,h;
 
-	SDL_SetRenderTarget(Renderer, TexTmp);
-	SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 255);
-	SDL_RenderClear(Renderer);
+	//SDL_SetRenderTarget(Renderer, TexTmp);
+	//pd->graphics->pushContext(TexTmp);
+	//SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 255);
+	//SDL_RenderClear(Renderer);
+	pd->graphics->clear(kColorBlack);
 	if (scene == 0)
 	{
-		strcpy(s,"Willems Davy aka Joyrider3774");
+		pd->system->formatString(&s,"Willems Davy aka Joyrider3774");
 		w = CFont_TextWidth("Roboto-Regular", tsize, s, strlen(s));
 		h = tsize*2;
-		CFont_WriteText(Renderer, "Roboto-Regular", tsize, s, strlen(s), (ScreenWidth - w) / 2, (ScreenHeight - h) /2, tsize, ClWhite);
+		CFont_WriteText("Roboto-Regular", tsize, s, strlen(s), (ScreenWidth - w) / 2, (ScreenHeight - h) /2, tsize, kColorWhite);
+		pd->system->realloc(s, 0);
 
-		strcpy(s,"presents");
+		pd->system->formatString(&s,"presents");
 		w = CFont_TextWidth("Roboto-Regular", tsize, s, strlen(s));
 		h = tsize;
-		CFont_WriteText(Renderer, "Roboto-Regular", tsize, s, strlen(s), (ScreenWidth - w) / 2, (ScreenHeight) /2, tsize, ClWhite);
+		CFont_WriteText("Roboto-Regular", tsize, s, strlen(s), (ScreenWidth - w) / 2, (ScreenHeight) /2, tsize, kColorWhite);
+		pd->system->realloc(s, 0);
 	}
 
 	if (scene == 1)
 	{
-		strcpy(s,"Retro Time");
+		pd->system->formatString(&s,"Retro Time");
 		w = CFont_TextWidth("Roboto-Regular", tsize, s, strlen(s));
-		CFont_WriteText(Renderer, "Roboto-Regular", tsize, s, strlen(s), (ScreenWidth - w) / 2, 40*yscale, tsize*2, ClWhite);
+		CFont_WriteText("Roboto-Regular", tsize, s, strlen(s), (ScreenWidth - w) / 2, (int)(40.0f*yscale), tsize*2, kColorWhite);
+		pd->system->realloc(s, 0);
 
-		strcpy(s,"A game containing");
+		pd->system->formatString(&s,"A game containing");
 		w = CFont_TextWidth("Roboto-Regular", tsize, s, strlen(s));
-		CFont_WriteText(Renderer, "Roboto-Regular", tsize, s, strlen(s),(ScreenWidth - w) / 2, ((ScreenHeight - 3 * (tsize + 10*yscale)) /2), tsize, ClWhite);
+		CFont_WriteText("Roboto-Regular", tsize, s, strlen(s),(ScreenWidth - w) / 2, (int)((ScreenHeight - 3.0f * (tsize + 10.0f*yscale)) /2.0f), tsize, kColorWhite);
+		pd->system->realloc(s, 0);
 
-		sprintf(s,"%d retro based games", Games);
+		pd->system->formatString(&s,"%d retro based games", Games);
 		w = CFont_TextWidth("Roboto-Regular", tsize, s, strlen(s));
-		CFont_WriteText(Renderer, "Roboto-Regular", tsize, s, strlen(s), (ScreenWidth - w) / 2, (ScreenHeight - 1 * (tsize + 10*yscale)) / 2, tsize, ClWhite);
+		CFont_WriteText("Roboto-Regular", tsize, s, strlen(s), (ScreenWidth - w) / 2,(int) ((ScreenHeight - 1 * (tsize + 10.f*yscale)) / 2.0f), tsize, kColorWhite);
+		pd->system->realloc(s, 0);
 
-		sprintf(s, "playable in %d game modes", Modes);
+		pd->system->formatString(&s, "playable in %d game modes", Modes);
 		w = CFont_TextWidth("Roboto-Regular", tsize, s, strlen(s));
-		CFont_WriteText(Renderer, "Roboto-Regular", tsize, s, strlen(s), (ScreenWidth - w) / 2, (ScreenHeight + 1 * (tsize + 10*yscale)) /2, tsize, ClWhite);
+		CFont_WriteText("Roboto-Regular", tsize, s, strlen(s), (ScreenWidth - w) / 2, (int)((ScreenHeight + 1 * (tsize + 10*yscale)) /2.0f), tsize, kColorWhite);
+		pd->system->realloc(s, 0);
 	}
 
 	if (scene >= 2)
@@ -63,12 +73,12 @@ void Intro()
 		GameState = GSTitleScreenInit;
 	}
 
-	SDL_SetRenderTarget(Renderer, TexOffScreen);
+	//SDL_SetRenderTarget(Renderer, TexOffScreen);
 	//SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 255);
-	SDL_RenderClear(Renderer);
-	SDL_Point Pos = {0,0};
-	Vec2F Scale = {1,1};
-	CImage_DrawImageFuzeTintFloatTex(Renderer, TexTmp, false, &Pos, 0, &Scale, 1, 1, 1, 1);
+	//SDL_RenderClear(Renderer);
+	//SDL_Point Pos = {0,0};
+	//Vec2F Scale = {1,1};
+	//CImage_DrawImageFuzeTintFloatTex(Renderer, TexTmp, false, &Pos, 0, &Scale, 1, 1, 1, 1);
 	sceneticks += 1;
 
 	if (sceneticks >= maxticks)

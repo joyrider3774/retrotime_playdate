@@ -1,4 +1,4 @@
-#include <SDL.h>
+#include <pd_api.h>
 #include <math.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -91,9 +91,9 @@ void CGameBreakOut_updateblockinfo(CGameBreakOut* GameBreakOut)
 	GameBreakOut->blockinfo.mostright = -1;
 	GameBreakOut->blockinfo.mostbottom = -1;
 
-	int x1 = GameBreakOut->GameBase->screenright + 1;
-	int x2 = GameBreakOut->GameBase->screenleft - 1;
-	int y = GameBreakOut->GameBase->screentop - 1;
+	float x1 = (float)(GameBreakOut->GameBase->screenright + 1);
+	float x2 = (float)(GameBreakOut->GameBase->screenleft - 1);
+	float y = (float)GameBreakOut->GameBase->screentop - 1;
 	for (int i = 0; i < CGameBreakOut_numblocks; i++)
 	{
 		if (GameBreakOut->blocks[i].alive)
@@ -142,18 +142,18 @@ void CGameBreakOut_createblocks(CGameBreakOut* GameBreakOut, bool setlocation)
 	{
 		for(int y = 0; y < CGameBreakOut_blockrows; y++)
 		{
-			GameBreakOut->tweens[x + y * CGameBreakOut_blockcols][CGameBreakOut_tweenblockpositions] = createtween(CGameBreakOut_tweenblockpositions, 1+ ((rand() %(6)) / 10), funcsmoothstop, 1, true, DesiredFps);
+			GameBreakOut->tweens[x + y * CGameBreakOut_blockcols][CGameBreakOut_tweenblockpositions] = createtween(CGameBreakOut_tweenblockpositions, 1.0f+ ((rand() %(6)) / 10), funcsmoothstop, 1, true, DesiredFps);
 			GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].spr = CSprites_CreateSprite();
 			GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].state = 0;
 			GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].alive = true;
-			CSprites_SetSpriteImageTiles(Renderer,GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].spr, &GameBreakOut->spritesheetblocks, 6, 1);
+			CSprites_SetSpriteImageTiles(GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].spr, &GameBreakOut->spritesheetblocks, 6, 1);
 			SDL_Point tz = CSprites_TileSize(GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].spr);
-			tz.x = tz.x * GameBreakOut->blockspritecale.x;
-			tz.y = tz.y * GameBreakOut->blockspritecale.y;
+			tz.x = (int)(tz.x * GameBreakOut->blockspritecale.x);
+			tz.y = (int)(tz.y * GameBreakOut->blockspritecale.y);
 			GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].tz = tz;
 			CSprites_SetSpriteAnimation(GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].spr, y % 6, y % 6, 0);
 
-			CSprites_SetSpriteScale(Renderer,GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].spr, GameBreakOut->blockspritecale);
+			CSprites_SetSpriteScale(GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].spr, GameBreakOut->blockspritecale);
 			GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].pos.x = GameBreakOut->GameBase->screenleft + CGameBreakOut_blockxoffset + (x * tz.x);
 			GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].pos.y = GameBreakOut->GameBase->screentop + CGameBreakOut_blockyoffset + y * tz.y;
 			if (setlocation)
@@ -216,8 +216,8 @@ void CGameBreakOut_updateblocks(CGameBreakOut* GameBreakOut)
 					}
 
 //					setSpriteLocation(GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].spr, pos)
-					GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].spr->x = (int)(pos.x);
-					GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].spr->y = (int)(pos.y);
+					GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].spr->x = (float)((int)(pos.x));
+					GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].spr->y = (float)((int)(pos.y));
 
 				}
 				if (GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].state == CGameBreakOut_blockstatedeath)
@@ -229,8 +229,8 @@ void CGameBreakOut_updateblocks(CGameBreakOut* GameBreakOut)
 						pos.y = pos.y + (50 * GameBreakOut->tweens[x + y * CGameBreakOut_blockcols][CGameBreakOut_tweenblockdeath].funcval);
 						pos.x = pos.x + (30 * GameBreakOut->tweens[x + y * CGameBreakOut_blockcols][CGameBreakOut_tweenblockdeath].funcval);
 //						setSpriteLocation(GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].spr, pos)
-						GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].spr->x = (int)(pos.x);
-						GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].spr->y = (int)(pos.y);
+						GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].spr->x = (float)((int)(pos.x));
+						GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].spr->y = (float)((int)(pos.y));
 						CSprites_SetSpriteRotation(GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].spr, 720 * GameBreakOut->tweens[x + y * CGameBreakOut_blockcols][CGameBreakOut_tweenblockdeath].funcval);
 						CSprites_SetSpriteColour(GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].spr, 1,1,1, 1- GameBreakOut->tweens[x + y * CGameBreakOut_blockcols][CGameBreakOut_tweenblockdeath].funcval);
 					}
@@ -267,11 +267,11 @@ void CGameBreakOut_destroyplayer(CGameBreakOut* GameBreakOut)
 void CGameBreakOut_createplayer(CGameBreakOut* GameBreakOut)
 {
 	GameBreakOut->player.spr = CSprites_CreateSprite();
-	CSprites_SetSpriteImage(Renderer,GameBreakOut->player.spr, &GameBreakOut->spritesheetbat);
-	CSprites_SetSpriteScale(Renderer,GameBreakOut->player.spr, GameBreakOut->spritescale);
+	CSprites_SetSpriteImage(GameBreakOut->player.spr, &GameBreakOut->spritesheetbat);
+	CSprites_SetSpriteScale(GameBreakOut->player.spr, GameBreakOut->spritescale);
 	GameBreakOut->player.tz = CImage_ImageSize(GameBreakOut->spritesheetbat);
-	GameBreakOut->player.tz.x = GameBreakOut->player.tz.x * GameBreakOut->spritescale.x;
-	GameBreakOut->player.tz.y = GameBreakOut->player.tz.y * GameBreakOut->spritescale.y;
+	GameBreakOut->player.tz.x = (int)(GameBreakOut->player.tz.x * GameBreakOut->spritescale.x);
+	GameBreakOut->player.tz.y = (int)(GameBreakOut->player.tz.y * GameBreakOut->spritescale.y);
 	GameBreakOut->player.pos.x = (float)(GameBreakOut->GameBase->screenright - GameBreakOut->GameBase->screenleft) / 2;
 	GameBreakOut->player.pos.y = (float)GameBreakOut->GameBase->screenbottom - 20*yscale - (GameBreakOut->player.tz.y / 2);
 	GameBreakOut->GameBase->HealthPoints = 5;
@@ -296,7 +296,7 @@ void CGameBreakOut_updateplayer(CGameBreakOut* GameBreakOut)
 			if (GameBreakOut->player.pos.x - GameBreakOut->player.tz.x / 2 - (CGameBreakOut_playerspeed * speedmultiplier) > GameBreakOut->GameBase->screenleft)
 				GameBreakOut->player.pos.x -= CGameBreakOut_playerspeed * speedmultiplier;
 			else
-				GameBreakOut->player.pos.x = GameBreakOut->GameBase->screenleft + GameBreakOut->player.tz.x / 2;
+				GameBreakOut->player.pos.x = (float)(GameBreakOut->GameBase->screenleft + GameBreakOut->player.tz.x / 2.0f);
 		}
 
 		if ((CInput_Buttons.ButRight) ||
@@ -306,12 +306,12 @@ void CGameBreakOut_updateplayer(CGameBreakOut* GameBreakOut)
 			if ( GameBreakOut->player.pos.x + GameBreakOut->player.tz.x / 2 + (CGameBreakOut_playerspeed * speedmultiplier) < GameBreakOut->GameBase->screenright)
 				GameBreakOut->player.pos.x += CGameBreakOut_playerspeed * speedmultiplier;
 			else
-				GameBreakOut->player.pos.x = GameBreakOut->GameBase->screenright - GameBreakOut->player.tz.x / 2;
+				GameBreakOut->player.pos.x = (float)(GameBreakOut->GameBase->screenright - GameBreakOut->player.tz.x / 2.0f);
 		}
 
 		//setSpriteLocation(GameBreakOut->player.spr, GameBreakOut->player.pos)
-		GameBreakOut->player.spr->x = (int)(GameBreakOut->player.pos.x);
-		GameBreakOut->player.spr->y = (int)(GameBreakOut->player.pos.y);
+		GameBreakOut->player.spr->x = (float)((int)(GameBreakOut->player.pos.x));
+		GameBreakOut->player.spr->y = (float)((int)(GameBreakOut->player.pos.y));
 	}
 	else
 	{
@@ -337,12 +337,12 @@ void CGameBreakOut_destroyball(CGameBreakOut* GameBreakOut)
 void CGameBreakOut_createball(CGameBreakOut* GameBreakOut)
 {
 	GameBreakOut->ball.spr = CSprites_CreateSprite();
-	CSprites_SetSpriteImage(Renderer,GameBreakOut->ball.spr, &GameBreakOut->spritesheetball);
+	CSprites_SetSpriteImage(GameBreakOut->ball.spr, &GameBreakOut->spritesheetball);
 	Vec2F scale = {xscale,yscale};
-	CSprites_SetSpriteScale(Renderer,GameBreakOut->ball.spr, scale);
+	CSprites_SetSpriteScale(GameBreakOut->ball.spr, scale);
 	GameBreakOut->ball.tz = CImage_ImageSize(GameBreakOut->spritesheetball);
-	GameBreakOut->ball.tz.x = GameBreakOut->ball.tz.x * xscale;
-	GameBreakOut->ball.tz.y = GameBreakOut->ball.tz.y * yscale;
+	GameBreakOut->ball.tz.x = (int)(GameBreakOut->ball.tz.x * xscale);
+	GameBreakOut->ball.tz.y = (int)(GameBreakOut->ball.tz.y * yscale);
 	
 	CSprites_SetSpriteCollisionShape(GameBreakOut->ball.spr, SHAPE_BOX, 4/xscale, 4/yscale, 0, 0, 0);
 	GameBreakOut->ball.pos.x = (float)((GameBreakOut->GameBase->screenright - GameBreakOut->GameBase->screenleft) / 2) + 250*xscale;
@@ -372,18 +372,18 @@ void CGameBreakOut_updateball(CGameBreakOut* GameBreakOut)
 				if (GameBreakOut->ball.pos.x < GameBreakOut->GameBase->screenleft)
 				{
 					GameBreakOut->ball.vel.x *= -1;
-					GameBreakOut->ball.pos.x = GameBreakOut->GameBase->screenleft;
+					GameBreakOut->ball.pos.x = (float)(GameBreakOut->GameBase->screenleft);
 				}
 
 				if (GameBreakOut->ball.pos.x > GameBreakOut->GameBase->screenright)
 				{
 					GameBreakOut->ball.vel.x *= -1;
-					GameBreakOut->ball.pos.x = GameBreakOut->GameBase->screenright;
+					GameBreakOut->ball.pos.x = (float)(GameBreakOut->GameBase->screenright);
 				}
 
 				if (GameBreakOut->ball.pos.y < GameBreakOut->GameBase->screentop)
 				{
-					GameBreakOut->ball.pos.y = GameBreakOut->GameBase->screentop;
+					GameBreakOut->ball.pos.y = (float)(GameBreakOut->GameBase->screentop);
 					GameBreakOut->ball.vel.y *= -1;
 				}
 
@@ -447,7 +447,7 @@ void CGameBreakOut_updateball(CGameBreakOut* GameBreakOut)
 									//reverse x velocity
 									GameBreakOut->ball.vel.x = -GameBreakOut->ball.vel.x;
 									//add some randomness
-									float rnd = (rand() % 100) / 500;
+									int rnd = (rand() % 100) / 500;
 									if (rand() % 2 == 0)
 										rnd *= -1;
 
@@ -465,7 +465,7 @@ void CGameBreakOut_updateball(CGameBreakOut* GameBreakOut)
 										//reverse x velocity
 										GameBreakOut->ball.vel.x = -GameBreakOut->ball.vel.x;
 										//add some randomness
-										float rnd = (rand() % 100) / 500;
+										int rnd = (rand() % 100) / 500;
 										if (rand() % 2 == 0)
 											rnd *= -1;
 
@@ -517,13 +517,13 @@ void CGameBreakOut_updateball(CGameBreakOut* GameBreakOut)
 
 void CGameBreakOut_DrawBackground(CGameBreakOut* GameBreakOut)
 {
-	CImage_DrawImage(Renderer, GameBreakOut->background, NULL, NULL);
+	CImage_DrawImage(GameBreakOut->background, NULL, NULL);
 }
 
 void CGameBreakOut_Draw(CGameBreakOut* GameBreakOut)
 {
 	GameBreakOut->DrawBackground(GameBreakOut);
-	CSprites_DrawSprites(Renderer);
+	CSprites_DrawSprites();
 	GameBreakOut->GameBase->DrawScoreBar(GameBreakOut->GameBase);
 	GameBreakOut->GameBase->DrawSubStateText(GameBreakOut->GameBase);
 }
@@ -543,11 +543,11 @@ void CGameBreakOut_init(CGameBreakOut* GameBreakOut)
 
 void CGameBreakOut_LoadSound(CGameBreakOut* GameBreakOut)
 {
-	GameBreakOut->SfxDie = CAudio_LoadSound("common/die.wav");
-	GameBreakOut->SfxSucces = CAudio_LoadSound("common/succes.wav");
-	GameBreakOut->SfxBat = CAudio_LoadSound("breakout/bat.wav");
-	GameBreakOut->SfxBrick = CAudio_LoadSound("breakout/brick.wav");
-	GameBreakOut->MusMusic = CAudio_LoadMusic("breakout/music.ogg");
+	GameBreakOut->SfxDie = CAudio_LoadSound("common/die");
+	GameBreakOut->SfxSucces = CAudio_LoadSound("common/succes");
+	GameBreakOut->SfxBat = CAudio_LoadSound("breakout/bat");
+	GameBreakOut->SfxBrick = CAudio_LoadSound("breakout/brick");
+	GameBreakOut->MusMusic = CAudio_LoadMusic("breakout/music");
 }
 
 void CGameBreakOut_UnLoadSound(CGameBreakOut* GameBreakOut)
@@ -575,11 +575,11 @@ void CGameBreakOut_deinit(CGameBreakOut* GameBreakOut)
 
 void CGameBreakOut_LoadGraphics(CGameBreakOut* GameBreakOut)
 {
-	GameBreakOut->background = CImage_LoadImage(Renderer, "breakout/background.png");
+	GameBreakOut->background = CImage_LoadImage("breakout/background.png");
 	GameBreakOut->backgroundtz = CImage_ImageSize(GameBreakOut->background);
-	GameBreakOut->spritesheetblocks = CImage_LoadImageEx(Renderer, "breakout/blocks.png", 8, 128, dumpScaledBitmaps); 
-	GameBreakOut->spritesheetbat = CImage_LoadImageEx(Renderer, "breakout/paddle.png",0, 128, dumpScaledBitmaps);
-	GameBreakOut->spritesheetball = CImage_LoadImageEx(Renderer, "breakout/ball.png", 0, 128, dumpScaledBitmaps);
+	GameBreakOut->spritesheetblocks = CImage_LoadImageEx("breakout/blocks.png", 8, 128, dumpScaledBitmaps); 
+	GameBreakOut->spritesheetbat = CImage_LoadImageEx("breakout/paddle.png",0, 128, dumpScaledBitmaps);
+	GameBreakOut->spritesheetball = CImage_LoadImageEx("breakout/ball.png", 0, 128, dumpScaledBitmaps);
 
 	//SDL_SaveBMPTextureScaled(Game->Renderer, "./retrotimefs/graphics/breakout/blocks.bmp", Game->CImage_GetImage(GameBreakOut->spritesheetblocks), 1,1, true,8, 128); //0 80
 	//SDL_SaveBMPTextureScaled(Game->Renderer, "./retrotimefs/graphics/breakout/paddle.bmp", Game->CImage_GetImage(GameBreakOut->spritesheetbat), 1,1, true,0, 128); //173
@@ -588,11 +588,11 @@ void CGameBreakOut_LoadGraphics(CGameBreakOut* GameBreakOut)
 	if(!useDefaultColorAssets)
 	{
 		GameBreakOut->UnloadGraphics(GameBreakOut);
-		GameBreakOut->background = CImage_LoadImage(Renderer, "breakout/background.png");
+		GameBreakOut->background = CImage_LoadImage("breakout/background.png");
 		GameBreakOut->backgroundtz = CImage_ImageSize(GameBreakOut->background);
-		GameBreakOut->spritesheetblocks = CImage_LoadImage(Renderer, "breakout/blocks.bmp");
-		GameBreakOut->spritesheetbat = CImage_LoadImage(Renderer, "breakout/paddle.bmp");
-		GameBreakOut->spritesheetball = CImage_LoadImage(Renderer, "breakout/ball.bmp");
+		GameBreakOut->spritesheetblocks = CImage_LoadImage("breakout/blocks.bmp");
+		GameBreakOut->spritesheetbat = CImage_LoadImage("breakout/paddle.bmp");
+		GameBreakOut->spritesheetball = CImage_LoadImage("breakout/ball.bmp");
 	}
 
 
@@ -623,5 +623,5 @@ void CGameBreakOut_UpdateLogic(CGameBreakOut* GameBreakOut)
 	GameBreakOut->GameBase->UpdateLogic(GameBreakOut->GameBase);
 	GameBreakOut->UpdateObjects(GameBreakOut, SubGameState == SGGame);
 	if(SubGameState == SGGame)
-		CSprites_UpdateSprites(Renderer);
+		CSprites_UpdateSprites();
 }
