@@ -214,7 +214,7 @@ void CAudio_PlayMusic(int MusicID, int loops)
 	if ((MusicID < 0) || (MusicID > MUS_Max) || !CAudio_GlobalSoundEnabled)
 		return;
 
-	// Mix_VolumeMusic(VolumeMusic);
+	CAudio_StopMusic();
 	pd->sound->fileplayer->play(CAudio_Music[MusicID], loops +1);
 }
 
