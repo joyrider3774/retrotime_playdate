@@ -370,13 +370,13 @@ void CImage_DrawImageFuzeTex(LCDBitmap *Texture, SDL_Rect *SrcRect, bool CenterI
 
 	//Draw
 
-	if ((Angle >= epsilion) || (Angle <= -epsilion))
+	if (((float)fabs(Angle) >= epsilion) || ((float)fabs(Angle) <= -epsilion))
 	{
 		pd->graphics->drawRotatedBitmap(Texture,(int)(Dst.x + ((dstW) / 2)),(int)(Dst.y + ((dstH) / 2)), Angle, 0.5f, 0.5f, (float)Dst.w / srcW, (float)Dst.h / srcH);
 	}
 	else
 	{
-		if ((Scale->x <= 1.0f - epsilion) || (Scale->x >= 1.0f + epsilion) || (Scale->y <= 1.0f - epsilion) || (Scale->y >= 1.0f + epsilion))
+		if (((float)fabs(Scale->x) <= 1.0f - epsilion) || ((float)fabs(Scale->x) >= 1.0f + epsilion) || ((float)fabs(Scale->y) <= 1.0f - epsilion) || ((float)fabs(Scale->y)>= 1.0f + epsilion))
 		{
 			DrawBitmapScaledSrcRec(Texture, Scale->x, Scale->y, Dst.x, Dst.y, srcX, srcY, srcW, srcH);
 		}
