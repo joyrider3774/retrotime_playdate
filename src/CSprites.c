@@ -225,6 +225,8 @@ void CSprites_DrawSprite(CSprite* Spr)
 		int x = AnimTile - (y * Spr->tilesX);
 		
 		SDL_Rect SrcRect = {(int)(x * Spr->tileSizeX* fabsf(Spr->sxscale)), (int)(y* Spr->tileSizeY* fabsf(Spr->syscale)), (int)(Spr->tileSizeX* fabsf(Spr->sxscale)),(int)(Spr->tileSizeY* fabsf(Spr->syscale))};
+		
+		
 		CImage_DrawImageFuzeSrcRectTintFloatTex(Spr->Img, &SrcRect, true, &pos, Spr->rotation, &scale, Spr->r, Spr->g, Spr->b, Spr->a);
 		
 

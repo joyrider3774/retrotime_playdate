@@ -372,7 +372,20 @@ void CImage_DrawImageFuzeTex(LCDBitmap *Texture, SDL_Rect *SrcRect, bool CenterI
 
 	if ((fabsf(Angle) >= epsilion) || (fabsf(Angle) <= -epsilion))
 	{
-		pd->graphics->drawRotatedBitmap(Texture,(int)(Dst.x + ((dstW) / 2)),(int)(Dst.y + ((dstH) / 2)), Angle, 0.5f, 0.5f, (float)Dst.w / srcW, (float)Dst.h / srcH);
+		SDL_Point ImageTz = CImage_ImageSizeTex(Texture);
+		//if we need to draw rotated but the sprite is not the full sprite need to first draw the sprite to seperate tile to only grab the part we need)
+		if ((ImageTz.x != srcW) || (ImageTz.y != srcH))
+		{
+			LCDBitmap* tmp = pd->graphics->newBitmap(srcW, srcH, kColorClear);
+			pd->graphics->pushContext(tmp);
+			DrawBitmapSrcRec(Texture, 0, 0, srcX, srcY, srcW, srcH, flip);
+			pd->graphics->popContext();
+			//pd->graphics->drawBitmap(tmp, (int)(Pos->x), (int)(Pos->y),kBitmapUnflipped);
+			pd->graphics->drawRotatedBitmap(tmp, (int)Pos->x, (int)Pos->y, Angle, 0.5f, 0.5f, (float)Dst.w / srcW, (float)Dst.h / srcH);
+			pd->graphics->freeBitmap(tmp);
+		}
+		else
+			pd->graphics->drawRotatedBitmap(Texture,(int)(Dst.x + ((dstW) / 2)),(int)(Dst.y + ((dstH) / 2)), Angle, 0.5f, 0.5f, (float)Dst.w / srcW, (float)Dst.h / srcH);
 	}
 	else
 	{

@@ -99,16 +99,11 @@ LCDFont* loadFontAtPath(const char* path)
 
 void DrawBitmapSrcRec(LCDBitmap* Bitmap, int dstX, int dstY, int srcX, int srcY, int srcW, int srcH, LCDBitmapFlip FlipMode)
 {
-	pd->graphics->pushContext(Bitmap);
-	pd->graphics->setClipRect(srcX, srcY, srcW, srcH);
-	pd->graphics->pushContext(NULL);
 	pd->graphics->setClipRect(dstX, dstY, srcW, srcH);
-	pd->graphics->setDrawOffset(-srcX + dstX, -srcY + dstY);
+	pd->graphics->setDrawOffset((-srcX) + dstX, (-srcY) + dstY);
 	pd->graphics->drawBitmap(Bitmap, 0, 0, FlipMode);
 	pd->graphics->setDrawOffset(0, 0);
 	pd->graphics->clearClipRect();
-	pd->graphics->popContext();
-	pd->graphics->popContext();
 }
 
 void DrawBitmapScaledSrcRec(LCDBitmap* Bitmap, float scalex, float scaley, int dstX, int dstY, int srcX, int srcY, int srcW, int srcH)

@@ -529,9 +529,6 @@ int CGame_MainLoop(void* ud)
 
 	CInput_Update();
 	
-	//pd->graphics->pushContext(TexOffScreen);
-	//SDL_SetRenderTarget(TexOffScreen);
-	
 	switch (GameState)
 	{
 		case GSIntroInit:
@@ -641,15 +638,11 @@ int CGame_MainLoop(void* ud)
 			break;
 	}
 	
-	//pd->graphics->popContext();
-
 	if (GameAlpha < MaxAlpha)
 	{
-		//GameAlpha = trunc(MaxAlpha * ((double)(pd->system->getCurrentTimeMilliseconds() - AlphaTimer) / MaxAlphaTime));
 		GameAlpha = MaxAlpha;
 		if (GameAlpha >= MaxAlpha)
 		{
-			//SDL_SetTextureBlendMode(TexOffScreen, SDL_BLENDMODE_NONE);
 			GameAlpha = MaxAlpha;
 			SubGameState = NextSubState;
 			SubStateTime = pd->system->getCurrentTimeMilliseconds() + NextSubStateTimeAdd;
@@ -662,10 +655,6 @@ int CGame_MainLoop(void* ud)
 		}
 	}
 
-	
-	
-	//pd->graphics->pushContext(NULL);
-	//pd->graphics->drawBitmap(TexOffScreen, 0, 0, kBitmapUnflipped);
 	if (debugInfo || ShowFPS)
 	{
 		Frames++;
@@ -712,19 +701,6 @@ int CGame_MainLoop(void* ud)
 		int tw = CFont_TextWidth("RobotoMono-Bold", 14, Text, strlen(Text));
 		CFont_WriteText("RobotoMono-Bold", 14, Text, strlen(Text), ScreenWidth - tw, 0, 0,(LCDColor) kColorGrey);
 	}
-	//pd->graphics->popContext();
-	/*if (showFps)
-	{
-		
-		char* Text;
-		pd->system->formatString(&Text, "%f %f", CurrentMs, 1000.0f / CurrentMs);
-		pd->graphics->pushContext(NULL);
-		pd->graphics->setFont(Mini2X);
-		pd->graphics->fillRect(0, 0, pd->graphics->getTextWidth(Mini2X, Text, strlen(Text), kASCIIEncoding, 0), 16, kColorWhite);
-		pd->graphics->drawText(Text, strlen(Text), kASCIIEncoding, 0, 0);
-		pd->system->realloc(Text, 0);
-		pd->graphics->popContext();
-	}*/
 	if (BatteryMonitoring)
 	{
 		pd->system->setAutoLockDisabled(true);

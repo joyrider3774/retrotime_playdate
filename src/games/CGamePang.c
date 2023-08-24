@@ -316,18 +316,15 @@ void CGamePang_drawbullet(CGamePang* GamePang)
 	if (GamePang->bullet.alive)
 	{
 		//copy whats on screen to a temporary buffer (i know this already contains the background)
-		LCDBitmap* prev = pd->graphics->copyBitmap(pd->graphics->getDisplayBufferBitmap());
 		pd->graphics->pushContext(TexTmp);
-		CImage_DrawImageTex(prev, NULL, NULL);
-		pd->graphics->pushContext(prev);
+		CImage_DrawImageTex(pd->graphics->getDisplayBufferBitmap(), NULL, NULL);
+		pd->graphics->popContext();
 		//draw the sprite
 		CSprites_DrawSprite(GamePang->bullet.spr);
-		pd->graphics->popContext();
-		pd->graphics->popContext();
 		//draw bottom part of what was previously on screen back to the screen to obscure bottom part of the chain texture
 		//this makes it seem as if the texture is created on the ground instead of at the bottom of the screen, like it is
 		//in real time.
-		SDL_Rect Rect = {0, GamePang->GameBase->screenbottom - CGamePang_backgroundcopyheight, GamePang->GameBase->screenright, CGamePang_backgroundcopyheight};
+		SDL_Rect Rect = {0, GamePang->GameBase->screenbottom - (int)CGamePang_backgroundcopyheight, GamePang->GameBase->screenright, (int)CGamePang_backgroundcopyheight};
 		CImage_DrawImageTex(TexTmp, &Rect, &Rect);
 
 	}

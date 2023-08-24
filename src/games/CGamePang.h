@@ -8,7 +8,7 @@
 #include "../Common.h"
 #include "../Vec2F.h"
 
-#define CGamePang_backgroundcopyheight 30
+#define CGamePang_backgroundcopyheight 30*yscale
 
 #define CGamePang_enemyspeed 1.0f*yscale*FPSScale
 #define CGamePang_playerspeed 8.0f*xscale*FPSScale
