@@ -409,10 +409,10 @@ void CGameBreakOut_updateball(CGameBreakOut* GameBreakOut)
 							//calculates but seems to work more or less ok
 							float dx = (GameBreakOut->ball.pos.x - GameBreakOut->blocks[k].pos.x) / GameBreakOut->blocks[k].tz.x;
 							float dy = (GameBreakOut->ball.pos.y - GameBreakOut->blocks[k].pos.y) / GameBreakOut->blocks[k].tz.y;
-							if ((float)fabs(dx) > (float)fabs(dy))
-								GameBreakOut->ball.vel.x = (float)fabs(GameBreakOut->ball.vel.x) * dx / (float)fabs(dx);
+							if (fabsf(dx) > fabsf(dy))
+								GameBreakOut->ball.vel.x = fabsf(GameBreakOut->ball.vel.x) * dx / fabsf(dx);
 							else
-								GameBreakOut->ball.vel.y = (float)fabs(GameBreakOut->ball.vel.y) * dy / (float)fabs(dy);
+								GameBreakOut->ball.vel.y = fabsf(GameBreakOut->ball.vel.y) * dy / fabsf(dy);
 
 							CGame_AddToScore(20);
 							//inc CGameBreakOut_ballspeed

@@ -81,8 +81,8 @@ LCDBitmap *CImage_LoadScaledImage(int GFXID, Vec2F Scale)
 	
 	int w, h;
 	pd->graphics->getBitmapData(CImage_Images[GFXID]->Img, &w, &h, NULL, NULL, NULL);
-	w = (int)ceil(w * fabs(Scale.x));
-	h = (int)ceil(h * fabs(Scale.y));
+	w = (int)ceil(w * fabsf(Scale.x));
+	h = (int)ceil(h * fabsf(Scale.y));
 	Vec2F Resolution = {(float)w,(float)h};
 
 	for(int i = 0; i < CImage_ScaledImagesLoaded; i++)
@@ -323,8 +323,8 @@ void CImage_DrawImageFuzeTex(LCDBitmap *Texture, SDL_Rect *SrcRect, bool CenterI
 		srcY = SrcRect->y;
 		srcW = SrcRect->w;
 		srcH = SrcRect->h;
-		dstW = (SrcRect->w * (float)fabs(Scale->x));
-		dstH = (SrcRect->h * (float)fabs(Scale->y));
+		dstW = (SrcRect->w * fabsf(Scale->x));
+		dstH = (SrcRect->h * fabsf(Scale->y));
 	}
 	else
 	{
@@ -333,8 +333,8 @@ void CImage_DrawImageFuzeTex(LCDBitmap *Texture, SDL_Rect *SrcRect, bool CenterI
 		SDL_Point ImageTz = CImage_ImageSizeTex(Texture);
 		srcW = ImageTz.x;
 		srcH = ImageTz.y;
-		dstW = (ImageTz.x * (float)fabs(Scale->x));
-		dstH = (ImageTz.y * (float)fabs(Scale->y));
+		dstW = (ImageTz.x * fabsf(Scale->x));
+		dstH = (ImageTz.y * fabsf(Scale->y));
 	}
 	SDL_Rect Dst;
 	if(CenterImagePos)
@@ -370,13 +370,13 @@ void CImage_DrawImageFuzeTex(LCDBitmap *Texture, SDL_Rect *SrcRect, bool CenterI
 
 	//Draw
 
-	if (((float)fabs(Angle) >= epsilion) || ((float)fabs(Angle) <= -epsilion))
+	if ((fabsf(Angle) >= epsilion) || (fabsf(Angle) <= -epsilion))
 	{
 		pd->graphics->drawRotatedBitmap(Texture,(int)(Dst.x + ((dstW) / 2)),(int)(Dst.y + ((dstH) / 2)), Angle, 0.5f, 0.5f, (float)Dst.w / srcW, (float)Dst.h / srcH);
 	}
 	else
 	{
-		if (((float)fabs(Scale->x) <= 1.0f - epsilion) || ((float)fabs(Scale->x) >= 1.0f + epsilion) || ((float)fabs(Scale->y) <= 1.0f - epsilion) || ((float)fabs(Scale->y)>= 1.0f + epsilion))
+		if ((fabsf(Scale->x) <= 1.0f - epsilion) || (fabsf(Scale->x) >= 1.0f + epsilion) || (fabsf(Scale->y) <= 1.0f - epsilion) || (fabsf(Scale->y)>= 1.0f + epsilion))
 		{
 			DrawBitmapScaledSrcRec(Texture, Scale->x, Scale->y, Dst.x, Dst.y, srcX, srcY, srcW, srcH);
 		}

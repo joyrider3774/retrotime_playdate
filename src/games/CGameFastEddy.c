@@ -663,7 +663,7 @@ void CGameFastEddy_updateplayer(CGameFastEddy* GameFastEddy)
 							{
 								CSprites_SetSpriteImageTiles(GameFastEddy->player.spr, &GameFastEddy->spritesheetplayerrun, 1, 7);
 								CSprites_SetSpriteAnimation(GameFastEddy->player.spr, 0, 6, 10);
-								GameFastEddy->player.spr->sxscale = -((float)fabs(GameFastEddy->player.spr->sxscale));
+								GameFastEddy->player.spr->sxscale = -(fabsf(GameFastEddy->player.spr->sxscale));
 								GameFastEddy->player.state = GameFastEddy_playerstateleft;
 							}
 						}
@@ -675,7 +675,7 @@ void CGameFastEddy_updateplayer(CGameFastEddy* GameFastEddy)
 								{
 									CSprites_SetSpriteImageTiles(GameFastEddy->player.spr, &GameFastEddy->spritesheetplayerrun, 1, 7);
 									CSprites_SetSpriteAnimation(GameFastEddy->player.spr, 0, 6, 10);
-									GameFastEddy->player.spr->sxscale = ((float)fabs(GameFastEddy->player.spr->sxscale));
+									GameFastEddy->player.spr->sxscale = (fabsf(GameFastEddy->player.spr->sxscale));
 									GameFastEddy->player.state = GameFastEddy_playerstateright;
 								}
 							}
@@ -801,7 +801,7 @@ void CGameFastEddy_updateplayer(CGameFastEddy* GameFastEddy)
 				}
 			}
 
-			if (GameFastEddy->player.spr->sxscale / (float)fabs(GameFastEddy->player.spr->sxscale) == 1)
+			if (GameFastEddy->player.spr->sxscale / fabsf(GameFastEddy->player.spr->sxscale) == 1)
 			{
 				if ( GameFastEddy->player.pos.x + GameFastEddy->player.tz.x / 2 + GameFastEddy_playerspeed < GameFastEddy->GameBase->screenright)
 					GameFastEddy->player.pos.x += GameFastEddy_playerspeed ;

@@ -377,7 +377,7 @@ void CGameInvaders_updatebullet(CGameInvaders* GameInvaders)
 							else
 								CGame_AddToScore(10);
 						}
-						GameInvaders->enemyvel.x += GameInvaders->enemyvel.x / (float)fabs(GameInvaders->enemyvel.x) * CGameInvaders_enemyspeedinc;
+						GameInvaders->enemyvel.x += GameInvaders->enemyvel.x / fabsf(GameInvaders->enemyvel.x) * CGameInvaders_enemyspeedinc;
 					}
 				}
 			}

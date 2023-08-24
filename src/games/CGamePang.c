@@ -128,7 +128,7 @@ void CGamePang_createball(CGamePang* GamePang, int size, float x, float y, float
 			CSprites_SetSpriteLocation(GamePang->balls[i].spr, GamePang->balls[i].pos);
 			GamePang->balls[i].alive = true;
 			GamePang->balls[i].speed = speed*0.1f;
-			GamePang->balls[i].force = -(float)fabs(speed);
+			GamePang->balls[i].force = -fabsf(speed);
 			GamePang->balls[i].curforce = GamePang->balls[i].force/3;
 			GamePang->balls[i].id = size;
 			break;
@@ -147,14 +147,14 @@ void CGamePang_updateballs(CGamePang* GamePang)
 			if (GamePang->balls[i].pos.x + GamePang->balls[i].speed > GamePang->GameBase->screenright)
 			{
 				if (GamePang->balls[i].speed > 0)
-					GamePang->balls[i].speed = -(float)fabs(GamePang->balls[i].speed);
+					GamePang->balls[i].speed = -fabsf(GamePang->balls[i].speed);
 
 			}
 
 			if (GamePang->balls[i].pos.x + GamePang->balls[i].speed < GamePang->GameBase->screenleft)
 			{
 				if (GamePang->balls[i].speed < 0)
-					GamePang->balls[i].speed = (float)fabs(GamePang->balls[i].speed);
+					GamePang->balls[i].speed = fabsf(GamePang->balls[i].speed);
 			}
 
 

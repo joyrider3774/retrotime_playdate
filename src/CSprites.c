@@ -218,13 +218,13 @@ void CSprites_DrawSprite(CSprite* Spr)
 	
 		Vec2F scale = {Spr->sxscale, Spr->syscale};
 		//multiply is to get the sign
-		scale.x = 1.0f * (Spr->sxscale / (float)fabs(Spr->sxscale));
-		scale.y = 1.0f * (Spr->syscale/(float)fabs(Spr->syscale));
+		scale.x = 1.0f * (Spr->sxscale / fabsf(Spr->sxscale));
+		scale.y = 1.0f * (Spr->syscale/fabsf(Spr->syscale));
 		int AnimTile = Spr->animTile;
 		int y = (int)floor(AnimTile / Spr->tilesX);
 		int x = AnimTile - (y * Spr->tilesX);
 		
-		SDL_Rect SrcRect = {(int)(x * Spr->tileSizeX* (float)fabs(Spr->sxscale)), (int)(y* Spr->tileSizeY* (float)fabs(Spr->syscale)), (int)(Spr->tileSizeX* (float)fabs(Spr->sxscale)),(int)(Spr->tileSizeY* (float)fabs(Spr->syscale))};
+		SDL_Rect SrcRect = {(int)(x * Spr->tileSizeX* fabsf(Spr->sxscale)), (int)(y* Spr->tileSizeY* fabsf(Spr->syscale)), (int)(Spr->tileSizeX* fabsf(Spr->sxscale)),(int)(Spr->tileSizeY* fabsf(Spr->syscale))};
 		CImage_DrawImageFuzeSrcRectTintFloatTex(Spr->Img, &SrcRect, true, &pos, Spr->rotation, &scale, Spr->r, Spr->g, Spr->b, Spr->a);
 		
 
@@ -314,8 +314,8 @@ void CSprites_UpdateImage(CSprite* Spr)
 	if(Spr->imageID == NULL)
 		return;
 
-	if(((float)fabs(Spr->syscale) == (float)fabs(Spr->prevyscale)) &&
-		((float)fabs(Spr->sxscale) == (float)fabs(Spr->prevxscale)))
+	if((fabsf(Spr->syscale) == fabsf(Spr->prevyscale)) &&
+		(fabsf(Spr->sxscale) == fabsf(Spr->prevxscale)))
 		return;
 
 	if(loadDumpedScaledBitmaps)
@@ -343,7 +343,7 @@ void CSprites_UpdateImage(CSprite* Spr)
 			pd->graphics->freeBitmap(Spr->Img);
 
 		// Create a new texture with the same properties as the one we are duplicating
-		Spr->Img = pd->graphics->newBitmap((int)(w * (float)fabs(Spr->sxscale)),(int)(h * (float)fabs(Spr->syscale)), kColorClear);
+		Spr->Img = pd->graphics->newBitmap((int)(w * fabsf(Spr->sxscale)),(int)(h * fabsf(Spr->syscale)), kColorClear);
 
 		
 		
@@ -351,8 +351,8 @@ void CSprites_UpdateImage(CSprite* Spr)
 		SDL_Rect TmpR;
 		TmpR.x = 0;
 		TmpR.y = 0;
-		TmpR.w = (int)(w * (float)fabs(Spr->sxscale));
-		TmpR.h = (int)(h * (float)fabs(Spr->syscale));
+		TmpR.w = (int)(w * fabsf(Spr->sxscale));
+		TmpR.h = (int)(h * fabsf(Spr->syscale));
 
 		pd->graphics->pushContext(Spr->Img);
 		DrawBitmapScaledSrcRec(tex, (float)TmpR.w / w,(float)TmpR.h / h, 0, 0, 0, 0, w, h);
@@ -467,7 +467,7 @@ bool CSprites_DetectRectCircleCollsion(CSprite* SprRect, CSprite* SprCircle)
 {
 	Vec2F center = {SprCircle->x + SprCircle->collisionxoffset /2.0f, SprCircle->y + SprCircle->collisionyoffset / 2.0f};
 	// calculate AABB info (center, half-extents)
-	Vec2F aabb_half_extents = {(float)fabs(SprRect->collisionWidth) * (float)fabs(SprRect->sxscale) / 2.0f, (float)fabs(SprRect->collisionHeight) * (float)fabs(SprRect->syscale) / 2.0f};
+	Vec2F aabb_half_extents = {fabsf(SprRect->collisionWidth) * fabsf(SprRect->sxscale) / 2.0f, fabsf(SprRect->collisionHeight) * fabsf(SprRect->syscale) / 2.0f};
 	Vec2F aabb_center = {SprRect->x + SprRect->collisionxoffset / 2.0f, SprRect->y + SprRect->collisionyoffset / 2.0f};
 
 	// get difference vector between both centers
@@ -486,20 +486,20 @@ bool CSprites_DetectRectCircleCollsion(CSprite* SprRect, CSprite* SprCircle)
 	difference.x = closest.x - center.x;
 	difference.y = closest.y - center.y;
 
-	return length(difference) < ((float)fabs(SprCircle->collisionWidth) * (float)fabs(SprCircle->sxscale) / 2.0f);
+	return length(difference) < (fabsf(SprCircle->collisionWidth) * fabsf(SprCircle->sxscale) / 2.0f);
 }
 
 bool CSprites_DetectRectRectCollsion(CSprite* Spr, CSprite* SprOther)
 {
-	float widthA = ((float)fabs(Spr->collisionWidth) * (float)fabs(Spr->sxscale));
-	float heightA = ((float)fabs(Spr->collisionHeight) * (float)fabs(Spr->syscale));
-	float minAx = Spr->x + Spr->collisionxoffset - ((float)fabs(Spr->collisionWidth) * (float)fabs(Spr->sxscale) / 2);
-	float minAy = Spr->y + Spr->collisionyoffset - ((float)fabs(Spr->collisionHeight) * (float)fabs(Spr->syscale) / 2);
+	float widthA = (fabsf(Spr->collisionWidth) * fabsf(Spr->sxscale));
+	float heightA = (fabsf(Spr->collisionHeight) * fabsf(Spr->syscale));
+	float minAx = Spr->x + Spr->collisionxoffset - (fabsf(Spr->collisionWidth) * fabsf(Spr->sxscale) / 2);
+	float minAy = Spr->y + Spr->collisionyoffset - (fabsf(Spr->collisionHeight) * fabsf(Spr->syscale) / 2);
 
-	float widthB = ((float)fabs(SprOther->collisionWidth) * (float)fabs(SprOther->sxscale));
-	float heightB = ((float)fabs(SprOther->collisionHeight) * (float)fabs(SprOther->syscale));
-	float minBx = SprOther->x + SprOther->collisionxoffset - ((float)fabs(SprOther->collisionWidth) * (float)fabs(SprOther->sxscale) / 2);
-	float minBy = SprOther->y + SprOther->collisionyoffset - ((float)fabs(SprOther->collisionHeight) * (float)fabs(SprOther->syscale) / 2);
+	float widthB = (fabsf(SprOther->collisionWidth) * fabsf(SprOther->sxscale));
+	float heightB = (fabsf(SprOther->collisionHeight) * fabsf(SprOther->syscale));
+	float minBx = SprOther->x + SprOther->collisionxoffset - (fabsf(SprOther->collisionWidth) * fabsf(SprOther->sxscale) / 2);
+	float minBy = SprOther->y + SprOther->collisionyoffset - (fabsf(SprOther->collisionHeight) * fabsf(SprOther->syscale) / 2);
 
 	bool xOverlap = ((minAx >= minBx) && (minAx <= minBx + widthB)) ||
 					((minBx >= minAx) && (minBx <= minAx + widthA));
