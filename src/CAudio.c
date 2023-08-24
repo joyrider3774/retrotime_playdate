@@ -9,7 +9,7 @@
 #define MUS_Max 20
 
 bool CAudio_DebugInfo;
-int CAudio_VolumeMusic, CAudio_VolumeSound;
+int CAudio_VolumeMusic = 128, CAudio_VolumeSound = 128;
 SamplePlayer* CAudio_Sounds[SND_Max];
 FilePlayer* CAudio_Music[MUS_Max];
 bool CAudio_GlobalSoundEnabled = true;
