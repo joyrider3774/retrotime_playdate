@@ -207,17 +207,56 @@ void CImage_DrawImageTex(LCDBitmap *Texture, SDL_Rect* Src, SDL_Rect* Dst)
 	
 	int texw, texh;
 	pd->graphics->getBitmapData(Texture, &texw, &texh, NULL, NULL, NULL);
-
 	if ((Src == NULL) && (Dst == NULL))
-		DrawBitmapScaledSrcRec(Texture, (float)ScreenWidth / texw, (float)ScreenHeight / texh, 0, 0, 0, 0, texw, texh);
-	else
-		if ((Src != NULL) && (Dst == NULL))
-			DrawBitmapScaledSrcRec(Texture, (float)ScreenWidth / Src->w, (float)ScreenHeight / Src->h, 0,0, Src->x, Src->y, Src->w, Src->h);
+	{
+		if ((ScreenWidth == texw) && (ScreenHeight == texh))
+		{
+			DrawBitmapSrcRec(Texture, 0, 0, 0, 0, ScreenWidth, ScreenHeight, kBitmapUnflipped);
+		}
 		else
+		{
+			DrawBitmapScaledSrcRec(Texture, (float)ScreenWidth / texw, (float)ScreenHeight / texh, 0, 0, 0, 0, texw, texh);
+		}
+	}	
+	else
+	{
+		if ((Src != NULL) && (Dst == NULL))
+		{
+			if ((ScreenWidth == Src->w) && (ScreenHeight == Src->h))
+			{
+				DrawBitmapSrcRec(Texture, 0, 0, Src->x, Src->y,  Src->w, Src->h, kBitmapUnflipped);
+			}
+			else
+			{
+				DrawBitmapScaledSrcRec(Texture, (float)ScreenWidth / Src->w, (float)ScreenHeight / Src->h, 0, 0, Src->x, Src->y, Src->w, Src->h);
+			}
+		}
+		else
+		{
 			if ((Src == NULL) && (Dst != NULL))
-				DrawBitmapScaledSrcRec(Texture, (float)Dst->w / texw, (float)Dst->h / texh, Dst->x, Dst->y, 0, 0, texw, texh);
-			else // both not null
-				DrawBitmapScaledSrcRec(Texture, (float)Dst->w / Src->w, (float)Dst->h / Src->h, Dst->x, Dst->y, Src->x, Src->y, Src->w, Src->h);
+			{
+				if((Dst->w == texw) && (Dst->h == texh))
+				{
+					DrawBitmapSrcRec(Texture, Dst->x, Dst->y, 0, 0, texw, texh, kBitmapUnflipped);
+				}
+				else
+				{
+					DrawBitmapScaledSrcRec(Texture, (float)Dst->w / texw, (float)Dst->h / texh, Dst->x, Dst->y, 0, 0, texw, texh);
+				}
+			}
+			else
+			{
+				if ((Dst->w == Src->w) && (Dst->h == Src->h))
+				{
+					DrawBitmapSrcRec(Texture, Dst->x, Dst->y, Src->x, Src->y, Src->w, Src->h, kBitmapUnflipped);
+				}
+				else
+				{
+					DrawBitmapScaledSrcRec(Texture, (float)Dst->w / Src->w, (float)Dst->h / Src->h, Dst->x, Dst->y, Src->x, Src->y, Src->w, Src->h);
+				}
+			}
+		}
+	}
 }
 
 //fuze used center points for positions and a floating point scale vector
@@ -337,17 +376,17 @@ void CImage_DrawImageFuzeTex(LCDBitmap *Texture, SDL_Rect *SrcRect, bool CenterI
 	}
 	else
 	{
-		if ((Scale->x <= -epsilion) || (Scale->x >= epsilion) || (Scale->y <= -epsilion) || (Scale->y >= epsilion))
+		if ((Scale->x <= 1.0f - epsilion) || (Scale->x >= 1.0f + epsilion) || (Scale->y <= 1.0f - epsilion) || (Scale->y >= 1.0f + epsilion))
 		{
 			DrawBitmapScaledSrcRec(Texture, Scale->x, Scale->y, Dst.x, Dst.y, srcX, srcY, srcW, srcH);
 		}
 		else
 		{
-			/*if ((Dst.w == srcW) && (Dst.h == srcH) && (srcX == 0) && (srcY == 0))
+			if ((Dst.w == srcW) && (Dst.h == srcH))
 			{
-				pd->graphics->drawBitmap(Texture, Dst.x, Dst.y, flip);
+				DrawBitmapSrcRec(Texture, Dst.x, Dst.y, srcX, srcY, srcW, srcH, flip);
 			}
-			else*/
+			else
 			{
 				DrawBitmapScaledSrcRec(Texture, (float)Dst.w / srcW, (float)Dst.h / srcH, Dst.x, Dst.y, srcX, srcY, srcW, srcH);
 			}
