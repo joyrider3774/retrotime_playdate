@@ -88,8 +88,10 @@ LCDBitmap *CImage_LoadScaledImage(int GFXID, Vec2F Scale)
 	for(int i = 0; i < CImage_ScaledImagesLoaded; i++)
 	{
 		if ((strcmp(ScaledImages[i].basefilename, CImage_Images[GFXID]->BaseFilename) ==0) &&
-			(ScaledImages[i].resolution.x - Resolution.x < epsilion) &&
-			(ScaledImages[i].resolution.y - Resolution.y < epsilion))
+			((ScaledImages[i].resolution.x  <= Resolution.x + epsilion)) && 
+			((ScaledImages[i].resolution.x >= Resolution.x - epsilion)) &&
+			((ScaledImages[i].resolution.y <= Resolution.y + epsilion)) &&
+			(ScaledImages[i].resolution.y >= Resolution.y - epsilion))
 			return ScaledImages[i].texture;
 	}
 
