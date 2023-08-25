@@ -236,14 +236,14 @@ void CSprites_DrawSprite(CSprite* Spr)
 			{
 				case SHAPE_BOX:
 				{
-					const SDL_Rect rect = {(int)(Spr->x + Spr->collisionxoffset - (Spr->collisionWidth * (Spr->sxscale) / 2)), (int)(Spr->y + Spr->collisionyoffset - (Spr->collisionHeight * (Spr->syscale) / 2)), (int)(Spr->collisionWidth * (Spr->sxscale)), (int)(Spr->collisionHeight * (Spr->syscale))};
-					pd->graphics->drawRect(rect.x, rect.y, rect.w, rect.h, kColorBlack);
+					const SDL_Rect rect = {(int)(Spr->x + Spr->collisionxoffset - (Spr->collisionWidth * fabsf(Spr->sxscale) / 2)), (int)(Spr->y + Spr->collisionyoffset - (Spr->collisionHeight * fabsf(Spr->syscale) / 2)), (int)(Spr->collisionWidth * fabsf(Spr->sxscale)), (int)(Spr->collisionHeight * fabsf(Spr->syscale))};
+					pd->graphics->drawRect(rect.x, rect.y, rect.w, rect.h, kColorXOR);
 					break;
 				}
 				case SHAPE_CIRCLE:
 				{
 					if ((Spr->collisionWidth == Spr->collisionHeight) && (Spr->sxscale == Spr->syscale))
-						pd->graphics->drawEllipse((int)(Spr->x + Spr->collisionxoffset),(int)(Spr->y + Spr->collisionyoffset),(int) ((Spr->collisionWidth * Spr->sxscale) / 2), (int)((Spr->collisionWidth * Spr->syscale) / 2.0f),1,0,360, kColorBlack);
+						pd->graphics->drawEllipse((int)(Spr->x + Spr->collisionxoffset - (Spr->collisionWidth * fabsf(Spr->sxscale) / 2)),(int)(Spr->y + Spr->collisionyoffset - (Spr->collisionHeight * fabsf(Spr->syscale) / 2)),(int) (Spr->collisionWidth * fabsf(Spr->sxscale)), (int)(Spr->collisionWidth * fabsf(Spr->syscale)),1,0,360, kColorXOR);
 					break;
 				}
 				default:
