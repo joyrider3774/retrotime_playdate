@@ -22,9 +22,9 @@ typedef struct CGameSnake CGameSnake;
 struct CGameSnake {
 
 	CGameBase *GameBase;
-	/*SDL_Color snakeheadcolor;
-	SDL_Color snakebodycolor;
-	SDL_Color snakefoodcolor;*/
+	LCDColor snakeheadcolor;
+	LCDColor snakebodycolor;
+	LCDColor snakefoodcolor;
 
 	bool movedone;
 	int snakelength;
