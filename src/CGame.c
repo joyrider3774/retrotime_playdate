@@ -668,12 +668,18 @@ int CGame_MainLoop(void* ud)
 		char Text[500];
 		char* TmpText;
 		Text[0] = '\0';
-		pd->system->formatString(&TmpText, "FPS: %f\n", 1000.0f / CurrentMs);
+		pd->system->formatString(&TmpText, "FPS: %.0f\n", 1000.0f / CurrentMs);
 		strcat(Text, TmpText);
 		pd->system->realloc(TmpText, 0);
-		if (debugInfo)
+		if (ShowFPS && !debugInfo)
 		{
-			pd->system->formatString(&TmpText, "FrameTime: %f.5\n", CurrentMs);
+			SDL_Point tz = CFont_TextSize("Roboto-Regular", 11, Text, strlen(Text), 0);
+			pd->graphics->fillRect(ScreenWidth - tz.x, 0, tz.x, tz.y, kColorWhite);
+			CFont_WriteText("Roboto-Regular", 11, Text, strlen(Text), ScreenWidth - tz.x, 0, 0, (LCDColor)kColorBlack);
+		}
+		else if(debugInfo)
+		{
+			pd->system->formatString(&TmpText, "FrameTime: %.5f\n", CurrentMs);
 			strncat(Text, TmpText, 100);
 			pd->system->realloc(TmpText, 0);
 			pd->system->formatString(&TmpText, "GFX Slots: %d/%d\n", CImage_ImageSlotsUsed(), CImage_ImageSlotsMax());
@@ -697,9 +703,11 @@ int CGame_MainLoop(void* ud)
 			pd->system->formatString(&TmpText, "SCL Loaded: %d/%d\n", CImage_ScaledImagesLoadedCount(), CImage_ScaledImagesLoadedMax());
 			strncat(Text, TmpText, 100);
 			pd->system->realloc(TmpText, 0);
+			SDL_Point tz = CFont_TextSize("Roboto-Regular", 11, Text, strlen(Text), 0);
+			pd->graphics->fillRect(ScreenWidth - tz.x, 0, tz.x, tz.y, kColorWhite);
+			CFont_WriteText("Roboto-Regular", 11, Text, strlen(Text), ScreenWidth - tz.x, 0, 0, (LCDColor)kColorBlack);
 		}
-		int tw = CFont_TextWidth("RobotoMono-Bold", 14, Text, strlen(Text));
-		CFont_WriteText("RobotoMono-Bold", 14, Text, strlen(Text), ScreenWidth - tw, 0, 0,(LCDColor) kColorGrey);
+		
 	}
 	if (BatteryMonitoring)
 	{
