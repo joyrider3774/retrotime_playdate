@@ -268,7 +268,7 @@ void TitleScreen()
 			CFont_WriteText("Roboto-Regular", (int)(80.0f*yscale), Text, strlen(Text), (int)(400.0f*xscale), (int)(50.0f*yscale), 0, color);
 			pd->system->realloc(Text, 0);
 
-			pd->system->formatString(&Text, "Retro Carousel Total highscore: %lu", RetroCarouselHighScore);
+			pd->system->formatString(&Text, "Retro Carousel Total highscore: %d", RetroCarouselHighScore);
 			CFont_WriteText("Roboto-Regular", (int)(50.0f*yscale), Text, strlen(Text),(int)(150.0f*xscale),(int)(195.0f*yscale), 0, color);
 			pd->system->realloc(Text, 0);
 
@@ -276,7 +276,7 @@ void TitleScreen()
 
 			for(int mode = 0; mode < Modes; mode++)
 			{
-				pd->system->formatString(&Text, "%s: %lu", GMModes[mode].name, HighScores[Game][mode]);
+				pd->system->formatString(&Text, "%s: %d", GMModes[mode].name, HighScores[Game][mode]);
 				CFont_WriteText("Roboto-Regular", (int)(50.0f*yscale), Text, strlen(Text), (int)(150.0f*xscale), (int)((350 + mode * 46)*yscale), 0, color);
 				pd->system->realloc(Text, 0);
 			}
@@ -329,7 +329,7 @@ void TitleScreen()
 			CFont_WriteText("Roboto-Regular", (int)(50.0f*yscale), Text, strlen(Text), (int)(50.0f*xscale), (int)(120.0f*yscale), 0, color);
 			pd->system->realloc(Text, 0);
 
-			pd->system->formatString(&Text, "%s High Score: %lu", GMModes[GameMode].name, HighScores[Game][GameMode]);
+			pd->system->formatString(&Text, "%s High Score: %d", GMModes[GameMode].name, HighScores[Game][GameMode]);
 			CFont_WriteText("Roboto-Regular", (int)(40.0f*yscale), Text, strlen(Text), (int)(50.0f*xscale), (int)(170.0f*yscale), 0, color);
 			pd->system->realloc(Text, 0);
 

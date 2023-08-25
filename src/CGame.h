@@ -24,7 +24,7 @@
 extern uint8_t GameAlpha;
 extern uint32_t AlphaTimer;
 extern uint32_t TimerTicks;
-extern uint32_t Score;
+extern int Score;
 extern int NextSubStateCounter, NextSubState, NextSubStateTimeAdd;
 
 extern bool ShowFPS;
@@ -40,9 +40,9 @@ extern CGamePang * GamePang;
 extern CGameFrog *GameFrog;
 
 extern LCDBitmap *TexOffScreen, *TexTmp;
-extern uint32_t RetroCarouselHighScore, RetroCarouselScore;
-extern uint32_t HighScores[Games][Modes];
-extern uint32_t Scores[Games][Modes];
+extern int RetroCarouselHighScore, RetroCarouselScore;
+extern int HighScores[Games][Modes];
+extern int Scores[Games][Modes];
 extern int GameState, SubGameState, GameMode, Game;
 extern float SubStateCounter;
 extern int MusMenu;
@@ -73,7 +73,7 @@ void CGame_SaveHighScores();
 void CGame_ResetTimer();
 void CGame_ResetScores();
 void CGame_ResetHighScores();
-void CGame_AddToScore(uint32_t Value);
+void CGame_AddToScore(int Value);
 void CGame_DrawTitleBackground();
 void CGame_StartCrossFade(int SetGameState, int SetNextSubState, int SetNextSubStateCounter, uint32_t SetNextSubStateTimeAdd);
 

@@ -34,7 +34,7 @@ char DataPath[500];
 
 uint32_t AlphaTimer;
 uint32_t TimerTicks;
-uint32_t Score;
+int Score;
 int NextSubStateCounter, NextSubState, NextSubStateTimeAdd;
 
 int ActiveGameGameStateId;
@@ -47,9 +47,9 @@ CGameRamIt *GameRamIt;
 CGamePang * GamePang;
 CGameFrog *GameFrog;
 LCDBitmap *TexOffScreen, *TexScreen, *TexTmp;
-uint32_t RetroCarouselHighScore, RetroCarouselScore;
-uint32_t HighScores[Games][Modes];
-uint32_t Scores[Games][Modes];
+int RetroCarouselHighScore, RetroCarouselScore;
+int HighScores[Games][Modes];
+int Scores[Games][Modes];
 int GameState, SubGameState, GameMode, Game;
 float SubStateCounter;
 int MusMenu;
@@ -199,9 +199,9 @@ void CGame_DrawTitleBackground()
 }
 
 
-void CGame_AddToScore(uint32_t Value)
+void CGame_AddToScore(int Value)
 {
-	uint32_t AScore = Value;
+	int AScore = Value;
 	if (AScore < 0)
 		if (GameMode == GMGame)
 			AScore = 0;
@@ -264,12 +264,12 @@ void CGame_LoadHighScores()
 	//ScoreFile = fopen(FileName, "r");
 	//if (ScoreFile)
 	//{
-	//	fscanf(ScoreFile, "RetroCarousel=%lu\n", &RetroCarouselHighScore);
+	//	fscanf(ScoreFile, "RetroCarousel=%d\n", &RetroCarouselHighScore);
 	//	for (int i = 0; i < Games; i++)
 	//		for (int j = 0; j < Modes; j++)
 	//		{
 	//			char entry[500];
-	//			pd->system->formatString(&TmpText,(entry, "Game_%d_Mode_%d%s", i, j,"=%lu\n"); 
+	//			pd->system->formatString(&TmpText,(entry, "Game_%d_Mode_%d%s", i, j,"=%d\n"); 
 	//			fscanf(ScoreFile, entry, &HighScores[i][j]);
 	//		}
 	//	fclose(ScoreFile);
@@ -299,10 +299,10 @@ void CGame_SaveHighScores()
 	//ScoreFile = fopen(FileName, "w");
 	//if (ScoreFile)
 	//{
-	//	fprintf(ScoreFile, "RetroCarousel=%lu\n", RetroCarouselHighScore);
+	//	fprintf(ScoreFile, "RetroCarousel=%d\n", RetroCarouselHighScore);
 	//	for (int i = 0; i < Games; i++)
 	//		for (int j = 0; j < Modes; j++)
-	//			fprintf(ScoreFile, "Game_%d_Mode_%d=%lu\n", i,j, HighScores[i][j]);
+	//			fprintf(ScoreFile, "Game_%d_Mode_%d=%d\n", i,j, HighScores[i][j]);
 	//	fclose(ScoreFile);
 	//}
 }

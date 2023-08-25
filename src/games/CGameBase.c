@@ -54,8 +54,8 @@ void CGameBase_PauseMenu(CGameBase* GameBase)
 	//int menuspacing = 85*yscale;
 	//CInput_ResetButtons();
 
-	//uint64_t TotalFrames = 0;
-	//uint64_t TotalFramePerf = 0;
+	//uint TotalFrames = 0;
+	//uint TotalFramePerf = 0;
 	//uint32_t Fps = 0;
 	//double AvgFrameTime = 0.0f;
 	//uint32_t Ticks = pd->system->getCurrentTimeMilliseconds();
@@ -63,7 +63,7 @@ void CGameBase_PauseMenu(CGameBase* GameBase)
 	//while ((SubGameState == SGFrame) || (SubGameState == SGPauseMenu) || (SubGameState == SGGameHelp))
 	//{
 	//	TotalFrames++;
-	//	uint64_t FrameStartPerf = SDL_GetPerformanceCounter();
+	//	uint FrameStartPerf = SDL_GetPerformanceCounter();
 	//	selectedmenu = GPGamePauseMenus[Game].menus[selected];
 
 	//	//draw everything to offscreen surface
@@ -128,7 +128,7 @@ void CGameBase_PauseMenu(CGameBase* GameBase)
 	//		sprintf(Text, "%s", GSGames[Game].name);
 	//		CFont_WriteText(Renderer, "Roboto-Regular", 50*yscale, Text, strlen(Text), 75*xscale, 150*yscale, 0, color);
 
-	//		sprintf(Text, "%s %s High Score: %lu", GSGames[Game].name,  GMModes[GameMode].name, HighScores[Game][GameMode]);
+	//		sprintf(Text, "%s %s High Score: %d", GSGames[Game].name,  GMModes[GameMode].name, HighScores[Game][GameMode]);
 	//		CFont_WriteText(Renderer, "Roboto-Regular", 38*yscale, Text, strlen(Text), 75*xscale, 210*yscale, 0, color);
 
 	//		sprintf(Text, "%s", GSGames[Game].description);
@@ -351,8 +351,8 @@ void CGameBase_PauseMenu(CGameBase* GameBase)
 	//	}
 	//	SDL_RenderPresent(Renderer);
 
-	//	uint64_t FrameEndPerf = SDL_GetPerformanceCounter();
-	//	uint64_t FramePerf = FrameEndPerf - FrameStartPerf;
+	//	uint FrameEndPerf = SDL_GetPerformanceCounter();
+	//	uint FramePerf = FrameEndPerf - FrameStartPerf;
 	//	double FrameTime = FramePerf / (double)SDL_GetPerformanceFrequency() * 1000.0;
 	//	TotalFramePerf += FramePerf;
 
@@ -391,7 +391,7 @@ void CGameBase_DrawScoreBar(CGameBase* GameBase)
 	if (GameMode == GMGame)
 	{
 
-		pd->system->formatString(&TmpText,"Lives:%d Score:%lu High Score:%lu ",  GameBase->HealthPoints,
+		pd->system->formatString(&TmpText,"Lives:%d Score:%d High Score:%d ",  GameBase->HealthPoints,
 			Scores[Game][GameMode], HighScores[Game][GameMode]);
 		strncat(Text, TmpText, 1000);
 		pd->system->realloc(TmpText, 0);
@@ -400,7 +400,7 @@ void CGameBase_DrawScoreBar(CGameBase* GameBase)
 	{
 		if(GameMode == GMRetroCarousel)
 		{
-			pd->system->formatString(&TmpText,"Timer: %.2f Total Score:%lu  Score:%lu Previous Total high score:%lu Previous High Score:%lu",
+			pd->system->formatString(&TmpText,"Timer: %.2f Total Score:%d  Score:%d Previous Total high score:%d Previous High Score:%d",
 				Timer, RetroCarouselScore, Scores[Game][GameMode], RetroCarouselHighScore,
 				HighScores[Game][GameMode]);
 			strncat(Text, TmpText, 1000);
@@ -408,7 +408,7 @@ void CGameBase_DrawScoreBar(CGameBase* GameBase)
 		}
 		else
 		{
-			pd->system->formatString(&TmpText, "Timer: %.2f Score:%lu Previous High Score:%lu ",
+			pd->system->formatString(&TmpText, "Timer: %.2f Score:%d Previous High Score:%d ",
 				Timer,Scores[Game][GameMode], HighScores[Game][GameMode]);
 			strncat(Text, TmpText, 1000);
 			pd->system->realloc(TmpText, 0);

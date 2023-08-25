@@ -19,7 +19,7 @@
 
 bool wasnewhighscorecarousel;
 bool wasnewhighscoregame;
-uint32_t prevretrocarouselscore;
+int prevretrocarouselscore;
 
 void InitSubScoreScreen()
 {
@@ -141,20 +141,20 @@ void SubScoreScreen()
 			CFont_WriteText("Roboto-Regular", (int)(50.0f*yscale), TextTmp, strlen(TextTmp), (int)(150.0f*xscale),(int)(285.0f*yscale), 0, kColorWhite);
 			pd->system->realloc(TextTmp, 0);
 
-			pd->system->formatString(&TextTmp, "Game Score: %lu", Scores[Game][GameMode]);
+			pd->system->formatString(&TextTmp, "Game Score: %d", Scores[Game][GameMode]);
 			CFont_WriteText("Roboto-Regular", (int)(50.0f*yscale), TextTmp, strlen(TextTmp), (int)(150.0f*xscale),(int)(330.0f*yscale), 0, kColorWhite);
 			pd->system->realloc(TextTmp, 0);
 
 			if (Game < Games -1)
-				pd->system->formatString(&TextTmp, "New Total Rounds Score: %lu", RetroCarouselScore);
+				pd->system->formatString(&TextTmp, "New Total Rounds Score: %d", RetroCarouselScore);
 			else
-				pd->system->formatString(&TextTmp, "Final Total Rounds Score: %lu", RetroCarouselScore);
+				pd->system->formatString(&TextTmp, "Final Total Rounds Score: %d", RetroCarouselScore);
 			CFont_WriteText("Roboto-Regular", (int)(50.0f*yscale), TextTmp, strlen(TextTmp),(int)(150.0f*xscale), (int)(375.0f*yscale), 0, kColorWhite);
 			pd->system->realloc(TextTmp, 0);
 
 			if (wasnewhighscoregame)
 			{
-				pd->system->formatString(&TextTmp, "New Game High Score: %lu", HighScores[Game][GameMode]);
+				pd->system->formatString(&TextTmp, "New Game High Score: %d", HighScores[Game][GameMode]);
 				CFont_WriteText("Roboto-Regular", (int)(50.0f*yscale), TextTmp, strlen(TextTmp), (int)(150.0f*xscale),(int)(425.0f*yscale), 0, kColorWhite);
 				pd->system->realloc(TextTmp, 0);
 				SDL_Point pos = {(int)(120.0f*xscale),(int) (425.0f*yscale)};
@@ -162,14 +162,14 @@ void SubScoreScreen()
 			}
 			else
 			{
-				pd->system->formatString(&TextTmp, "Game High Score: %lu", HighScores[Game][GameMode]);
+				pd->system->formatString(&TextTmp, "Game High Score: %d", HighScores[Game][GameMode]);
 				CFont_WriteText("Roboto-Regular", (int)(50.0f*yscale), TextTmp, strlen(TextTmp), (int)(150.0f*xscale), (int)(425.0f*yscale), 0, kColorWhite);
 				pd->system->realloc(TextTmp, 0);
 			}
 
 			if (wasnewhighscorecarousel)
 			{
-				pd->system->formatString(&TextTmp, "New All Rounds High Score: %lu", RetroCarouselHighScore);
+				pd->system->formatString(&TextTmp, "New All Rounds High Score: %d", RetroCarouselHighScore);
 				CFont_WriteText("Roboto-Regular", (int)(50.0f*yscale), TextTmp, strlen(TextTmp), (int)(150.0f*xscale), (int)(470.0f*yscale), 0, kColorWhite);
 				pd->system->realloc(TextTmp, 0);
 				SDL_Point pos = {(int)(120.0f*xscale),(int)( 470.0f*yscale)};
@@ -177,7 +177,7 @@ void SubScoreScreen()
 			}
 			else
 			{
-				pd->system->formatString(&TextTmp, "All Rounds High Score: %lu", RetroCarouselHighScore);
+				pd->system->formatString(&TextTmp, "All Rounds High Score: %d", RetroCarouselHighScore);
 				CFont_WriteText("Roboto-Regular", (int)(50.0f*yscale), TextTmp, strlen(TextTmp), (int)(150.0f*xscale), (int)(470.0f*yscale), 0, kColorWhite);
 				pd->system->realloc(TextTmp, 0);
 			}
@@ -192,13 +192,13 @@ void SubScoreScreen()
 		}
 		else
 		{
-			pd->system->formatString(&TextTmp, "Game Score: %lu", Scores[Game][GameMode]);
+			pd->system->formatString(&TextTmp, "Game Score: %d", Scores[Game][GameMode]);
 			CFont_WriteText("Roboto-Regular", (int)(50.0f*yscale), TextTmp, strlen(TextTmp), (int)(150.0f*xscale), (int)(285.0f*yscale), 0, kColorWhite);
 			pd->system->realloc(TextTmp, 0);
 
 			if (wasnewhighscoregame)
 			{
-				pd->system->formatString(&TextTmp, "New Game High Score: %lu", HighScores[Game][GameMode]);
+				pd->system->formatString(&TextTmp, "New Game High Score: %d", HighScores[Game][GameMode]);
 				CFont_WriteText("Roboto-Regular", (int)(50.0f*yscale), TextTmp, strlen(TextTmp), (int)(150.0f*xscale), (int)(330.0f*yscale), 0, kColorWhite);
 				pd->system->realloc(TextTmp, 0);
 				SDL_Point pos = {(int)(120.0f*xscale),(int)(330.0f*yscale)};
@@ -207,7 +207,7 @@ void SubScoreScreen()
 			}
 			else
 			{
-				pd->system->formatString(&TextTmp, "Game High Score: %lu", HighScores[Game][GameMode]);
+				pd->system->formatString(&TextTmp, "Game High Score: %d", HighScores[Game][GameMode]);
 				CFont_WriteText("Roboto-Regular", (int)(50.0f*yscale), TextTmp, strlen(TextTmp), (int)(150.0f*xscale), (int)(330.0f*yscale), 0, kColorWhite);
 				pd->system->realloc(TextTmp, 0);
 			}
