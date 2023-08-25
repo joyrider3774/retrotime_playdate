@@ -384,7 +384,7 @@ void CGameBase_DrawScoreBar(CGameBase* GameBase)
 	if(GameBase->UsesLevels)
 	{
 		pd->system->formatString(&TmpText,"Level: %d ",GameBase->level);
-		strncat(Text, TmpText, 1000);
+		strncat(Text, TmpText, 999);
 		pd->system->realloc(TmpText, 0);
 	}
 
@@ -393,7 +393,7 @@ void CGameBase_DrawScoreBar(CGameBase* GameBase)
 
 		pd->system->formatString(&TmpText,"Lives:%d Score:%d High Score:%d ",  GameBase->HealthPoints,
 			Scores[Game][GameMode], HighScores[Game][GameMode]);
-		strncat(Text, TmpText, 1000);
+		strncat(Text, TmpText, 999);
 		pd->system->realloc(TmpText, 0);
 	}
 	else
@@ -403,14 +403,14 @@ void CGameBase_DrawScoreBar(CGameBase* GameBase)
 			pd->system->formatString(&TmpText,"Timer: %.2f Total Score:%d  Score:%d Previous Total high score:%d Previous High Score:%d",
 				Timer, RetroCarouselScore, Scores[Game][GameMode], RetroCarouselHighScore,
 				HighScores[Game][GameMode]);
-			strncat(Text, TmpText, 1000);
+			strncat(Text, TmpText, 999);
 			pd->system->realloc(TmpText, 0);
 		}
 		else
 		{
 			pd->system->formatString(&TmpText, "Timer: %.2f Score:%d Previous High Score:%d ",
 				Timer,Scores[Game][GameMode], HighScores[Game][GameMode]);
-			strncat(Text, TmpText, 1000);
+			strncat(Text, TmpText, 999);
 			pd->system->realloc(TmpText, 0);
 		}
 			
