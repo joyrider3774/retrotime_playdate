@@ -588,6 +588,8 @@ void CGamePang_UpdateObjects(CGamePang* GamePang, bool IsGameState)
 	if (IsGameState)
 	{
 		GamePang->updateplayer(GamePang);
+		//2 times for double speed, game went from 60 fps to 30 fps
+		GamePang->updateballs(GamePang);
 		GamePang->updateballs(GamePang);
 		GamePang->updatebullet(GamePang);
 	}
