@@ -6,6 +6,228 @@
 #include "../SDL_HelperTypes.h"
 #include "../pd_helperfuncs.h"
 
+LCDPattern kColor1 = {
+	// Bitmap
+	0b10101010,
+	0b01010101,
+	0b10101010,
+	0b01010101,
+	0b10101010,
+	0b01010101,
+	0b10101010,
+	0b01010101,
+
+	// Mask
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+};
+
+LCDPattern kColor2 = {
+	// Bitmap
+	0b10011001,
+	0b01100110,
+	0b10011001,
+	0b01100110,
+	0b10011001,
+	0b01100110,
+	0b10011001,
+	0b01100110,
+
+	// Mask
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+};
+
+LCDPattern kColor3 = {
+	// Bitmap
+	0b11101110,
+	0b01110111,
+	0b10111011,
+	0b11011100,
+	0b11101110,
+	0b01110111,
+	0b10111011,
+	0b11011100,
+
+	// Mask
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+};
+
+LCDPattern kColor4 = {
+	// Bitmap
+	0b11001100,
+	0b01100110,
+	0b00110011,
+	0b10011000,
+	0b11001100,
+	0b01100110,
+	0b00110011,
+	0b10011000,
+
+	// Mask
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+};
+
+LCDPattern kColor5 = {
+	// Bitmap
+	0b10001000,
+	0b01000100,
+	0b00100010,
+	0b00010001,
+	0b10001000,
+	0b01000100,
+	0b00100010,
+	0b00010001,
+
+	// Mask
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+};
+
+LCDPattern kColor6 = {
+	// Bitmap
+	0b10001000,
+	0b00010001,
+	0b00100010,
+	0b01000100,
+	0b10001000,
+	0b00010001,
+	0b00100010,
+	0b01000100,
+
+	// Mask
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+};
+
+LCDPattern kColor7 = {
+	// Bitmap
+	0b11000011,
+	0b11101101,
+	0b10111001,
+	0b10010001,
+	0b10010001,
+	0b10111001,
+	0b11101101,
+	0b11000011,
+
+	// Mask
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+};
+
+LCDPattern kColor8 = {
+	// Bitmap
+	0b11000110,
+	0b11000110,
+	0b10110001,
+	0b10110001,
+	0b01101100,
+	0b01101100,
+	0b00011011,
+	0b00011011,
+
+	// Mask
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+};
+
+
+LCDPattern kColor9 = {
+	// Bitmap
+	0b11100111,
+	0b11011011,
+	0b11100111,
+	0b11011011,
+	0b11100111,
+	0b11011011,
+	0b11100111,
+	0b11011011,
+
+	// Mask
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+};
+
+LCDPattern kColor10 = {
+	// Bitmap
+	0b10010010,
+	0b11011011,
+	0b01101101,
+	0b11011011,
+	0b10010010,
+	0b11011011,
+	0b01101101,
+	0b11011011,
+
+	// Mask
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+	0b11111111,
+};
+
+
 CGameRamIt* Create_CGameRamIt()
 {
 	CGameRamIt* GameRamIt = (CGameRamIt*) malloc(sizeof(CGameRamIt));
@@ -240,7 +462,7 @@ void CGameRamIt_createplayfield(CGameRamIt* GameRamIt)
 {
 	int prevpiece = -1;
 	int piece = -1;
-	//SDL_Color color = {0xFF, 0xFf, 0xFF, 0xFF};
+	LCDColor color = (LCDColor) kColorWhite;
 	for (int side = 0 ; side < CGameRamIt_sides; side++)
 	{
 		for (int block = 0; block < CGameRamIt_numblocks; block++)
@@ -250,58 +472,58 @@ void CGameRamIt_createplayfield(CGameRamIt* GameRamIt)
 
 			prevpiece = piece;
 
-			// if (piece == 0)
-			// 	color = {0x65, 0x65, 0xFF, 0xFF};
+			if (piece == 0)
+			 	color = (LCDColor) kColorWhite;
 
-			// if (piece == 1)
-			// 	color = {0xFF, 0xFF, 0x65, 0xFF};
+			if (piece == 1)
+				color = (LCDColor) kColor1;
 
-			// if (piece == 2)
-			// 	color = {0x65, 0xFF, 0x65, 0xFF};
+			if (piece == 2)
+				color = (LCDColor) kColor2;
 
-			// if (piece == 3)
-			// 	color = {0x65, 0x65, 0xFF, 0xFF};
+			if (piece == 3)
+				color = (LCDColor) kColor3;
 
-			// if (piece == 4)
-			// 	color = {0xA0, 0x20, 0xF0, 0xFF};
+			if (piece == 4)
+				color = (LCDColor) kColor4;
 
-			// if (piece == 5)
-			// 	color = {0xA5, 0x2A, 0x2A, 0xFF};
+			if (piece == 5)
+				color = (LCDColor) kColor5;
 
-			// if (piece == 6)
-			// 	color = {0xFF, 0x65, 0xFF, 0xFF};
+			if (piece == 6)
+				color = (LCDColor) kColor6;
 
-			// if (piece == 7)
-			// 	color = {0xFF, 0xFF, 0xFF, 0xFF};
+			if (piece == 7)
+				color = (LCDColor) kColor7;
 
-			// if (piece == 8)
-			// 	color = {0x9B, 0x9B, 0x9B, 0xFF};
+			if (piece == 8)
+				color = (LCDColor) kColor8;
 
-			// if (piece == 9)
-			// 	color = {0xDD, 0xE4, 0xC4, 0xFF};
+			if (piece == 9)
+				color = (LCDColor) kColor9;
 
-			// if (piece == 10)
-			// 	color = {0xED, 0x70, 0x24, 0xFF};
+			if (piece == 10)
+				color = (LCDColor) kColor10;
 
-			// if (piece == 11)
-			// 	color = {0xCC, 0xCC, 0xFF, 0xFF};
+			if (piece == 11)
+				color = (LCDColor) kColorWhite;
 
-			// if (piece == 12)
-			// 	color = {0xBF, 0xDD, 0x65, 0xFF};
+			if (piece == 12)
+				color = (LCDColor) kColor1;
 
-			// if (piece == 13)
-			// 	color = {0x65, 0x80, 0x80, 0xFF};
+			if (piece == 13)
+				color = (LCDColor) kColor2;
 
-			// if (piece == 14)
-			// 	color = {0x65, 0xFF, 0xFF, 0xFF};
+			if (piece == 14)
+				color = (LCDColor) kColor3;
 
-			// if (piece == 15)
-			// 	color = {0x8A, 0x9A, 0x5B, 0xFF};
+			if (piece == 15)
+				color = (LCDColor) kColor4;
 
-			// if (piece == 16)
-			// 	color = {0xD9, 0x96, 0x7A, 0xFF};
+			if (piece == 16)
+				color = (LCDColor) kColor5;
 
-			//GameRamIt->playfield[side][block].color = color;
+			GameRamIt->playfield[side][block].color = color;
 			GameRamIt->playfield[side][block].segments = 2;
 			GameRamIt->playfield[side][block].maxsegments = 2;
 		}
@@ -390,10 +612,7 @@ void CGameRamIt_drawplayfield(CGameRamIt* GameRamIt)
 				r.w = GameRamIt->playfield[side][block].segments * GameRamIt->segmentwidth;
 				r.h = GameRamIt->riblocksize;
 			}
-			//SDL_SetRenderDrawColor(Renderer, GameRamIt->playfield[side][block].color.r, GameRamIt->playfield[side][block].color.g, GameRamIt->playfield[side][block].color.b,
-			//		GameRamIt->playfield[side][block].color.a);
-			//SDL_RenderFillRect(Renderer, &r);
-			pd->graphics->fillRect(r.x, r.y, r.w, r.h, kColorWhite);
+			pd->graphics->fillRect(r.x, r.y, r.w, r.h, GameRamIt->playfield[side][block].color);
 		}
 }
 
@@ -401,13 +620,6 @@ void CGameRamIt_drawplayfield(CGameRamIt* GameRamIt)
 
 void CGameRamIt_DrawBackground(CGameRamIt* GameRamIt)
 {
-	/*
-	SDL_SetRenderDrawColor(Renderer, 150, 150, 150, 255);
-	SDL_RenderClear(Renderer);
-	SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 255);
-	SDL_Rect r = {GameRamIt->GameBase->screenleft, GameRamIt->GameBase->screentop, GameRamIt->GameBase->playfieldwidth, GameRamIt->GameBase->playfieldheight};
-	SDL_RenderFillRect(Renderer, &r);
-	*/
 	pd->graphics->clear(kColorWhite);
 	SDL_Rect r = {GameRamIt->GameBase->screenleft, GameRamIt->GameBase->screentop, GameRamIt->GameBase->playfieldwidth, GameRamIt->GameBase->playfieldheight};
 	pd->graphics->fillRect(r.x, r.y, r.w, r.h, kColorBlack);

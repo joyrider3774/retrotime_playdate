@@ -23,7 +23,7 @@ struct ramitblock
 {
 	int maxsegments;
 	int segments;
-	//SDL_Color color;
+	LCDColor color;
 };
 typedef struct ramitblock ramitblock;
 
