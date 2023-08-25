@@ -34,7 +34,7 @@ char DataPath[500];
 
 uint32_t AlphaTimer;
 uint32_t TimerTicks;
-uint64_t Score;
+uint32_t Score;
 int NextSubStateCounter, NextSubState, NextSubStateTimeAdd;
 
 int ActiveGameGameStateId;
@@ -47,9 +47,9 @@ CGameRamIt *GameRamIt;
 CGamePang * GamePang;
 CGameFrog *GameFrog;
 LCDBitmap *TexOffScreen, *TexScreen, *TexTmp;
-long long int RetroCarouselHighScore, RetroCarouselScore;
-long long int HighScores[Games][Modes];
-long long int Scores[Games][Modes];
+uint32_t RetroCarouselHighScore, RetroCarouselScore;
+uint32_t HighScores[Games][Modes];
+uint32_t Scores[Games][Modes];
 int GameState, SubGameState, GameMode, Game;
 float SubStateCounter;
 int MusMenu;
@@ -199,9 +199,9 @@ void CGame_DrawTitleBackground()
 }
 
 
-void CGame_AddToScore(long long int Value)
+void CGame_AddToScore(uint32_t Value)
 {
-	long long int AScore = Value;
+	uint32_t AScore = Value;
 	if (AScore < 0)
 		if (GameMode == GMGame)
 			AScore = 0;
@@ -264,12 +264,12 @@ void CGame_LoadHighScores()
 	//ScoreFile = fopen(FileName, "r");
 	//if (ScoreFile)
 	//{
-	//	fscanf(ScoreFile, "RetroCarousel=%llu\n", &RetroCarouselHighScore);
+	//	fscanf(ScoreFile, "RetroCarousel=%lu\n", &RetroCarouselHighScore);
 	//	for (int i = 0; i < Games; i++)
 	//		for (int j = 0; j < Modes; j++)
 	//		{
 	//			char entry[500];
-	//			pd->system->formatString(&TmpText,(entry, "Game_%d_Mode_%d%s", i, j,"=%llu\n"); 
+	//			pd->system->formatString(&TmpText,(entry, "Game_%d_Mode_%d%s", i, j,"=%lu\n"); 
 	//			fscanf(ScoreFile, entry, &HighScores[i][j]);
 	//		}
 	//	fclose(ScoreFile);
@@ -299,10 +299,10 @@ void CGame_SaveHighScores()
 	//ScoreFile = fopen(FileName, "w");
 	//if (ScoreFile)
 	//{
-	//	fprintf(ScoreFile, "RetroCarousel=%llu\n", RetroCarouselHighScore);
+	//	fprintf(ScoreFile, "RetroCarousel=%lu\n", RetroCarouselHighScore);
 	//	for (int i = 0; i < Games; i++)
 	//		for (int j = 0; j < Modes; j++)
-	//			fprintf(ScoreFile, "Game_%d_Mode_%d=%llu\n", i,j, HighScores[i][j]);
+	//			fprintf(ScoreFile, "Game_%d_Mode_%d=%lu\n", i,j, HighScores[i][j]);
 	//	fclose(ScoreFile);
 	//}
 }

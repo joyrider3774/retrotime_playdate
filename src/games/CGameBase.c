@@ -38,6 +38,9 @@ void Destroy_CGameBase(CGameBase* GameBase)
 
 void CGameBase_PauseMenu(CGameBase* GameBase)
 {
+	CGame_StartCrossFade(GSTitleScreenInit, SGNone, 3, 500);
+
+
 	//int prevsubgamestate = SubGameState;
 	//int prevsubstatecounter = SubStateCounter;
 	//SubGameState = SGPauseMenu;
@@ -125,7 +128,7 @@ void CGameBase_PauseMenu(CGameBase* GameBase)
 	//		sprintf(Text, "%s", GSGames[Game].name);
 	//		CFont_WriteText(Renderer, "Roboto-Regular", 50*yscale, Text, strlen(Text), 75*xscale, 150*yscale, 0, color);
 
-	//		sprintf(Text, "%s %s High Score: %llu", GSGames[Game].name,  GMModes[GameMode].name, HighScores[Game][GameMode]);
+	//		sprintf(Text, "%s %s High Score: %lu", GSGames[Game].name,  GMModes[GameMode].name, HighScores[Game][GameMode]);
 	//		CFont_WriteText(Renderer, "Roboto-Regular", 38*yscale, Text, strlen(Text), 75*xscale, 210*yscale, 0, color);
 
 	//		sprintf(Text, "%s", GSGames[Game].description);
@@ -388,7 +391,7 @@ void CGameBase_DrawScoreBar(CGameBase* GameBase)
 	if (GameMode == GMGame)
 	{
 
-		pd->system->formatString(&TmpText,"Lives:%d Score:%llu High Score:%llu ",  GameBase->HealthPoints,
+		pd->system->formatString(&TmpText,"Lives:%d Score:%lu High Score:%lu ",  GameBase->HealthPoints,
 			Scores[Game][GameMode], HighScores[Game][GameMode]);
 		strncat(Text, TmpText, 1000);
 		pd->system->realloc(TmpText, 0);
@@ -397,7 +400,7 @@ void CGameBase_DrawScoreBar(CGameBase* GameBase)
 	{
 		if(GameMode == GMRetroCarousel)
 		{
-			pd->system->formatString(&TmpText,"Timer: %.2f Total Score:%llu  Score:%llu Previous Total high score:%llu Previous High Score:%llu",
+			pd->system->formatString(&TmpText,"Timer: %.2f Total Score:%lu  Score:%lu Previous Total high score:%lu Previous High Score:%lu",
 				Timer, RetroCarouselScore, Scores[Game][GameMode], RetroCarouselHighScore,
 				HighScores[Game][GameMode]);
 			strncat(Text, TmpText, 1000);
@@ -405,7 +408,7 @@ void CGameBase_DrawScoreBar(CGameBase* GameBase)
 		}
 		else
 		{
-			pd->system->formatString(&TmpText, "Timer: %.2f Score:%llu Previous High Score:%llu ",
+			pd->system->formatString(&TmpText, "Timer: %.2f Score:%lu Previous High Score:%lu ",
 				Timer,Scores[Game][GameMode], HighScores[Game][GameMode]);
 			strncat(Text, TmpText, 1000);
 			pd->system->realloc(TmpText, 0);

@@ -324,7 +324,7 @@ void CGamePang_drawbullet(CGamePang* GamePang)
 		//draw bottom part of what was previously on screen back to the screen to obscure bottom part of the chain texture
 		//this makes it seem as if the texture is created on the ground instead of at the bottom of the screen, like it is
 		//in real time.
-		SDL_Rect Rect = {0, GamePang->GameBase->screenbottom - (int)CGamePang_backgroundcopyheight, GamePang->GameBase->screenright, (int)CGamePang_backgroundcopyheight};
+		SDL_Rect Rect = {0, (int)(GamePang->GameBase->screenbottom - CGamePang_backgroundcopyheight),GamePang->GameBase->screenright, (int)CGamePang_backgroundcopyheight};
 		CImage_DrawImageTex(TexTmp, &Rect, &Rect);
 
 	}
