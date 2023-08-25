@@ -258,7 +258,7 @@ void CGameBlockStacker_updateplayfield(CGameBlockStacker* BlockStacker, bool for
 
 void CGameBlockStacker_drawplayfieldcell(CGameBlockStacker* BlockStacker, int x, int y, int piece)
 {
-	//SDL_Color color = {255,255,255,240};
+	LCDColor color = kColorWhite;
 
 	if (piece != -1)
 	{
@@ -283,11 +283,11 @@ void CGameBlockStacker_drawplayfieldcell(CGameBlockStacker* BlockStacker, int x,
 		// if (piece == 6)
 		// 	color = {0xFF, 0x65, 0xFF, 0xFF};
 
-		// if (piece == -2)
-		// 	color = {0x80, 0x80, 0x80, 0xFF};
+		if (piece == -2)
+			color = (LCDColor) kColorGrey;
 
-		// if (piece == -3)
-		// 	color = {0xFF, 0xFF, 0xFF, 0xFF};
+		if (piece == -3)
+			color = (LCDColor) kColorGrey;
 
 		SDL_Rect r = {BlockStacker->GameBase->screenleft + x * CGameBlockStacker_blocksize, BlockStacker->GameBase->screentop + y * CGameBlockStacker_blocksize, CGameBlockStacker_blocksize, CGameBlockStacker_blocksize};
 		//SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 255);
@@ -298,9 +298,7 @@ void CGameBlockStacker_drawplayfieldcell(CGameBlockStacker* BlockStacker, int x,
 		r.y = BlockStacker->GameBase->screentop +1 + y * CGameBlockStacker_blocksize;
 		r.w = CGameBlockStacker_blocksize-2;
 		r.h = CGameBlockStacker_blocksize-2;
-		//SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
-		//SDL_RenderFillRect(Renderer, &r);
-		pd->graphics->fillRect(r.x, r.y, r.w, r.h, kColorWhite);
+		pd->graphics->fillRect(r.x, r.y, r.w, r.h, color);
 	}
 }
 
