@@ -520,13 +520,6 @@ void CGameBreakOut_DrawBackground(CGameBreakOut* GameBreakOut)
 	CImage_DrawImage(GameBreakOut->background, NULL, NULL);
 }
 
-void CGameBreakOut_Draw(CGameBreakOut* GameBreakOut)
-{
-	GameBreakOut->DrawBackground(GameBreakOut);
-	CSprites_DrawSprites();
-	GameBreakOut->GameBase->DrawScoreBar(GameBreakOut->GameBase);
-	GameBreakOut->GameBase->DrawSubStateText(GameBreakOut->GameBase);
-}
 //init - deinit ----------------------------------------------------------------------------------------------------------------
 
 void CGameBreakOut_init(CGameBreakOut* GameBreakOut)
@@ -553,7 +546,6 @@ void CGameBreakOut_LoadSound(CGameBreakOut* GameBreakOut)
 void CGameBreakOut_UnLoadSound(CGameBreakOut* GameBreakOut)
 {
 	CAudio_StopMusic();
-	CAudio_StopSound();
 	CAudio_UnLoadMusic(GameBreakOut->MusMusic);
 	CAudio_UnLoadSound(GameBreakOut->SfxSucces);
 	CAudio_UnLoadSound(GameBreakOut->SfxDie);
@@ -621,7 +613,22 @@ void CGameBreakOut_UpdateObjects(CGameBreakOut* GameBreakOut, bool IsGameState)
 void CGameBreakOut_UpdateLogic(CGameBreakOut* GameBreakOut)
 {
 	GameBreakOut->GameBase->UpdateLogic(GameBreakOut->GameBase);
+	
+	if ((GameState == GSTitleScreenInit) || (SubGameState == SGPauseMenu) || (SubGameState == SGFrame) || (SubGameState == SGGameHelp))
+		return;
+
 	GameBreakOut->UpdateObjects(GameBreakOut, SubGameState == SGGame);
 	if(SubGameState == SGGame)
 		CSprites_UpdateSprites();
+}
+
+void CGameBreakOut_Draw(CGameBreakOut* GameBreakOut)
+{
+	if ((GameState == GSTitleScreenInit) || (SubGameState == SGPauseMenu) || (SubGameState == SGFrame) || (SubGameState == SGGameHelp))
+		return;
+
+	GameBreakOut->DrawBackground(GameBreakOut);
+	CSprites_DrawSprites();
+	GameBreakOut->GameBase->DrawScoreBar(GameBreakOut->GameBase);
+	GameBreakOut->GameBase->DrawSubStateText(GameBreakOut->GameBase);
 }

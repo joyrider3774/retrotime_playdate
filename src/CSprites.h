@@ -91,5 +91,6 @@ int CSprites_SpriteSlotsUsed();
 int CSprites_SpriteSlotsMax();
 int CSprites_UpdateImageResetsCount();
 int CSprites_SpritesDrawnCount();
+void CSprites_SpritesDrawnReset();
 
 #endif

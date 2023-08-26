@@ -167,7 +167,6 @@ MainMenusDesc MMMainMenus[MainMenus] =
 	{MMOptions,				"Options"},
 	{MMHelp,				"Help"},
 	{MMCredits,				"Credits"},
-	{MMQuit,				"Quit"}
 };
 
 //OptionsMenus

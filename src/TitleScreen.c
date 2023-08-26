@@ -13,7 +13,7 @@ int SelMenu = 0;
 int SelOptions = 0;
 
 const int menutextsize = (int)(60.0f*yscale);
-const int menuspacing = (int)(85.0f*yscale);
+const int menuspacing = (int)(90.0f*yscale);
 const int rcolor = 64;
 const int rdcolor = 1;
 
@@ -466,7 +466,7 @@ void TitleScreen()
 					color = kColorWhite;
 				else
 					color = (LCDColor)kColorGrey;
-				CFont_WriteText("Roboto-Regular", menutextsize, MMMainMenus[i].name, strlen(MMMainMenus[i].name), (int)(500.0f*xscale), (int)(150.0f*yscale + i * menuspacing), 0, color);
+				CFont_WriteText("Roboto-Regular", menutextsize, MMMainMenus[i].name, strlen(MMMainMenus[i].name), (int)(500.0f*xscale), (int)(180.0f*yscale + i * menuspacing), 0, color);
 			}
 			color = kColorWhite;
 
@@ -497,8 +497,6 @@ void TitleScreen()
 			{
 				CurrentMainMenu = SelMenu;
 				CAudio_PlaySound(SfxConfirm, 0);
-				if (SelMenu == MMQuit)
-					GameState = GSQuit;
 
 				if (SelMenu == MMStart)
 					CurrentMainMenu = MMSelectGameMode;

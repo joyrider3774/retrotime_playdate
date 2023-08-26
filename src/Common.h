@@ -35,7 +35,6 @@
 //GameStates
 #define initDiff 50
 
-#define GSQuit 0
 #define GSIntro 1
 #define GSGame 2
 #define GSTitleScreen 3
@@ -97,14 +96,13 @@
 #define MMStart 0
 #define MMHighScores 1
 #define MMHelp 2
-#define MMQuit 3
-#define MMOptions 4
-#define MMCredits 5
+#define MMOptions 3
+#define MMCredits 4
 //Sub Main Menus
-#define MMSelectGameMode 7
-#define MMSelectGame 8
-//6 because only fist 6 are real main menu
-#define MainMenus 6
+#define MMSelectGameMode 5
+#define MMSelectGame 6
+//6 because only fist 5 are real main menu
+#define MainMenus 5
 
 //options menu
 #define OMMusicVol 0

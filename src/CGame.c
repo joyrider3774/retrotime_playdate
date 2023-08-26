@@ -157,8 +157,6 @@ void CGame_Init()
 
 	//Clear score values
 	CGame_ResetScores();
-
-	ActiveGameGameStateId = -1;
 }
 
 void CGame_ResetHighScores()
@@ -524,7 +522,7 @@ void CGame_CreateActiveGame()
 
 int CGame_MainLoop(void* ud)
 {
-	
+	CSprites_SpritesDrawnReset();
 	CGame_UpdateTimer();
 
 	CInput_Update();

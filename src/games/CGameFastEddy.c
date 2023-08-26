@@ -1004,7 +1004,6 @@ void CGameFastEddy_LoadSound(CGameFastEddy* GameFastEddy)
 void CGameFastEddy_UnLoadSound(CGameFastEddy* GameFastEddy)
 {
 	CAudio_StopMusic();
-	CAudio_StopSound();
 	CAudio_UnLoadMusic(GameFastEddy->MusMusic);
 	CAudio_UnLoadSound(GameFastEddy->SfxDie);
 	CAudio_UnLoadSound(GameFastEddy->SfxSucces);
@@ -1083,6 +1082,10 @@ void CGameFastEddy_UpdateObjects(CGameFastEddy* GameFastEddy, bool IsGameState)
 void CGameFastEddy_UpdateLogic(CGameFastEddy* GameFastEddy)
 {
 	GameFastEddy->GameBase->UpdateLogic(GameFastEddy->GameBase);
+
+	if ((GameState == GSTitleScreenInit) || (SubGameState == SGPauseMenu) || (SubGameState == SGFrame) || (SubGameState == SGGameHelp))
+		return;
+	
 	GameFastEddy->UpdateObjects(GameFastEddy, SubGameState == SGGame);
 	if(SubGameState == SGGame)
 		CSprites_UpdateSprites();
@@ -1090,6 +1093,9 @@ void CGameFastEddy_UpdateLogic(CGameFastEddy* GameFastEddy)
 
 void CGameFastEddy_Draw(CGameFastEddy* GameFastEddy)
 {
+	if ((GameState == GSTitleScreenInit) || (SubGameState == SGPauseMenu) || (SubGameState == SGFrame) || (SubGameState == SGGameHelp))
+		return;
+
 	GameFastEddy->DrawBackground(GameFastEddy);
 	CSprites_DrawSprites();
 	GameFastEddy->GameBase->DrawScoreBar(GameFastEddy->GameBase);

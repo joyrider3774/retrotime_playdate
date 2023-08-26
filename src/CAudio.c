@@ -44,7 +44,8 @@ void CAudio_SetVolumeMusic(const int VolumeIn)
 		CAudio_VolumeMusic = VolumeIn;
 		for (int i = 0; i < MUS_Max; i++)
 			if (CAudio_Music[i])
-				pd->sound->fileplayer->setVolume(CAudio_Music[i], (float)VolumeIn / 128.0f, (float)VolumeIn / 128.0f);
+				if(pd->sound->fileplayer->isPlaying(CAudio_Music[i]))
+					pd->sound->fileplayer->setVolume(CAudio_Music[i], (float)VolumeIn / 128.0f, (float)VolumeIn / 128.0f);
 	}
 }
 
@@ -56,7 +57,8 @@ void CAudio_SetVolumeSound(const int VolumeIn)
 		CAudio_VolumeSound = VolumeIn;
 		for (int i = 0; i < SND_Max; i++)
 			if (CAudio_Sounds[i])
-				pd->sound->sampleplayer->setVolume(CAudio_Sounds[i], (float)VolumeIn / 128.0f, (float)VolumeIn / 128.0f);
+				if(pd->sound->sampleplayer->isPlaying(CAudio_Sounds[i]))
+					pd->sound->sampleplayer->setVolume(CAudio_Sounds[i], (float)VolumeIn / 128.0f, (float)VolumeIn / 128.0f);
 	}
 }
 
@@ -170,8 +172,7 @@ int CAudio_LoadMusic(char* FileName)
 				if (Tmp)
 				{
 					if (pd->sound->fileplayer->loadIntoPlayer(Tmp, FullFileName) == 1)
-					{
-						pd->sound->fileplayer->setVolume(Tmp, (float)CAudio_VolumeMusic / 128.0f, (float)CAudio_VolumeMusic / 128.0f);
+					{						
 						CAudio_Music[i] = Tmp;
 						if (CAudio_DebugInfo)
 							pd->system->logToConsole("Loaded Music %s\n", FullFileName);
@@ -215,6 +216,7 @@ void CAudio_PlayMusic(int MusicID, int loops)
 		return;
 
 	CAudio_StopMusic();
+	pd->sound->fileplayer->setVolume(CAudio_Music[MusicID], (float)CAudio_VolumeMusic / 128.0f, (float)CAudio_VolumeMusic / 128.0f);
 	pd->sound->fileplayer->play(CAudio_Music[MusicID], loops +1);
 }
 
@@ -244,7 +246,7 @@ void CAudio_PlaySound(int SoundID, int loops)
 {
 	if ((SoundID < 0) || (SoundID > SND_Max) || !CAudio_GlobalSoundEnabled)
 		return;
-
+	pd->sound->sampleplayer->setVolume(CAudio_Sounds[SoundID], (float)CAudio_VolumeSound / 128.0f, (float)CAudio_VolumeSound / 128.0f);
 	pd->sound->sampleplayer->play(CAudio_Sounds[SoundID], loops +1, 1.0f);
 }
 

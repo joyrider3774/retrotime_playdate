@@ -9,6 +9,15 @@
 #include "../pd_helperfuncs.h"
 #include "../SDL_HelperTypes.h"
 
+int CGameBase_prevsubgamestate = -1;
+float CGameBase_prevsubstatecounter = 0;
+int CGameBase_selected = 0;
+int CGameBase_selectedmenu = 0;
+int CGameBase_maxmenus = 5;
+int CGameBase_menutextsize = (int)(60.0f * yscale);
+int CGameBase_menuspacing = (int)(85.0f * yscale);
+bool CGameBase_readygoplayed = false;
+
 CGameBase* Create_CGameBase(int aGameStateID, bool aUsesLevels)
 {
 	CGameBase* result = (CGameBase*) malloc(sizeof(CGameBase));
@@ -36,342 +45,228 @@ void Destroy_CGameBase(CGameBase* GameBase)
 	free(GameBase);
 }
 
+
 void CGameBase_PauseMenu(CGameBase* GameBase)
 {
-	CGame_StartCrossFade(GSTitleScreenInit, SGNone, 3, 500);
+	if ((CGameBase_prevsubgamestate > -1) && ((SubGameState == SGFrame) || (SubGameState == SGPauseMenu) || (SubGameState == SGGameHelp)))
+	{
+		CGameBase_selectedmenu = GPGamePauseMenus[Game].menus[CGameBase_selected];
 
+		SDL_Point FramePos = { ScreenWidth / 2, ScreenHeight / 2 };
+		Vec2F FrameScale = { 16.0f / 4 * xscale, 12.8f * yscale };
+		CImage_DrawImageFuze(GFXFrameID, true, &FramePos, 0, &FrameScale, 255, 255, 255, 255);
+		// color = {255, 255, 255, 255};
+		LCDColor color = kColorWhite;
+		char* Text;
+		if (SubGameState == SGPauseMenu)
+		{
 
-	//int prevsubgamestate = SubGameState;
-	//int prevsubstatecounter = SubStateCounter;
-	//SubGameState = SGPauseMenu;
-	//CAudio_PlaySound(SfxConfirm, 0);
-	////subgamestate = sgframe;
-	////global.substatecounter = 10.6
-	//int selected = 0;
-	//int selectedmenu = 0;
-	//int maxmenus = 5;
-	//int menutextsize = 60*yscale;
-	//int menuspacing = 85*yscale;
-	//CInput_ResetButtons();
+			pd->system->formatString(&Text, "Paused");
+			CFont_WriteText("Roboto-Regular", (int)(80.0f * yscale), Text, strlen(Text), (int)(510.0f * xscale), (int)(50.0f * yscale), 0, color);
+			pd->system->realloc(Text, 0);
+			int menu;
 
-	//uint TotalFrames = 0;
-	//uint TotalFramePerf = 0;
-	//uint32_t Fps = 0;
-	//double AvgFrameTime = 0.0f;
-	//uint32_t Ticks = pd->system->getCurrentTimeMilliseconds();
+			for (int i = 0; i < CGameBase_maxmenus; i++)
+			{
+				menu = GPGamePauseMenus[Game].menus[i];
+				if (menu == CGameBase_selectedmenu)
+					color = kColorWhite;
+				else
+					color = (LCDColor) kColorGrey;
 
-	//while ((SubGameState == SGFrame) || (SubGameState == SGPauseMenu) || (SubGameState == SGGameHelp))
-	//{
-	//	TotalFrames++;
-	//	uint FrameStartPerf = SDL_GetPerformanceCounter();
-	//	selectedmenu = GPGamePauseMenus[Game].menus[selected];
+				switch (menu)
+				{
+					case PMSoundVol:
+						pd->system->formatString(&Text, "%s %d %%", PMPauseMenus[menu].name, (int)(CAudio_GetVolumeSound() * 100.0f / 128.0f));
+						CFont_WriteText("Roboto-Regular", CGameBase_menutextsize, Text, strlen(Text), (int)(300.0f * xscale), (int)(185.0f * yscale + i * CGameBase_menuspacing), 0, color);
+						pd->system->realloc(Text, 0);
+						break;
+					case PMMusicVol:
+						pd->system->formatString(&Text, "%s %d %%", PMPauseMenus[menu].name, (int)(CAudio_GetVolumeMusic() * 100.0f / 128.0f));
+						CFont_WriteText("Roboto-Regular", CGameBase_menutextsize, Text, strlen(Text), (int)(300.0f * xscale),(int)(185.0f * yscale + i * CGameBase_menuspacing), 0, color);
+						pd->system->realloc(Text, 0);
+						break;
+					default:
+						CFont_WriteText("Roboto-Regular", CGameBase_menutextsize, PMPauseMenus[menu].name, strlen(PMPauseMenus[menu].name),(int)(300.0f * xscale),
+							(int)(185.0f * yscale + i * CGameBase_menuspacing), 0, color);
+						break;
+				}
+			}
 
-	//	//draw everything to offscreen surface
+			color = kColorWhite;
+			pd->system->formatString(&Text, "Use dpad to switch between options. (A) to select and (B) for back");
+			CFont_WriteText("Roboto-Regular", (int)(34.0f * yscale), Text, strlen(Text), (int)(90.0f * xscale), (int)(630.0f * yscale), 0, color);
+			pd->system->realloc(Text, 0);
+		}
 
-	//	SDL_SetRenderTarget(Renderer, TexOffScreen);
+		if (SubGameState == SGGameHelp)
+		{
+			pd->system->formatString(&Text, "Game Help");
+			CFont_WriteText("Roboto-Regular", (int)(80.0f * yscale), Text, strlen(Text), (int)(485.0f * xscale), (int)(50.0f * yscale), 0, color);
+			pd->system->realloc(Text, 0);
 
-	//	// this seems to cause a blackscreen somehow when certain games
-	//	// are paused not sure as to why but i disabled it for now
-	//	// SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 128);
-	//	// SDL_RenderFillRect(Renderer, NULL);
+			pd->system->formatString(&Text, "%s", GSGames[Game].name);
+			CFont_WriteText("Roboto-Regular", (int)(50.0f * yscale), Text, strlen(Text),(int)(75.0f * xscale), (int)(150.0f * yscale), 0, color);
+			pd->system->realloc(Text, 0);
 
-	//	 //draw everything to offscreen surface
-	//	SDL_SetRenderDrawColor(Renderer, 255,255, 255, 255);
-	//	//so we can can copy the transparant part with the blue and text from this image
-	//	SDL_Point FramePos = {ScreenWidth / 2, ScreenHeight / 2};
-	//	Vec2F FrameScale = {16.0f / 4 * xscale, 12.8f *yscale};
-	//	CImage_DrawImageFuze(Renderer, GFXFrameID, true, &FramePos, 0, &FrameScale, 255, 255, 255, 255);
-	//	char Text[2000];
-	//	SDL_Color color = {255,255,255,255};
-	//	if (SubGameState == SGPauseMenu)
-	//	{
-	//		
-	//		sprintf(Text, "Paused");
-	//		CFont_WriteText(Renderer, "Roboto-Regular", 80*yscale, Text, strlen(Text), 510*xscale, 50*yscale, 0, color);
-	//		int menu;
-	//		
-	//		for(int i = 0; i < maxmenus; i++)
-	//		{
-	//			menu = GPGamePauseMenus[Game].menus[i];
-	//			if (menu == selectedmenu)
-	//				color.a =  255;
-	//			else
-	//				color.a = 64;
+			pd->system->formatString(&Text, "%s %s High Score: %d", GSGames[Game].name, GMModes[GameMode].name, HighScores[Game][GameMode]);
+			CFont_WriteText("Roboto-Regular", (int)(38.0f * yscale), Text, strlen(Text), (int)(75.0f * xscale), (int)(210.0f * yscale), 0, color);
+			pd->system->realloc(Text, 0);
 
-	//			switch(menu)
-	//			{
-	//				case PMSoundVol:
-	//					sprintf(Text, "%s %d %%", PMPauseMenus[menu].name, (int)(CAudio_GetVolumeSound()*100/128));
-	//					CFont_WriteText(Renderer, "Roboto-Regular", menutextsize, Text, strlen(Text), 300*xscale, 185*yscale + i * menuspacing, 0, color);
-	//					break;
-	//				case PMMusicVol:
-	//					sprintf(Text, "%s %d %%", PMPauseMenus[menu].name, (int)(CAudio_GetVolumeMusic()*100/128));
-	//					CFont_WriteText(Renderer, "Roboto-Regular", menutextsize, Text, strlen(Text), 300*xscale, 185*yscale + i * menuspacing, 0, color);
-	//					break;
-	//				default:
-	//					CFont_WriteText(Renderer, "Roboto-Regular", menutextsize, PMPauseMenus[menu].name, strlen(PMPauseMenus[menu].name), 300*xscale,
-	//						185*yscale + i * menuspacing, 0, color);
-	//					break;
-	//			}
-	//		}
-	//		
-	//		color.a = 255;
-	//		sprintf(Text, "Use dpad to switch between options. (A) to select and (B) for back");
-	//		CFont_WriteText(Renderer, "Roboto-Regular", 34*yscale, Text, strlen(Text), 90*xscale, 630*yscale, 0, color);
-	//	}
+			pd->system->formatString(&Text, "%s", GSGames[Game].description);
+			CFont_WriteText("Roboto-Regular", (int)(38.0f * yscale), Text, strlen(Text), (int)(75.0f * xscale), (int)(255.0f * yscale), 0, color);
+			pd->system->realloc(Text, 0);
 
-	//	if (SubGameState == SGGameHelp)
-	//	{
-	//		sprintf(Text, "Game Help");
-	//		CFont_WriteText(Renderer, "Roboto-Regular", 80*yscale, Text, strlen(Text), 485*xscale, 50*yscale, 0, color);
+			pd->system->formatString(&Text, "Press (A) or (B) for back");
+			CFont_WriteText("Roboto-Regular", (int)(34.0f * yscale), Text, strlen(Text), (int)(485.0f * xscale),(int)(630.0f * yscale), 0, color);
+			pd->system->realloc(Text, 0);
+		}
 
-	//		sprintf(Text, "%s", GSGames[Game].name);
-	//		CFont_WriteText(Renderer, "Roboto-Regular", 50*yscale, Text, strlen(Text), 75*xscale, 150*yscale, 0, color);
+		if (SubGameState == SGGameHelp)
+		{
+			if ((CInput_Buttons.ButB && !CInput_PrevButtons.ButB) ||
+				(CInput_Buttons.ButA && !CInput_PrevButtons.ButA) ||
+				(!CInput_PrevButtons.ButBack && CInput_Buttons.ButBack) ||
+				(!CInput_PrevButtons.ButStart && CInput_Buttons.ButStart))
+			{
+				CAudio_PlaySound(SfxBack, 0);
+				SubGameState = SGPauseMenu;
+				CInput_ResetButtons();
+			}
+		}
 
-	//		sprintf(Text, "%s %s High Score: %d", GSGames[Game].name,  GMModes[GameMode].name, HighScores[Game][GameMode]);
-	//		CFont_WriteText(Renderer, "Roboto-Regular", 38*yscale, Text, strlen(Text), 75*xscale, 210*yscale, 0, color);
+		if (SubGameState == SGPauseMenu)
+		{
+			if ((!CInput_PrevButtons.ButLeft && CInput_Buttons.ButLeft) ||
+				(!CInput_PrevButtons.ButLeft2 && CInput_Buttons.ButLeft2) ||
+				(!CInput_PrevButtons.ButDpadLeft && CInput_Buttons.ButDpadLeft))
+			{
+				CAudio_PlaySound(SfxSelect, 0);
 
-	//		sprintf(Text, "%s", GSGames[Game].description);
-	//		CFont_WriteText(Renderer, "Roboto-Regular", 38*yscale, Text, strlen(Text), 75*xscale, 255*yscale, 0, color);
+				switch (CGameBase_selectedmenu)
+				{
+					case PMSoundVol:
+					{
+						CAudio_DecVolumeSound();
+						break;
+					}
 
-	//		sprintf(Text, "Press (A) or (B) for back");
-	//		CFont_WriteText(Renderer, "Roboto-Regular", 34*yscale, Text, strlen(Text), 485*xscale, 630*yscale, 0, color);
-	//	}
+					case PMMusicVol:
+					{
+						bool wasplaying = CAudio_IsMusicPlaying();
+						CAudio_DecVolumeMusic();
+						if (!wasplaying)
+							CAudio_PlayMusic(CurrentGameMusicID, -1);
+						break;
+					}
 
-	//	CInput_Update();
+				}
+			}
 
-	//	if (CInput_Buttons.ButQuit)
-	//	{
-	//		GameState = GSQuit;
-	//		SubGameState = GSGame;
-	//	}
+			if ((!CInput_PrevButtons.ButRight && CInput_Buttons.ButRight) ||
+				(!CInput_PrevButtons.ButRight2 && CInput_Buttons.ButRight2) ||
+				(!CInput_PrevButtons.ButDpadRight && CInput_Buttons.ButDpadRight))
+			{
+				CAudio_PlaySound(SfxSelect, 0);
+				switch (CGameBase_selectedmenu)
+				{
+					case PMSoundVol:
+					{
+						CAudio_IncVolumeSound();
+						break;
+					}
 
-	//	if (SubGameState == SGGameHelp)
-	//	{
-	//		if ((CInput_Buttons.ButB && !CInput_PrevButtons.ButB) ||
-	//			(CInput_Buttons.ButA && !CInput_PrevButtons.ButA) ||
-	//			(!CInput_PrevButtons.ButBack && CInput_Buttons.ButBack) ||
-	//			(!CInput_PrevButtons.ButStart && CInput_Buttons.ButStart))
-	//		{
-	//			CAudio_PlaySound(SfxBack, 0);
-	//			SubGameState = SGPauseMenu;
-	//			CInput_ResetButtons();
-	//		}
-	//	}
+					case PMMusicVol:
+					{
+						bool wasplaying = CAudio_IsMusicPlaying();
+						CAudio_IncVolumeMusic();
+						if (!wasplaying)
+							CAudio_PlayMusic(CurrentGameMusicID, -1);
+						break;
+					}
+				}
+			}
 
-	//	if (SubGameState == SGPauseMenu)
-	//	{
-	//		if ((!CInput_PrevButtons.ButLeft && CInput_Buttons.ButLeft) ||
-	//			(!CInput_PrevButtons.ButLeft2 && CInput_Buttons.ButLeft2) ||
-	//			(!CInput_PrevButtons.ButDpadLeft && CInput_Buttons.ButDpadLeft))
-	//		{
-	//			CAudio_PlaySound(SfxSelect, 0);
+			if ((!CInput_PrevButtons.ButDown && CInput_Buttons.ButDown) ||
+				(!CInput_PrevButtons.ButDown2 && CInput_Buttons.ButDown2) ||
+				(!CInput_PrevButtons.ButDpadDown && CInput_Buttons.ButDpadDown))
+			{
+				CAudio_PlaySound(SfxSelect, 0);
 
-	//			switch(selectedmenu)
-	//			{
-	//				case PMSoundVol:
-	//				{
-	//					CAudio_DecVolumeSound();
-	//					break;
-	//				}
+				CGameBase_selected += 1;
+				if (CGameBase_selected == CGameBase_maxmenus)
+					CGameBase_selected = 0;
+			}
 
-	//				case PMMusicVol:
-	//				{
-	//					bool wasplaying = CAudio_IsMusicPlaying();
-	//					CAudio_DecVolumeMusic();
-	//					if (!wasplaying)
-	//						CAudio_PlayMusic(CurrentGameMusicID, -1);
-	//					break;
-	//				}
+			if ((!CInput_PrevButtons.ButUp && CInput_Buttons.ButUp) ||
+				(!CInput_PrevButtons.ButUp2 && CInput_Buttons.ButUp2) ||
+				(!CInput_PrevButtons.ButDpadUp && CInput_Buttons.ButDpadUp))
+			{
+				CAudio_PlaySound(SfxSelect, 0);
 
-	//			}
-	//		}
+				CGameBase_selected -= 1;
+				if (CGameBase_selected == -1)
+					CGameBase_selected = CGameBase_maxmenus - 1;
+			}
 
-	//		if ((!CInput_PrevButtons.ButRight && CInput_Buttons.ButRight) ||
-	//			(!CInput_PrevButtons.ButRight2 && CInput_Buttons.ButRight2) ||
-	//			(!CInput_PrevButtons.ButDpadRight && CInput_Buttons.ButDpadRight))
-	//		{
-	//			CAudio_PlaySound(SfxSelect, 0);
-	//			switch(selectedmenu)
-	//			{
-	//				case PMSoundVol:
-	//				{
-	//					CAudio_IncVolumeSound();
-	//					break;
-	//				}
+			if (!CInput_PrevButtons.ButBack && CInput_Buttons.ButBack)
+			{
+				CAudio_PlaySound(SfxConfirm, 0);
+				CInput_ResetButtons();
+				SubGameState = CGameBase_prevsubgamestate;
+				SubStateCounter = CGameBase_prevsubstatecounter;
+				CGameBase_prevsubgamestate = -1;
+			}
 
-	//				case PMMusicVol:
-	//				{
-	//					bool wasplaying = CAudio_IsMusicPlaying();
-	//					CAudio_IncVolumeMusic();
-	//					if (!wasplaying)
-	//						CAudio_PlayMusic(CurrentGameMusicID, -1);
-	//					break;
-	//				}
-	//			}
-	//		}
+			if ((!CInput_PrevButtons.ButA && CInput_Buttons.ButA) ||
+				(!CInput_PrevButtons.ButStart && CInput_Buttons.ButStart))
+			{
+				CAudio_PlaySound(SfxConfirm, 0);
 
-	//		if ((!CInput_PrevButtons.ButDown && CInput_Buttons.ButDown) ||
-	//			(!CInput_PrevButtons.ButDown2 && CInput_Buttons.ButDown2) ||
-	//			(!CInput_PrevButtons.ButDpadDown && CInput_Buttons.ButDpadDown))
-	//		{
-	//			CAudio_PlaySound(SfxSelect, 0);
+				switch (CGameBase_selectedmenu)
+				{
+				case PMContinue:
+				{
+					SubGameState = CGameBase_prevsubgamestate;
+					SubStateCounter = CGameBase_prevsubstatecounter;
+					CGameBase_prevsubgamestate = -1;
+					CInput_ResetButtons();
+					break;
+				}
 
-	//			selected += 1;
-	//			if (selected == maxmenus)
-	//				selected = 0;
-	//		}
+				case PMQuit:
+				{
+					CGameBase_prevsubgamestate = -1;
+					CGame_StartCrossFade(GSTitleScreenInit, SGNone, 3, 500);
+					break;
+				}
 
-	//		if ((!CInput_PrevButtons.ButUp && CInput_Buttons.ButUp) ||
-	//			(!CInput_PrevButtons.ButUp2 && CInput_Buttons.ButUp2) ||
-	//			(!CInput_PrevButtons.ButDpadUp && CInput_Buttons.ButDpadUp))
-	//		{
-	//			CAudio_PlaySound(SfxSelect, 0);
+				case PMSoundVol:
+				{
+					CAudio_IncVolumeSound();
+					break;
+				}
 
-	//			selected -= 1;
-	//			if (selected == -1)
-	//				selected = maxmenus - 1;
-	//		}
+				case PMMusicVol:
+				{
+					bool wasplaying = CAudio_IsMusicPlaying();
+					CAudio_IncVolumeMusic();
+					if (!wasplaying)
+						CAudio_PlayMusic(CurrentGameMusicID, -1);
+					break;
+				}
 
-	//		if (!CInput_PrevButtons.ButBack && CInput_Buttons.ButBack)
-	//		{
-	//			CAudio_PlaySound(SfxConfirm, 0);
+				case PMGameHelp:
+				{
+					SubGameState = SGGameHelp;
+					CInput_ResetButtons();
+					break;
+				}
+				}
 
-	//			SubGameState = prevsubgamestate;
-	//			SubStateCounter = prevsubstatecounter;
-	//		}
-
-	//		if ((!CInput_PrevButtons.ButA && CInput_Buttons.ButA) ||
-	//			(!CInput_PrevButtons.ButStart && CInput_Buttons.ButStart))
-	//		{
-	//			CAudio_PlaySound(SfxConfirm, 0);
-
-	//			switch(selectedmenu)
-	//			{
-	//				case PMContinue:
-	//				{
-	//					//to fix tetris block rotating or dropping
-	//					//when choosing continue with a or a with b pressed
-	//					while (CInput_Buttons.ButA || CInput_Buttons.ButB)
-	//						CInput_Update();
-
-	//					SubGameState = prevsubgamestate;
-	//					SubStateCounter = prevsubstatecounter;
-	//					break;
-	//				}
-
-	//				case PMQuit:
-	//				{
-	//					CGame_StartCrossFade(GSTitleScreenInit, SGNone, 3, 500);
-	//					break;
-	//				}
-
-	//				case PMSoundVol:
-	//				{
-	//					CAudio_IncVolumeSound();
-	//					break;
-	//				}
-
-	//				case PMMusicVol:
-	//				{
-	//					bool wasplaying = CAudio_IsMusicPlaying();
-	//					CAudio_IncVolumeMusic();
-	//					if(!wasplaying)
-	//						CAudio_PlayMusic(CurrentGameMusicID, -1);
-	//					break;
-	//				}
-
-	//				case PMGameHelp:
-	//				{
-	//					SubGameState = SGGameHelp;
-	//					CInput_ResetButtons();
-	//					break;
-	//				}
-	//			}
-	//		}
-	//	}
-
-	//	SDL_SetRenderTarget(Renderer, TexScreen);
-	//	SDL_RenderCopy(Renderer, TexOffScreen, NULL, NULL);
-
-
-	//	SDL_SetRenderTarget(Renderer, NULL);
-	//	SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 255);
-	//	SDL_RenderClear(Renderer);
-
-	//	int w, h, w2, h2, x, y;
-	//	SDL_GetWindowSize(SdlWindow, &w , &h);
-	//	float ScaleX = (float)w / (float)ScreenWidth;
-	//	float ScaleY = (float)h / (float)ScreenHeight;
-	//	h2 = ScreenHeight * ScaleY;
-	//	w2 = ScreenWidth * ScaleY;
-	//	if (w2 > w)
-	//	{
-	//		h2 = ScreenHeight * ScaleX;
-	//		w2 = ScreenWidth * ScaleX;
-	//	}
-	//	x = ((w - w2) / 2);
-	//	y = ((h - h2) / 2);
-
-	//	SDL_Rect Rect = { x, y, w2, h2};
-	//	SDL_RenderCopy(Renderer, TexScreen, NULL, &Rect);
-
-	//	if (debugInfo || ShowFPS)
-	//	{
-	//		char Text[500];
-	//		char TmpText[100];
-	//		Text[0] = '\0';
-	//		sprintf(TmpText, "FPS: %d\n", Fps);
-	//		strcat(Text, TmpText);
-	//		if(debugInfo)
-	//		{
-	//			sprintf(TmpText,"FrameTime: %f.5\n",AvgFrameTime);
-	//			strncat(Text, TmpText, 100);
-	//			sprintf(TmpText,"GFX Slots: %d/%d\n",CImage_ImageSlotsUsed(), CImage_ImageSlotsMax());
-	//			strncat(Text, TmpText, 100);
-	//			sprintf(TmpText,"SND Slots: %d/%d\n",CAudio_SoundSlotsUsed(),CAudio_SoundSlotsMax());
-	//			strncat(Text, TmpText, 100);
-	//			sprintf(TmpText,"MUS Slots: %d/%d\n",CAudio_MusicSlotsUsed(), CAudio_MusicSlotsMax());
-	//			strncat(Text, TmpText, 100);
-	//			sprintf(TmpText,"SPR Slots: %d/%d\n",CSprites_SpriteSlotsUsed(),CSprites_SpriteSlotsMax());
-	//			strncat(Text, TmpText, 100);
-	//			sprintf(TmpText,"SPR Resets: %d\n",CSprites_UpdateImageResetsCount());
-	//			strncat(Text, TmpText, 100);
-	//			sprintf(TmpText,"SPR Draws: %d\n", CSprites_SpritesDrawnCount());
-	//			strncat(Text, TmpText, 100);
-	//			sprintf(TmpText,"SCL Loaded: %d/%d\n", CImage_ScaledImagesLoadedCount(),CImage_ScaledImagesLoadedMax());
-	//			strncat(Text, TmpText, 100);				
-	//		}
-	//		int tw = CFont_TextWidth("RobotoMono-Bold", 16, Text, strlen(Text));
-	//		color.a = 255;
-	//		color.r = 255;
-	//		color.g = 0;
-	//		color.b = 255;
-	//		CFont_WriteText(Renderer, "RobotoMono-Bold", 16, Text, strlen(Text), w - tw, 0, 0, color);
-	//	}
-	//	SDL_RenderPresent(Renderer);
-
-	//	uint FrameEndPerf = SDL_GetPerformanceCounter();
-	//	uint FramePerf = FrameEndPerf - FrameStartPerf;
-	//	double FrameTime = FramePerf / (double)SDL_GetPerformanceFrequency() * 1000.0;
-	//	TotalFramePerf += FramePerf;
-
-	//	if(pd->system->getCurrentTimeMilliseconds() - Ticks >= 1000)
-	//	{
-	//		AvgFrameTime = (TotalFramePerf / TotalFrames) / (double)SDL_GetPerformanceFrequency() * 1000.0;
-	//		Fps = TotalFrames;
-	//		TotalFrames = 0;
-	//		TotalFramePerf = 0;
-	//		Ticks = pd->system->getCurrentTimeMilliseconds();
-	//	}
-	//	if(DesiredFps > 0)
-	//	{
-	//		int RequiredDelay = 1000.0/DesiredFps - FrameTime;
-	//		if (RequiredDelay > 0)
-	//			SDL_Delay(RequiredDelay);
-	//	}
-	//}
-	//CInput_ResetButtons();
+			}
+		}
+	}
 }
 
 void CGameBase_DrawScoreBar(CGameBase* GameBase)
@@ -430,9 +325,25 @@ void CGameBase_DrawSubstateText(CGameBase* GameBase)
 bool CGameBase_UpdateLogic(CGameBase* GameBase)
 {
 	bool result = false;
-	if ((CInput_Buttons.ButStart && !CInput_PrevButtons.ButStart) ||
-		(CInput_Buttons.ButBack && !CInput_PrevButtons.ButBack))
-	 	GameBase->PauseMenu(GameBase);
+	//check for pause menu only when in game substate
+	if ((CGameBase_prevsubgamestate == -1) && (SubGameState == SGGame) && CInput_Buttons.ButBack && !CInput_PrevButtons.ButBack)
+	{
+		CAudio_PlaySound(SfxConfirm, 0);
+		//subgamestate = sgframe;
+		//global.substatecounter = 10.6
+		CGameBase_selected = 0;
+		CGameBase_selectedmenu = 0;
+		CInput_ResetButtons();
+		CGameBase_prevsubgamestate = SubGameState;
+		CGameBase_prevsubstatecounter = SubStateCounter;
+		SubGameState = SGPauseMenu;
+	}
+
+	GameBase->PauseMenu(GameBase);
+	
+	//we are in the pause menu
+	if (CGameBase_prevsubgamestate > -1)
+		return result;
 
 	if (GameMode == GMGame)
 	{
@@ -463,11 +374,16 @@ bool CGameBase_UpdateLogic(CGameBase* GameBase)
 					pd->system->realloc(Tmp, 0);
 					if(SubStateCounter == 2)
 					{
-						CAudio_PlaySound(SfxReadyGo, 0);
+						if (!CGameBase_readygoplayed)
+						{
+							CAudio_PlaySound(SfxReadyGo, 0);
+							CGameBase_readygoplayed = true;
+						}
 					}
 
 					if (SubStateCounter == 0)
 					{
+						CGameBase_readygoplayed = false;
 						if (SubGameState == SGReadyGo)
 						{
 							strcpy(GameBase->SubStateText, "GO");

@@ -539,7 +539,6 @@ void CGamePang_LoadSound(CGamePang* GamePang)
 void CGamePang_UnLoadSound(CGamePang* GamePang)
 {
 	CAudio_StopMusic();
-	CAudio_StopSound();
 	CAudio_UnLoadMusic(GamePang->MusMusic);
 	CAudio_UnLoadSound(GamePang->SfxDie);
 	CAudio_UnLoadSound(GamePang->SfxSucces);
@@ -598,6 +597,10 @@ void CGamePang_UpdateObjects(CGamePang* GamePang, bool IsGameState)
 void CGamePang_UpdateLogic(CGamePang* GamePang)
 {
 	GamePang->GameBase->UpdateLogic(GamePang->GameBase);
+
+	if ((GameState == GSTitleScreenInit) || (SubGameState == SGPauseMenu) || (SubGameState == SGFrame) || (SubGameState == SGGameHelp))
+		return;
+
 	GamePang->UpdateObjects(GamePang, SubGameState == SGGame);
 	if(SubGameState == SGGame)
 		CSprites_UpdateSprites();
@@ -614,6 +617,9 @@ bool CGamePang_DrawObjects(CGamePang* GamePang)
 
 void CGamePang_Draw(CGamePang* GamePang)
 {
+	if ((GameState == GSTitleScreenInit) || (SubGameState == SGPauseMenu) || (SubGameState == SGFrame) || (SubGameState == SGGameHelp))
+		return;
+
 	GamePang->DrawBackground(GamePang);
 	if (GamePang->DrawObjects(GamePang))
 		CSprites_DrawSprites();

@@ -958,7 +958,6 @@ void CGameFrog_LoadSound(CGameFrog* GameFrog)
 void CGameFrog_UnLoadSound(CGameFrog* GameFrog)
 {
 	CAudio_StopMusic();
-	CAudio_StopSound();
 	CAudio_UnLoadMusic(GameFrog->MusMusic);
 	CAudio_UnLoadSound(GameFrog->SfxDie);
 	CAudio_UnLoadSound(GameFrog->SfxCollect);
@@ -1041,6 +1040,10 @@ void CGameFrog_UpdateLogic(CGameFrog* GameFrog)
 {
 	if (GameFrog->GameBase->UpdateLogic(GameFrog->GameBase))
 		GameFrog->OnGameStart(GameFrog);
+
+	if ((GameState == GSTitleScreenInit) || (SubGameState == SGPauseMenu) || (SubGameState == SGFrame) || (SubGameState == SGGameHelp))
+		return;
+
 	if (SubGameState == SGGame)
 	{
 		GameFrog->updateplayer(GameFrog);
@@ -1083,6 +1086,9 @@ void CGameFrog_UpdateLogic(CGameFrog* GameFrog)
 
 void CGameFrog_Draw(CGameFrog* GameFrog)
 {
+	if ((GameState == GSTitleScreenInit) || (SubGameState == SGPauseMenu) || (SubGameState == SGFrame) || (SubGameState == SGGameHelp))
+		return;
+
 	CSprites_DrawSprites();
 	GameFrog->DrawBackground(GameFrog);
 	GameFrog->GameBase->DrawScoreBar(GameFrog->GameBase);

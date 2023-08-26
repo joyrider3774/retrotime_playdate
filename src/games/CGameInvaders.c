@@ -750,7 +750,6 @@ void CGameInvaders_LoadSound(CGameInvaders* GameInvaders)
 void CGameInvaders_UnLoadSound(CGameInvaders* GameInvaders)
 {
 	CAudio_StopMusic();
-	CAudio_StopSound();
 	CAudio_UnLoadMusic(GameInvaders->MusMusic);
 	CAudio_UnLoadSound(GameInvaders->SfxDie);
 	CAudio_UnLoadSound(GameInvaders->SfxPlayerShoot);
@@ -824,6 +823,10 @@ void CGameInvaders_UpdateObjects(CGameInvaders* GameInvaders, bool IsGameState)
 void CGameInvaders_UpdateLogic(CGameInvaders* GameInvaders)
 {
 	GameInvaders->GameBase->UpdateLogic(GameInvaders->GameBase);
+
+	if ((GameState == GSTitleScreenInit) || (SubGameState == SGPauseMenu) || (SubGameState == SGFrame) || (SubGameState == SGGameHelp))
+		return;
+
 	GameInvaders->UpdateObjects(GameInvaders,SubGameState == SGGame);
 	if(SubGameState == SGGame)
 		CSprites_UpdateSprites();
@@ -839,6 +842,9 @@ bool CGameInvaders_DrawObjects(CGameInvaders* GameInvaders)
 
 void CGameInvaders_Draw(CGameInvaders* GameInvaders)
 {
+	if ((GameState == GSTitleScreenInit) || (SubGameState == SGPauseMenu) || (SubGameState == SGFrame) || (SubGameState == SGGameHelp))
+		return;
+
 	GameInvaders->DrawBackground(GameInvaders);
 	if (GameInvaders->DrawObjects(GameInvaders))
 		CSprites_DrawSprites();

@@ -328,15 +328,6 @@ void CGameBlockStacker_DrawBackground(CGameBlockStacker* BlockStacker)
 	CImage_DrawImage(BlockStacker->background, NULL, NULL);
 }
 
-void CGameBlockStacker_Draw(CGameBlockStacker* BlockStacker)
-{
-	BlockStacker->DrawBackground(BlockStacker);
-	if (BlockStacker->DrawObjects(BlockStacker))
-		CSprites_DrawSprites();
-	BlockStacker->GameBase->DrawScoreBar(BlockStacker->GameBase);
-	BlockStacker->GameBase->DrawSubStateText(BlockStacker->GameBase);
-}
-
 //init - deinit ----------------------------------------------------------------------------------------------------------------
 
 void CGameBlockStacker_init(CGameBlockStacker* BlockStacker)
@@ -383,7 +374,6 @@ void CGameBlockStacker_LoadSound(CGameBlockStacker* BlockStacker)
 void CGameBlockStacker_UnLoadSound(CGameBlockStacker* BlockStacker)
 {
 	CAudio_StopMusic();
-	CAudio_StopSound();
 	CAudio_UnLoadMusic(BlockStacker->MusMusic);
 	CAudio_UnLoadSound(BlockStacker->SfxLineClear);
 	CAudio_UnLoadSound(BlockStacker->SfxDrop);
@@ -405,6 +395,10 @@ void CGameBlockStacker_deinit(CGameBlockStacker* BlockStacker)
 void CGameBlockStacker_UpdateLogic(CGameBlockStacker* BlockStacker)
 {
 	BlockStacker->GameBase->UpdateLogic(BlockStacker->GameBase);
+	
+	if ((GameState == GSTitleScreenInit) || (SubGameState == SGPauseMenu) || (SubGameState == SGFrame) || (SubGameState == SGGameHelp))
+		return;
+
 	BlockStacker->UpdateObjects(BlockStacker, SubGameState == SGGame);
 	if(SubGameState == SGGame)
 		CSprites_UpdateSprites();
@@ -423,4 +417,14 @@ bool CGameBlockStacker_DrawObjects(CGameBlockStacker* BlockStacker)
 	return false;
 }
 
+void CGameBlockStacker_Draw(CGameBlockStacker* BlockStacker)
+{
+	if ((GameState == GSTitleScreenInit) || (SubGameState == SGPauseMenu) || (SubGameState == SGFrame) || (SubGameState == SGGameHelp))
+		return;
 
+	BlockStacker->DrawBackground(BlockStacker);
+	if (BlockStacker->DrawObjects(BlockStacker))
+		CSprites_DrawSprites();
+	BlockStacker->GameBase->DrawScoreBar(BlockStacker->GameBase);
+	BlockStacker->GameBase->DrawSubStateText(BlockStacker->GameBase);
+}

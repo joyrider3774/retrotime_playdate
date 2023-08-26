@@ -662,7 +662,6 @@ void CGameRamIt_LoadSound(CGameRamIt* GameRamIt)
 void CGameRamIt_UnLoadSound(CGameRamIt* GameRamIt)
 {
 	CAudio_StopMusic();
-	CAudio_StopSound();
 	CAudio_UnLoadMusic(GameRamIt->MusMusic);
 	CAudio_UnLoadSound(GameRamIt->SfxShoot);
 	CAudio_UnLoadSound(GameRamIt->SfxHit);
@@ -699,6 +698,10 @@ void CGameRamIt_UpdateObjects(CGameRamIt* GameRamIt, bool IsGameState)
 void CGameRamIt_UpdateLogic(CGameRamIt* GameRamIt)
 {
 	GameRamIt->GameBase->UpdateLogic(GameRamIt->GameBase);
+
+	if ((GameState == GSTitleScreenInit) || (SubGameState == SGPauseMenu) || (SubGameState == SGFrame) || (SubGameState == SGGameHelp))
+		return;
+
 	GameRamIt->UpdateObjects(GameRamIt, SubGameState == SGGame);
 	if(SubGameState == SGGame)
 		CSprites_UpdateSprites();
@@ -716,6 +719,9 @@ bool CGameRamIt_DrawObjects(CGameRamIt* GameRamIt)
 
 void CGameRamIt_Draw(CGameRamIt* GameRamIt)
 {
+	if ((GameState == GSTitleScreenInit) || (SubGameState == SGPauseMenu) || (SubGameState == SGFrame) || (SubGameState == SGGameHelp))
+		return;
+
 	GameRamIt->DrawBackground(GameRamIt);
 	if (GameRamIt->DrawObjects(GameRamIt))
 		CSprites_DrawSprites();

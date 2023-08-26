@@ -247,7 +247,6 @@ void CGameSnake_LoadSound(CGameSnake* GameSnake)
 void CGameSnake_UnLoadSound(CGameSnake* GameSnake)
 {
 	CAudio_StopMusic();
-	CAudio_StopSound();
 	CAudio_UnLoadMusic(GameSnake->MusMusic);
 	CAudio_UnLoadSound(GameSnake->SfxFood);
 	CAudio_UnLoadSound(GameSnake->SfxDie);
@@ -286,6 +285,10 @@ void CGameSnake_UpdateObjects(CGameSnake* GameSnake, bool IsGameState)
 void CGameSnake_UpdateLogic(CGameSnake* GameSnake)
 {
 	GameSnake->GameBase->UpdateLogic(GameSnake->GameBase);
+
+	if ((GameState == GSTitleScreenInit) || (SubGameState == SGPauseMenu) || (SubGameState == SGFrame) || (SubGameState == SGGameHelp))
+		return;
+
 	GameSnake->UpdateObjects(GameSnake, SubGameState == SGGame);
 	if(SubGameState == SGGame)
 		CSprites_UpdateSprites();
@@ -302,6 +305,9 @@ bool CGameSnake_DrawObjects(CGameSnake* GameSnake)
 
 void CGameSnake_Draw(CGameSnake* GameSnake)
 {
+	if ((GameState == GSTitleScreenInit) || (SubGameState == SGPauseMenu) || (SubGameState == SGFrame) || (SubGameState == SGGameHelp))
+		return;
+
 	GameSnake->DrawBackground(GameSnake);
 	if (GameSnake->DrawObjects(GameSnake))
 		CSprites_DrawSprites();

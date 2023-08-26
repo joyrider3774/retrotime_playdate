@@ -7,9 +7,9 @@
 #include "pd_helperfuncs.h"
 #include "SDL_HelperTypes.h"
 
-#define SPR_Max 1000
+#define SPR_Max 500
 
-#define SavedScalingsMax 1000
+#define SavedScalingsMax 500
 
 int SavedScalingsCount = 0;
 struct SavedScalingsStruct {
@@ -32,7 +32,7 @@ void CSprites_Init()
 	CSprites_UpdateImageResets = 0;
 	CSprites_ForceShowCollisionShape = false;
 	CSprites_needSpriteSorting = false;
-	CSprites_SpritesDrawn = 0;
+	CSprites_SpritesDrawnReset();
 	for (int i=0; i < SPR_Max; i++)
 	{
 		CSprites_Sprites[i] = NULL;
@@ -60,6 +60,11 @@ int CSprites_UpdateImageResetsCount()
 int CSprites_SpritesDrawnCount()
 {
 	return CSprites_SpritesDrawn;
+}
+
+void CSprites_SpritesDrawnReset()
+{
+	CSprites_SpritesDrawn = 0;
 }
 
 CSprite* CSprites_CreateSprite()
@@ -269,7 +274,7 @@ void CSprites_ResetDrawTargets()
 
 void CSprites_DrawSprites()
 {
-	CSprites_SpritesDrawn = 0;
+	CSprites_SpritesDrawnReset();
 	for (int i = 0; i < SPR_Max; i++)
 	{
 		if (CSprites_Sprites[i] == NULL)
