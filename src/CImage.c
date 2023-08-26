@@ -104,20 +104,16 @@ LCDBitmap *CImage_LoadScaledImage(int GFXID, Vec2F Scale)
 		
 		Tmp = loadImageAtPath(FullFileName);
 		pd->system->realloc(FullFileName, 0);
-		if(Tmp)
-		{
-			if (CImage_DebugInfo)
+		if (CImage_DebugInfo)
+			if (Tmp)
 				pd->system->logToConsole("Loaded Graphic %s\n", FullFileName);
-			strcpy(ScaledImages[CImage_ScaledImagesLoaded].basefilename, CImage_Images[GFXID]->BaseFilename);
-			ScaledImages[CImage_ScaledImagesLoaded].resolution.x = Resolution.x;
-			ScaledImages[CImage_ScaledImagesLoaded].resolution.y = Resolution.y;
-			ScaledImages[CImage_ScaledImagesLoaded].texture = Tmp;
-			CImage_ScaledImagesLoaded++;
-		}
-		else
-			if (CImage_DebugInfo)
+			else
 				pd->system->logToConsole("Failed Loading Graphic %s\n", FullFileName);
-
+		strcpy(ScaledImages[CImage_ScaledImagesLoaded].basefilename, CImage_Images[GFXID]->BaseFilename);
+		ScaledImages[CImage_ScaledImagesLoaded].resolution.x = Resolution.x;
+		ScaledImages[CImage_ScaledImagesLoaded].resolution.y = Resolution.y;
+		ScaledImages[CImage_ScaledImagesLoaded].texture = Tmp;
+		CImage_ScaledImagesLoaded++;
 	}
 
 	return Tmp;
