@@ -10,12 +10,12 @@
 //floor(35 * yscale)
 #define CGameSnake_snakesize 10
 //(int)(ScreenHeight / snakesize) -1;
-#define CGameSnake_rows 22
+#define CGameSnake_rows 20
 //(int)(ScreenWidth / snakesize) -1;
 #define CGameSnake_cols 38
 #define CGameSnake_updateticks 8 / FPSScale
 //rows*cols
-#define CGameSnake_totalcells 836
+#define CGameSnake_totalcells 760
 
 typedef struct CGameSnake CGameSnake;
 

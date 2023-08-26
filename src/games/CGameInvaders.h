@@ -16,7 +16,7 @@
 #define CGameInvaders_enemyrows 5
 #define CGameInvaders_enemycols 7
 #define CGameInvaders_enemystartxoffset (50*xscale)
-#define CGameInvaders_enemystartyoffset (50*yscale)
+#define CGameInvaders_enemystartyoffset (ScoreBarHeight + (50*yscale))
 #define CGameInvaders_enemyspacing (60*yscale)
 #define CGameInvaders_enemyhorzspacing (50*xscale)
 

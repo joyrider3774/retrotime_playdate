@@ -17,7 +17,7 @@ CGameSnake* Create_CGameSnake()
 	GameSnake->GameBase->playfieldheight = (CGameSnake_rows) * CGameSnake_snakesize;
 	GameSnake->GameBase->screenleft = (ScreenWidth - GameSnake->GameBase->playfieldwidth) / 2;
 	GameSnake->GameBase->screenright = GameSnake->GameBase->screenleft + GameSnake->GameBase->playfieldwidth;
-	GameSnake->GameBase->screentop = (ScreenHeight - GameSnake->GameBase->playfieldheight) / 2;
+	GameSnake->GameBase->screentop = (ScreenHeight - GameSnake->GameBase->playfieldheight + ScoreBarHeight) / 2;
 	GameSnake->GameBase->screenbottom = GameSnake->GameBase->screentop + GameSnake->GameBase->playfieldheight;
 	GameSnake->snakeheadcolor = (LCDColor) kColorGrey;
 

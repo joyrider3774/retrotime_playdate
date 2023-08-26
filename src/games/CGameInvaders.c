@@ -22,7 +22,7 @@ CGameInvaders* Create_CGameInvaders()
 	GameInvaders->SfxDie = -1;
 	GameInvaders->GameBase->screenleft = 0;
 	GameInvaders->GameBase->screenright = ScreenWidth;
-	GameInvaders->GameBase->screentop = 0;
+	GameInvaders->GameBase->screentop = ScoreBarHeight;
 	GameInvaders->GameBase->screenbottom = ScreenHeight;
 
 	GameInvaders->enemyvel.x = CGameInvaders_enemyspeed;

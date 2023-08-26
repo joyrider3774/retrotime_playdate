@@ -240,14 +240,14 @@ CGameRamIt* Create_CGameRamIt()
 	GameRamIt->SfxDie = -1;
 	GameRamIt->SfxSucces = -1;
 	GameRamIt->MusMusic = -1;
-	GameRamIt->riblocksize = (int)((ScreenHeight / (CGameRamIt_numblocks+1)) - 2 * CGameRamIt_blockspacing);
+	GameRamIt->riblocksize = (int)(((ScreenHeight - ScoreBarHeight) / (CGameRamIt_numblocks+1)) - 2 * CGameRamIt_blockspacing);
 	GameRamIt->riblocksizespacing =(int)(GameRamIt->riblocksize + 2 * CGameRamIt_blockspacing);
 	GameRamIt->GameBase->playfieldwidth = (ScreenWidth - 1 * GameRamIt->riblocksize);
 	GameRamIt->segmentwidth = (int)(((GameRamIt->GameBase->playfieldwidth / 2) / CGameRamIt_blocksegments));
 	GameRamIt->GameBase->playfieldheight = CGameRamIt_numblocks * GameRamIt->riblocksizespacing;
 	GameRamIt->GameBase->screenleft = (ScreenWidth - GameRamIt->GameBase->playfieldwidth) / 2;
 	GameRamIt->GameBase->screenright = GameRamIt->GameBase->screenleft + GameRamIt->GameBase->playfieldwidth;
-	GameRamIt->GameBase->screentop = (ScreenHeight - GameRamIt->GameBase->playfieldheight) / 2;
+	GameRamIt->GameBase->screentop =  (ScreenHeight - GameRamIt->GameBase->playfieldheight + ScoreBarHeight) / 2;
 	GameRamIt->GameBase->screenbottom = GameRamIt->GameBase->screentop + GameRamIt->GameBase->playfieldheight;
 
 

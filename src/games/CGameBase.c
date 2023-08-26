@@ -278,7 +278,7 @@ void CGameBase_DrawScoreBar(CGameBase* GameBase)
 
 	if(GameBase->UsesLevels)
 	{
-		pd->system->formatString(&TmpText,"Level: %d ",GameBase->level);
+		pd->system->formatString(&TmpText,"Lev:%d ",GameBase->level);
 		strncat(Text, TmpText, 999);
 		pd->system->realloc(TmpText, 0);
 	}
@@ -286,7 +286,7 @@ void CGameBase_DrawScoreBar(CGameBase* GameBase)
 	if (GameMode == GMGame)
 	{
 
-		pd->system->formatString(&TmpText,"Lives:%d Score:%d High Score:%d ",  GameBase->HealthPoints,
+		pd->system->formatString(&TmpText,"Lives:%d Score:%d High:%d ",  GameBase->HealthPoints,
 			Scores[Game][GameMode], HighScores[Game][GameMode]);
 		strncat(Text, TmpText, 999);
 		pd->system->realloc(TmpText, 0);
@@ -295,7 +295,7 @@ void CGameBase_DrawScoreBar(CGameBase* GameBase)
 	{
 		if(GameMode == GMRetroCarousel)
 		{
-			pd->system->formatString(&TmpText,"Timer: %.2f Total Score:%d  Score:%d Previous Total high score:%d Previous High Score:%d",
+			pd->system->formatString(&TmpText,"Timer:%.0f Total Score:%d Score:%d Prev Total high:%d Prev High:%d",
 				Timer, RetroCarouselScore, Scores[Game][GameMode], RetroCarouselHighScore,
 				HighScores[Game][GameMode]);
 			strncat(Text, TmpText, 999);
@@ -303,14 +303,14 @@ void CGameBase_DrawScoreBar(CGameBase* GameBase)
 		}
 		else
 		{
-			pd->system->formatString(&TmpText, "Timer: %.2f Score:%d Previous High Score:%d ",
+			pd->system->formatString(&TmpText, "Timer:%.0f Score:%d Prev High:%d ",
 				Timer,Scores[Game][GameMode], HighScores[Game][GameMode]);
 			strncat(Text, TmpText, 999);
 			pd->system->realloc(TmpText, 0);
 		}
 			
 	}
-	CFont_WriteText("Roboto-Regular", (int)(20.0f*yscale), Text, strlen(Text), 0, 0, 0, kColorWhite);
+	CFont_WriteText("Roboto-Regular", 11, Text, strlen(Text), 0, 0, 0, kColorWhite);
 }
 
 void CGameBase_DrawSubstateText(CGameBase* GameBase)

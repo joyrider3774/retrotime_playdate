@@ -23,7 +23,7 @@ CGameBlockStacker* Create_CGameBlockStacker()
 	BlockStacker->GameBase->playfieldheight = CGameBlockStacker_numrows * CGameBlockStacker_blocksize;
 	BlockStacker->GameBase->screenleft = (ScreenWidth - BlockStacker->GameBase->playfieldwidth) / 2;
 	BlockStacker->GameBase->screenright = BlockStacker->GameBase->screenleft + BlockStacker->GameBase->playfieldwidth;
-	BlockStacker->GameBase->screentop = (ScreenHeight - BlockStacker->GameBase->playfieldheight) / 2;
+	BlockStacker->GameBase->screentop = ScoreBarHeight+ (ScreenHeight - BlockStacker->GameBase->playfieldheight) / 2;
 	BlockStacker->GameBase->screenbottom = BlockStacker->GameBase->screentop + BlockStacker->GameBase->playfieldheight;
 
 	BlockStacker->piecefits = CGameBlockStacker_piecefits;

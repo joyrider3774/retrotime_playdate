@@ -31,7 +31,7 @@
 #define DesiredFps 30
 #define FPSScale (60.0f / DesiredFps)
 
-#define ScoreBarHeight (int)(24*yscale)
+#define ScoreBarHeight (int)(39*yscale)
 
 //GameStates
 #define initDiff 50
