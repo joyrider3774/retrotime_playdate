@@ -92,5 +92,8 @@ int CSprites_SpriteSlotsMax();
 int CSprites_UpdateImageResetsCount();
 int CSprites_SpritesDrawnCount();
 void CSprites_SpritesDrawnReset();
+void CSprites_quickSort(CSprite* array[], int low, int high);
+int CSprites_partition(CSprite* array[], int low, int high);
+void CSprites_swap(CSprite* array[], int ai, int bi);
 
 #endif

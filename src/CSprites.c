@@ -1,6 +1,7 @@
 #include <pd_api.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <limits.h>
 #include "CSprites.h"
 #include "Vec2F.h"
 #include "Common.h"
@@ -184,29 +185,84 @@ void CSprites_UpdateSprites()
 	}
 }
 
+// function to swap elements https://www.programiz.com/dsa/quick-sort
+
+void CSprites_swap(CSprite* array[], int ai, int bi) {
+	CSprite* t = array[ai];
+	array[ai] = array[bi];
+	if (array[ai])
+		array[ai]->index = ai;
+	array[bi] = t;
+	if (array[bi])
+		array[bi]->index = bi;
+}
+
+// function to find the partition position https://www.programiz.com/dsa/quick-sort
+
+int CSprites_partition(CSprite* array[], int low, int high) {
+
+	// select the rightmost element as pivot
+	int pivot = array[high] == NULL ? INT_MAX: array[high]->depth;
+
+	// pointer for greater element
+	int i = (low - 1);
+
+	// traverse each element of the array
+	// compare them with the pivot
+	for (int j = low; j < high; j++) {
+		if ((array[j] == NULL ? INT_MAX : array[j]->depth) < pivot) {
+
+			// if element smaller than pivot is found
+			// swap it with the greater element pointed by i
+			i++;
+
+			// swap element at i with element at j
+			CSprites_swap(array, i, j);
+		}
+	}
+
+	// swap the pivot element with the greater element at i
+	CSprites_swap(array, i + 1, high);
+
+	// return the partition point
+	return (i + 1);
+}
+
+//https://www.programiz.com/dsa/quick-sort
+void CSprites_quickSort(CSprite* array[], int low, int high) {
+	if (low < high) {
+
+		// find the pivot element such that
+		// elements smaller than pivot are on left of pivot
+		// elements greater than pivot are on right of pivot
+		int pi = CSprites_partition(array, low, high);
+
+		// recursive call on the left of pivot
+		CSprites_quickSort(array, low, pi - 1);
+
+		// recursive call on the right of pivot
+		CSprites_quickSort(array, pi + 1, high);
+	}
+}
+
+// function to print array elements
+void CSprites_printArray(CSprite* array[], int size) {
+	for (int i = 0; i < size; ++i) {
+		pd->system->logToConsole("%d  ", array[i] == NULL ? INT_MAX : array[i]->depth);
+	}
+	pd->system->logToConsole("\n\n\n\n\n");
+}
+
+
 void CSprites_SortSprites()
 {
 	if (CSprites_needSpriteSorting)
 	{
-		for (int i = 0; i< SPR_Max; i++)
-		{
-			for(int j=i+1; j < SPR_Max; j++)
-			{
-				if ((CSprites_Sprites[i] != NULL) && (CSprites_Sprites[j] != NULL))
-				{
-					if(CSprites_Sprites[i]->depth > CSprites_Sprites[j]->depth)
-					{
-						CSprite* Tmp = CSprites_Sprites[i];
-						CSprites_Sprites[i] = CSprites_Sprites[j];
-						CSprites_Sprites[i]->index = i;
-						CSprites_Sprites[j] = Tmp;
-						CSprites_Sprites[j]->index = j;
-					}
-				}
-			}
-		}
+		CSprites_quickSort(CSprites_Sprites, 0, SPR_Max - 1);
+		//CSprites_printArray(CSprites_Sprites, SPR_Max - 1);
 		CSprites_needSpriteSorting = false;
 	}
+
 }
 
 void CSprites_DrawSprite(CSprite* Spr)
