@@ -27,7 +27,6 @@ extern uint32_t TimerTicks;
 extern int Score;
 extern int NextSubStateCounter, NextSubState, NextSubStateTimeAdd;
 
-extern bool ShowFPS;
 extern int ActiveGameGameStateId;
 
 extern CGameSnake *GameSnake;

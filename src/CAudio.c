@@ -187,7 +187,8 @@ int CAudio_LoadMusic(char* FileName)
 			}
 	
 	if(result == -1)
-		pd->system->logToConsole("Failed Loading Music %s", FullFileName);
+		if(CAudio_DebugInfo)
+			pd->system->logToConsole("Failed Loading Music %s", FullFileName);
 	
 	pd->system->realloc(FullFileName, 0);
 	
@@ -283,7 +284,8 @@ int CAudio_LoadSound(char* FileName)
 			}
 
 	if (result == -1)
-		pd->system->logToConsole("Failed Loading Sound %s\n", FullFileName);
+		if(CAudio_DebugInfo)
+			pd->system->logToConsole("Failed Loading Sound %s\n", FullFileName);
 	
 	pd->system->realloc(FullFileName, 0);
 	

@@ -82,7 +82,8 @@ SDL_Point CFont_TextSize(char* Font, int FontSize, char* Tekst, size_t NrOfChars
 			pd->system->realloc(Filename, 0);
 			if (!FontIn)
 			{
-				pd->system->logToConsole("Failed Loading Font %s\n", Filename);
+				if(CFont_DebugInfo)
+					pd->system->logToConsole("Failed Loading Font %s\n", Filename);
 				return Result;
 			}
 			if(CFont_DebugInfo)
@@ -161,7 +162,8 @@ void CFont_WriteTextBitmap(bool IgnoreRenderer, LCDBitmap *Renderer, char* Font,
 			pd->system->realloc(Filename, 0);
 			if (!FontIn)
 			{
-				pd->system->logToConsole("Failed Loading Font %s\n", Filename);
+				if(CFont_DebugInfo)
+					pd->system->logToConsole("Failed Loading Font %s\n", Filename);
 			}
 			if (CFont_DebugInfo)
 				pd->system->logToConsole("Loaded Font %s\n", Filename);

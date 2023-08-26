@@ -28,7 +28,6 @@
 #undef LoadImage
 #undef PlaySound
 
-bool ShowFPS = true;
 uint8_t GameAlpha = 0;
 char DataPath[500];
 
@@ -671,9 +670,10 @@ int CGame_MainLoop(void* ud)
 		pd->system->realloc(TmpText, 0);
 		if (ShowFPS && !debugInfo)
 		{
-			SDL_Point tz = CFont_TextSize("Roboto-Regular", 11, Text, strlen(Text), 0);
+			pd->system->drawFPS(0, 0);
+			/*SDL_Point tz = CFont_TextSize("Roboto-Regular", 11, Text, strlen(Text), 0);
 			pd->graphics->fillRect(ScreenWidth - tz.x, 0, tz.x, tz.y, kColorWhite);
-			CFont_WriteText("Roboto-Regular", 11, Text, strlen(Text), ScreenWidth - tz.x, 0, 0, (LCDColor)kColorBlack);
+			CFont_WriteText("Roboto-Regular", 11, Text, strlen(Text), ScreenWidth - tz.x, 0, 0, (LCDColor)kColorBlack);*/
 		}
 		else if(debugInfo)
 		{

@@ -71,9 +71,6 @@ LCDBitmap* loadImageAtPath(const char* path)
 {
 	const char* outErr = NULL;
 	LCDBitmap* img = pd->graphics->loadBitmap(path, &outErr);
-	if (outErr != NULL) {
-		pd->system->logToConsole("Error loading image at path '%s': %s", path, outErr);
-	}
 	return img;
 }
 
@@ -81,9 +78,6 @@ LCDBitmapTable* loadBitmapTableAtPath(const char* path)
 {
 	const char* outErr = NULL;
 	LCDBitmapTable* table = pd->graphics->loadBitmapTable(path, &outErr);
-	if (outErr != NULL) {
-		pd->system->logToConsole("Error loading image at path '%s': %s", path, outErr);
-	}
 	return table;
 }
 
@@ -91,9 +85,6 @@ LCDFont* loadFontAtPath(const char* path)
 {
 	const char* outErr = NULL;
 	LCDFont* fnt = pd->graphics->loadFont(path, &outErr);
-	if (outErr != NULL) {
-		pd->system->logToConsole("Error loading font at path '%s': %s", path, outErr);
-	}
 	return fnt;
 }
 

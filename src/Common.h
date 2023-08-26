@@ -5,6 +5,7 @@
 #include <pd_api.h>
 #include <stdbool.h>
 
+#define ShowFPS true
 #define debugInfo false
 #define debugShowCollisionShapes false
 #define dumpScaledBitmaps false
