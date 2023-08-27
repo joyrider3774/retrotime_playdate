@@ -233,5 +233,8 @@ void SubScoreScreen()
 				GameState = GSGames[Game].state;
 			}
 		}
+
+		if (GameState == GSTitleScreenInit)
+			CGame_SaveHighScores();
 	}
 }

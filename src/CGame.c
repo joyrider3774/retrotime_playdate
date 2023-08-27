@@ -244,127 +244,83 @@ void CGame_LoadGraphics()
 
 void CGame_LoadHighScores()
 {
-	//FILE *ScoreFile;
-	//char FileName[1000];
-	//strcpy(FileName,  "./.retrotimesscores");
+	SDFile *ScoreFile;
 
-	//char *EnvHome = getenv("HOME");
-	//char *EnvHomeDrive = getenv("HOMEDRIVE");
-	//char *EnvHomePath = getenv("HOMEPATH");
-
-	//if (EnvHome) //linux systems normally
-	//	pd->system->formatString(&TmpText,(FileName, "%s/.retrotimesscores", EnvHome);
-	//else
-	//	if(EnvHomeDrive && EnvHomePath) //windows systems normally
-	//		pd->system->formatString(&TmpText,(FileName, "%s%s/.retrotimesscores", EnvHomeDrive, EnvHomePath);
-
-	//ScoreFile = fopen(FileName, "r");
-	//if (ScoreFile)
-	//{
-	//	fscanf(ScoreFile, "RetroCarousel=%d\n", &RetroCarouselHighScore);
-	//	for (int i = 0; i < Games; i++)
-	//		for (int j = 0; j < Modes; j++)
-	//		{
-	//			char entry[500];
-	//			pd->system->formatString(&TmpText,(entry, "Game_%d_Mode_%d%s", i, j,"=%d\n"); 
-	//			fscanf(ScoreFile, entry, &HighScores[i][j]);
-	//		}
-	//	fclose(ScoreFile);
-	//}
-	//else
-	//{
-	//	CGame_ResetHighScores();
-	//}
+	ScoreFile = pd->file->open("retrotimesscores", kFileReadData);
+	if (ScoreFile)
+	{
+		pd->file->read(ScoreFile, &RetroCarouselHighScore, sizeof(int));
+		for (int i = 0; i < Games; i++)
+			for (int j = 0; j < Modes; j++)
+			{
+				pd->file->read(ScoreFile, &HighScores[i][j], sizeof(int));
+			}
+		pd->file->close(ScoreFile);
+	}
+	else
+	{
+		CGame_ResetHighScores();
+	}
 }
 
 void CGame_SaveHighScores()
 {
-	//FILE *ScoreFile;
-	//char FileName[1000];
-	//strcpy(FileName,  "./.retrotimesscores");
+	SDFile *ScoreFile;
 
-	//char *EnvHome = getenv("HOME");
-	//char *EnvHomeDrive = getenv("HOMEDRIVE");
-	//char *EnvHomePath = getenv("HOMEPATH");
-
-	//if (EnvHome) //linux systems normally
-	//	pd->system->formatString(&TmpText,(FileName, "%s/.retrotimesscores", EnvHome);
-	//else
-	//	if(EnvHomeDrive && EnvHomePath) //windows systems normally
-	//		pd->system->formatString(&TmpText,(FileName, "%s%s/.retrotimesscores", EnvHomeDrive, EnvHomePath);
-
-	//ScoreFile = fopen(FileName, "w");
-	//if (ScoreFile)
-	//{
-	//	fprintf(ScoreFile, "RetroCarousel=%d\n", RetroCarouselHighScore);
-	//	for (int i = 0; i < Games; i++)
-	//		for (int j = 0; j < Modes; j++)
-	//			fprintf(ScoreFile, "Game_%d_Mode_%d=%d\n", i,j, HighScores[i][j]);
-	//	fclose(ScoreFile);
-	//}
+	ScoreFile = pd->file->open("retrotimesscores", kFileWrite);
+	if (ScoreFile)
+	{
+		pd->file->write(ScoreFile, &RetroCarouselHighScore, sizeof(int));
+		for (int i = 0; i < Games; i++)
+			for (int j = 0; j < Modes; j++)
+				pd->file->write(ScoreFile, &HighScores[i][j], sizeof(int));
+		pd->file->close(ScoreFile);
+	}
 }
 
 void CGame_LoadSettings()
 {
-	//FILE *SettingsFile;
-	//char FileName[1000];
-	//strcpy(FileName, "./.retrotimesettings");
+	SDFile *SettingsFile;
 
-	//char *EnvHome = getenv("HOME");
-	//char *EnvHomeDrive = getenv("HOMEDRIVE");
-	//char *EnvHomePath = getenv("HOMEPATH");
-
-	//if (EnvHome) //linux systems normally
-	//	pd->system->formatString(&TmpText,(FileName, "%s/.retrotimesettings", EnvHome);
-	//else
-	//	if(EnvHomeDrive && EnvHomePath) //windows systems normally
-	//		pd->system->formatString(&TmpText,(FileName, "%s%s/.retrotimesettings", EnvHomeDrive, EnvHomePath);
-
-	//SettingsFile = fopen(FileName, "r");
-	//if (SettingsFile)
-	//{
-	//	int VolumeMusic, VolumeSound;
-	//	int ret = fscanf(SettingsFile, "VolumeMusic=%d\nVolumeSound=%d\n", 
-	//		&VolumeMusic, &VolumeSound);
-
-	//	if(ret > 0)
-	//		CAudio_SetVolumeMusic(VolumeMusic);
-	//	if(ret > 1)
-	//		CAudio_SetVolumeSound(VolumeSound);
-	//	fclose(SettingsFile);
-	//}
-	//else
-	//{
-	//	CAudio_SetVolumeMusic(128);
-	//	CAudio_SetVolumeSound(128);
-	//}
+	SettingsFile = pd->file->open("retrotimesettings", kFileReadData);
+	if (SettingsFile)
+	{
+		int VolumeMusic, VolumeSound;
+		if (pd->file->read(SettingsFile, &VolumeMusic, sizeof(int)) > 0)
+		{
+			CAudio_SetVolumeMusic(VolumeMusic);
+		}
+		else
+			CAudio_SetVolumeMusic(128);
+		
+		if (pd->file->read(SettingsFile, &VolumeSound, sizeof(int)) > 0)
+		{
+			CAudio_SetVolumeSound(VolumeSound);
+		}
+		else
+			CAudio_SetVolumeSound(128);
+		pd->file->close(SettingsFile);
+	}
+	else
+	{
+		CAudio_SetVolumeMusic(128);
+		CAudio_SetVolumeSound(128);
+	}
 }
 
 void CGame_SaveSettings()
 {
-	//FILE *SettingsFile;
-	//char FileName[1000];
-	//strcpy(FileName, "./.retrotimesettings");
+	SDFile *SettingsFile;
 
-	//char *EnvHome = getenv("HOME");
-	//char *EnvHomeDrive = getenv("HOMEDRIVE");
-	//char *EnvHomePath = getenv("HOMEPATH");
-
-	//if (EnvHome) //linux systems normally
-	//	pd->system->formatString(&TmpText,(FileName, "%s/.retrotimesettings", EnvHome);
-	//else
-	//	if(EnvHomeDrive && EnvHomePath) //windows systems normally
-	//		pd->system->formatString(&TmpText,(FileName, "%s%s/.retrotimesettings", EnvHomeDrive, EnvHomePath);
-
-	//SettingsFile = fopen(FileName, "w");
-	//if (SettingsFile)
-	//{
-	//	int VolumeMusic = CAudio_GetVolumeMusic();
-	//	int VolumeSound = CAudio_GetVolumeSound();
-	//	fprintf(SettingsFile, "VolumeMusic=%d\nVolumeSound=%d\n",
-	//		VolumeMusic, VolumeSound);
-	//	fclose(SettingsFile);
-	//}
+	SettingsFile = pd->file->open("retrotimesettings", kFileWrite);
+	if (SettingsFile)
+	{
+		int VolumeMusic = CAudio_GetVolumeMusic();
+		int VolumeSound = CAudio_GetVolumeSound();
+		pd->file->write(SettingsFile, &VolumeMusic, sizeof(int));
+		pd->file->write(SettingsFile, &VolumeSound, sizeof(int));
+		pd->file->close(SettingsFile);
+	}
 }
 
 void CGame_StartCrossFade(int SetGameState, int SetNextSubState, int SetNextSubStateCounter, uint32_t SetNextSubStateTimeAdd)

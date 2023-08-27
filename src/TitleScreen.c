@@ -160,6 +160,7 @@ void TitleScreen()
 				CAudio_PlaySound(SfxBack, 0);
 
 				CurrentMainMenu = -1;
+				CGame_SaveSettings();
 			}
 
 			if ((!CInput_PrevButtons.ButStart && CInput_Buttons.ButStart) ||
@@ -171,10 +172,11 @@ void TitleScreen()
 				{
 					case OMBack:
 						CurrentMainMenu = -1;
+						CGame_SaveSettings();
 						break;
 					case OMResetHighScores:
 						CGame_ResetHighScores();
-						//savehighscoresoptions();
+						CGame_SaveHighScores();
 						break;
 					case OMSoundVol:
 						CAudio_IncVolumeSound();
