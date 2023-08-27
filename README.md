@@ -57,7 +57,7 @@ Bubble Buster is a game based on Pang (Arcade). You control a player that needs 
 ### Block Stacker
 <img src="metadata/blockstacker.png">
 
-Block Stacker is a game of tetris. You control the blocks with the left joystick or dpad. You need to stack them in such a manner that they form complete rows. Once this is done that row will be removed. Speed increases gradually and having no place at the top to place a block will lose you a life. You can rotate blocks using (A) and quick drop them using (B).
+Block Stacker is a game of tetris. You control the blocks with the left joystick or dpad. You need to stack them in such a manner that they form complete rows. Once this is done that row will be removed. Speed increases gradually and having no place at the top to place a block will lose you a life. You can rotate blocks using (A).
 
 
 ### Color Invasion
