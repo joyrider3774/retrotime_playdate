@@ -21,14 +21,9 @@ void Intro()
 		GameState -= initDiff;
 	}
 
-	//SDL_Color ClWhite = {255, 255, 255, 255};
 	char *s;
 	int w,h;
 
-	//SDL_SetRenderTarget(Renderer, TexTmp);
-	//pd->graphics->pushContext(TexTmp);
-	//SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 255);
-	//SDL_RenderClear(Renderer);
 	pd->graphics->clear(kColorBlack);
 	if (scene == 0)
 	{
@@ -73,12 +68,6 @@ void Intro()
 		GameState = GSTitleScreenInit;
 	}
 
-	//SDL_SetRenderTarget(Renderer, TexOffScreen);
-	//SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 255);
-	//SDL_RenderClear(Renderer);
-	//SDL_Point Pos = {0,0};
-	//Vec2F Scale = {1,1};
-	//CImage_DrawImageFuzeTintFloatTex(Renderer, TexTmp, false, &Pos, 0, &Scale, 1, 1, 1, 1);
 	sceneticks += 1;
 
 	if (sceneticks >= maxticks)

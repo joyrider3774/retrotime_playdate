@@ -177,7 +177,6 @@ void CGameFrog_createobjects(CGameFrog* GameFrog, bool initialize)
 			{
 				if (GameFrog->nextrowtype == CGameFrog_rowtyperoad)
 				{
-					//while rowtype == GameFrog->prevrowtype loop
 					rowtype = CGameFrog_rowtyperoadstart + rand() % (CGameFrog_rowtyperoadend - CGameFrog_rowtyperoadstart + 1);
 					if (rowtype == GameFrog->prevrowtype)
 					{
@@ -618,14 +617,6 @@ void CGameFrog_updateobjects(CGameFrog* GameFrog)
 	{
 		if(GameFrog->objects[i].alive)
 		{
-			// if ((GameFrog->objects[i].pos.y + 1 > GameFrog->player.pos.y) && (GameFrog->objects[i].pos.y - 1 < GameFrog->player.pos.y))
-			// {
-			// 	if(GameFrog->objects[i].id == CGameFrog_idgrass)
-			// 	{
-			// 		printf("P:%f O:%f\n", GameFrog->objects[i].pos.y, GameFrog->player.pos.y);
-			// 	}
-			//}
-
 			//if (floatequal(GameFrog->objects[i].pos.y,GameFrog->player.pos.y))
 			if(true)
 			{

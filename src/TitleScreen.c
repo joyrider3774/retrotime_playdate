@@ -30,14 +30,13 @@ void TitleScreen()
 		InitTitleScreen();
 		GameState -= initDiff;
 	}
-	//draw everything to offscreen surface
+
 	CGame_DrawTitleBackground();
-	//SDL_SetRenderDrawColor(255, 255, 255, 235);
-	//so we can can copy the transparant part with the blue and text from this image
+
 	SDL_Point FramePos = {ScreenWidth / 2, ScreenHeight / 2};
 	Vec2F FrameScale = {16.0f / 4 * xscale, 12.8f *yscale};
 	CImage_DrawImageFuze(GFXFrameID, true, &FramePos, 0, &FrameScale, 255, 255, 255, 255);
-	// color = {255, 255, 255, 255};
+
 	LCDColor color = kColorWhite;
 	char *Text;
 	switch (CurrentMainMenu)
@@ -45,15 +44,13 @@ void TitleScreen()
 		case MMOptions:
 		{
 			int selectedmenu = 0;
-			//int menutextsize = (int)(35.0f*yscale);
-			//int menuspacing = (int)(45.0f*yscale);
 
 			selectedmenu = OMOptionMenus[SelOptions].menu;
 			pd->system->formatString(&Text, "Options");
 			CFont_WriteText("Roboto-Regular", (int)(80.0f*yscale), Text, strlen(Text),(int)(525.0f*xscale), (int)(50.0f*yscale), 0, color);
 			pd->system->realloc(Text, 0);
 			int menu;
-			//SDL_Color color = {255, 255, 255, 255};
+
 			for(int i = 0; i < OptionMenus; i++)
 			{
 				menu = OMOptionMenus[i].menu;
@@ -126,8 +123,6 @@ void TitleScreen()
 						break;
 
 				}
-
-				//savehighscoresoptions()
 			}
 
 			if ((!CInput_PrevButtons.ButRight && CInput_Buttons.ButRight) ||
@@ -149,8 +144,6 @@ void TitleScreen()
 							CAudio_PlayMusic(MusMenu, -1);
 						break;
 				}
-
-				//savehighscoresoptions()
 			}
 
 
@@ -505,22 +498,4 @@ void TitleScreen()
 			}
 		}
 	}
-
-	//SDL_Rect SrcRect = {230*xscale,85*yscale,820*xscale,550*yscale};
-	// //grab transparant part of frame + menu
-	// LCDBitmap *Tmp = SDL_CreateTexture(PixelFormat, LCDBitmapACCESS_TARGET, SrcRect.w, SrcRect.h);
-	// LCDBitmap *TmpRender = SDL_GetRenderTarget(Renderer);
-	// SDL_SetRenderTarget(Tmp);
-	// CImage_DrawImage(TexOffScreen, &SrcRect, NULL);
-
-	//draw the frame again without transparancy
-	//SDL_SetRenderTarget(TmpRender);
-	//CImage_DrawImageFuze(GFXFrameID, true, &FramePos, 0, &FrameScale, 255, 255, 255, 255);
-
-	// //and then draw the transparant part over it now
-	// CImage_DrawImage(Tmp, NULL, &SrcRect);
-	// SDL_DestroyTexture(Tmp);
-
-//	freeImage(surface)
-//	stopChannel(0)
 }

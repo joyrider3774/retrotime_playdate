@@ -385,7 +385,6 @@ void CImage_DrawImageFuzeTex(LCDBitmap *Texture, SDL_Rect *SrcRect, bool CenterI
 			pd->graphics->pushContext(tmp);
 			DrawBitmapSrcRec(Texture, 0, 0, srcX, srcY, srcW, srcH, flip);
 			pd->graphics->popContext();
-			//pd->graphics->drawBitmap(tmp, (int)(Pos->x), (int)(Pos->y),kBitmapUnflipped);
 			pd->graphics->drawRotatedBitmap(tmp, (int)Pos->x, (int)Pos->y, Angle, 0.5f, 0.5f, (float)Dst.w / srcW, (float)Dst.h / srcH);
 			pd->graphics->freeBitmap(tmp);
 		}

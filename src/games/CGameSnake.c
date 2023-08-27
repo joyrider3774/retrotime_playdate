@@ -200,17 +200,8 @@ void CGameSnake_updatesnake(CGameSnake* GameSnake)
 
 void CGameSnake_DrawBackground(CGameSnake* GameSnake)
 {
-	//SDL_SetRenderDrawColor(Renderer, 0x65, 0x65, 0xFF, 0xFF);
-	//SDL_RenderClear(Renderer);
-	//SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 255);
-	//SDL_Rect r = {GameSnake->GameBase->screenleft, GameSnake->GameBase->screentop, GameSnake->GameBase->playfieldwidth, GameSnake->GameBase->playfieldheight};
-	//SDL_RenderFillRect(Renderer, &r);
-
-
-//	SDL_SetRenderDrawColor(Renderer, 0x65, 0x65, 0xFF, 0xFF);
 	pd->graphics->clear(kColorWhite);
 	SDL_Rect r = { GameSnake->GameBase->screenleft, GameSnake->GameBase->screentop, GameSnake->GameBase->playfieldwidth, GameSnake->GameBase->playfieldheight };
-	//SDL_RenderFillRect(Renderer, &r);
 	pd->graphics->fillRect(r.x, r.y, r.w, r.h, kColorBlack);
 }
 

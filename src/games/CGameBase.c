@@ -55,7 +55,6 @@ void CGameBase_PauseMenu(CGameBase* GameBase)
 		SDL_Point FramePos = { ScreenWidth / 2, ScreenHeight / 2 };
 		Vec2F FrameScale = { 16.0f / 4 * xscale, 12.8f * yscale };
 		CImage_DrawImageFuze(GFXFrameID, true, &FramePos, 0, &FrameScale, 255, 255, 255, 255);
-		// color = {255, 255, 255, 255};
 		LCDColor color = kColorWhite;
 		char* Text;
 		if (SubGameState == SGPauseMenu)

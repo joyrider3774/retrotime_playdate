@@ -54,7 +54,6 @@ void SubScoreScreen()
 		InitSubScoreScreen();
 		GameState -= initDiff;
 	}
-	//SDL_SetRenderTarget(TexOffScreen);
 	//pd->graphics->pushContext(TexOffScreen);
 	switch (ActiveGameGameStateId)
 	{
@@ -83,8 +82,6 @@ void SubScoreScreen()
 			GameBlockStacker->Draw(GameBlockStacker);
 			break;
 	}
-	// SDL_SetRenderDrawColor(0, 0, 0, 128);
-	// SDL_RenderFillRect(NULL);
 
 	if (SubGameState == SGFrame)
 	{
@@ -99,7 +96,7 @@ void SubScoreScreen()
 	Vec2F Scale = {SubStateCounter / 4*xscale, (0.0f > SubStateCounter-3.2f ? 0.0f:SubStateCounter-3.2f)*yscale};
 	CImage_DrawImageFuze(GFXFrameID, true, &pos, 0, &Scale, 255, 255, 255, 240);
 	char* TextTmp;
-	//SDL_Color color = {255,255,255,255};
+
 	SDL_Point MedalTz = CImage_ImageSize(GFXMedal);
 	Vec2F MedalScale = {50.0f/MedalTz.y*xscale, 50.0f/MedalTz.y*yscale};
 	if (SubGameState == SGCalcScore)

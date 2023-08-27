@@ -290,8 +290,6 @@ void CGameBlockStacker_drawplayfieldcell(CGameBlockStacker* BlockStacker, int x,
 			color = (LCDColor) kColorGrey;
 
 		SDL_Rect r = {BlockStacker->GameBase->screenleft + x * CGameBlockStacker_blocksize, BlockStacker->GameBase->screentop + y * CGameBlockStacker_blocksize, CGameBlockStacker_blocksize, CGameBlockStacker_blocksize};
-		//SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 255);
-		//SDL_RenderFillRect(Renderer, &r);
 		pd->graphics->fillRect(r.x, r.y, r.w, r.h, kColorBlack);
 
 		r.x = BlockStacker->GameBase->screenleft +1 + x * CGameBlockStacker_blocksize;
