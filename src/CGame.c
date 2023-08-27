@@ -190,8 +190,6 @@ void CGame_UnLoadGraphics()
 
 void CGame_DrawTitleBackground()
 {
-	SDL_Rect Dst = {0, 0, ScreenWidth, ScreenHeight};
-
 	pd->graphics->clear(kColorBlack);
 }
 

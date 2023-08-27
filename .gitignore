@@ -54,3 +54,4 @@ dkms.conf
 /build_simulator
 /build_device
 /RetroTime.pdx
+/convert bmp to png.bat
