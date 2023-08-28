@@ -5,7 +5,7 @@
 #include <pd_api.h>
 #include <stdbool.h>
 
-#define ShowFPS true
+#define ShowFPS false
 #define debugInfo false
 #define debugShowCollisionShapes false
 #define dumpScaledBitmaps false
@@ -29,7 +29,7 @@
 #define yscale (ScreenHeight / 720.0f)
 
 #define DesiredFps 30
-#define FPSScale (60.0f / DesiredFps)
+#define FPSScale (60.0f / (DesiredFps == 0 ? 60:DesiredFps))
 
 #define ScoreBarHeight (int)(39*yscale)
 
