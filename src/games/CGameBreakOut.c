@@ -142,7 +142,7 @@ void CGameBreakOut_createblocks(CGameBreakOut* GameBreakOut, bool setlocation)
 	{
 		for(int y = 0; y < CGameBreakOut_blockrows; y++)
 		{
-			GameBreakOut->tweens[x + y * CGameBreakOut_blockcols][CGameBreakOut_tweenblockpositions] = createtween(CGameBreakOut_tweenblockpositions, 1.0f+ ((rand() %(6)) / 10), funcsmoothstop, 1, true, DesiredFps);
+			GameBreakOut->tweens[x + y * CGameBreakOut_blockcols][CGameBreakOut_tweenblockpositions] = createtween(CGameBreakOut_tweenblockpositions, 1.0f+ ((rand() %(6)) / 10), funcsmoothstop, 1, true, DesiredFps == 0 ? 60 : DesiredFps);
 			GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].spr = CSprites_CreateSprite();
 			GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].state = 0;
 			GameBreakOut->blocks[x + y * CGameBreakOut_blockcols].alive = true;
@@ -420,7 +420,7 @@ void CGameBreakOut_updateball(CGameBreakOut* GameBreakOut)
 							CAudio_PlaySound(GameBreakOut->SfxBrick, 0);
 							GameBreakOut->blocks[k].state = CGameBreakOut_blockstatedeath;
 							CSprites_SetSpriteDepth(GameBreakOut->blocks[k].spr, 5);
-							GameBreakOut->tweens[k][CGameBreakOut_tweenblockdeath] = createtween(CGameBreakOut_tweenblockdeath, 1, funcsmoothstep, 1, true, DesiredFps);
+							GameBreakOut->tweens[k][CGameBreakOut_tweenblockdeath] = createtween(CGameBreakOut_tweenblockdeath, 1, funcsmoothstep, 1, true, DesiredFps == 0 ? 60: DesiredFps);
 						}
 					}
 				}
