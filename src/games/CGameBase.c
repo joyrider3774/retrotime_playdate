@@ -314,16 +314,16 @@ void CGameBase_DrawScoreBar(CGameBase* GameBase)
 
 void CGameBase_DrawSubstateText(CGameBase* GameBase)
 {
-	int w = CFont_TextWidth("RobotoMono-Bold", 24, GameBase->SubStateText, strlen(GameBase->SubStateText));
-	CFont_WriteText("RobotoMono-Bold", 24, GameBase->SubStateText, strlen(GameBase->SubStateText), (int)(-1.0f + GameBase->screenleft + ((GameBase->screenright - GameBase->screenleft) / 2.0f) - w / 2.0f),
+	int w = CFont_TextWidth("Roboto-Regular", 23, GameBase->SubStateText, strlen(GameBase->SubStateText));
+	CFont_WriteText("Roboto-Regular", 23, GameBase->SubStateText, strlen(GameBase->SubStateText), (int)(-1.0f + GameBase->screenleft + ((GameBase->screenright - GameBase->screenleft) / 2.0f) - w / 2.0f),
 		(int)(-1.0f + GameBase->screentop + ((GameBase->screenbottom - GameBase->screentop) / 2.0f) - 110.0f * xscale), 0, (LCDColor)kColorBlack);
-	CFont_WriteText("RobotoMono-Bold", 24, GameBase->SubStateText, strlen(GameBase->SubStateText), (int)(-1.0f + GameBase->screenleft + ((GameBase->screenright - GameBase->screenleft) / 2.0f) - w / 2.0f),
+	CFont_WriteText("Roboto-Regular", 23, GameBase->SubStateText, strlen(GameBase->SubStateText), (int)(-1.0f + GameBase->screenleft + ((GameBase->screenright - GameBase->screenleft) / 2.0f) - w / 2.0f),
 		(int)(1.0f + GameBase->screentop + ((GameBase->screenbottom - GameBase->screentop) / 2.0f) - 110.0f * xscale), 0, (LCDColor)kColorBlack);
-	CFont_WriteText("RobotoMono-Bold", 24, GameBase->SubStateText, strlen(GameBase->SubStateText), (int)(1.0f + GameBase->screenleft + ((GameBase->screenright - GameBase->screenleft) / 2.0f) - w / 2.0f),
+	CFont_WriteText("Roboto-Regular", 23, GameBase->SubStateText, strlen(GameBase->SubStateText), (int)(1.0f + GameBase->screenleft + ((GameBase->screenright - GameBase->screenleft) / 2.0f) - w / 2.0f),
 		(int)(-1.0f + GameBase->screentop + ((GameBase->screenbottom - GameBase->screentop) / 2.0f) - 110.0f * xscale), 0, (LCDColor)kColorBlack);
-	CFont_WriteText("RobotoMono-Bold", 24, GameBase->SubStateText, strlen(GameBase->SubStateText), (int)(1.0f + GameBase->screenleft + ((GameBase->screenright - GameBase->screenleft) / 2.0f) - w / 2.0f),
+	CFont_WriteText("Roboto-Regular", 23, GameBase->SubStateText, strlen(GameBase->SubStateText), (int)(1.0f + GameBase->screenleft + ((GameBase->screenright - GameBase->screenleft) / 2.0f) - w / 2.0f),
 		(int)(1.0f + GameBase->screentop + ((GameBase->screenbottom - GameBase->screentop) / 2.0f) - 110.0f * xscale), 0, (LCDColor)kColorBlack);
-	CFont_WriteText("RobotoMono-Bold", 24, GameBase->SubStateText, strlen(GameBase->SubStateText), (int)(GameBase->screenleft + ((GameBase->screenright - GameBase->screenleft) / 2.0f) - w / 2.0f),
+	CFont_WriteText("Roboto-Regular", 23, GameBase->SubStateText, strlen(GameBase->SubStateText), (int)(GameBase->screenleft + ((GameBase->screenright - GameBase->screenleft) / 2.0f) - w / 2.0f),
 		(int)(GameBase->screentop + ((GameBase->screenbottom - GameBase->screentop) / 2.0f) - 110.0f * xscale), 0, (LCDColor)kColorWhite);
 }
 
