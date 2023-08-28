@@ -79,15 +79,16 @@ SDL_Point CFont_TextSize(char* Font, int FontSize, char* Tekst, size_t NrOfChars
 			char *Filename;
 			pd->system->formatString(&Filename, "fonts/%s", FontNameSize);
 			FontIn = loadFontAtPath(Filename);
-			pd->system->realloc(Filename, 0);
 			if (!FontIn)
 			{
 				if(CFont_DebugInfo)
 					pd->system->logToConsole("Failed Loading Font %s\n", Filename);
+				pd->system->realloc(Filename, 0);
 				return Result;
 			}
 			if(CFont_DebugInfo)
 				pd->system->logToConsole("Loaded Font %s\n", Filename);
+			pd->system->realloc(Filename, 0);
 
 			CFont_FontCache[fontCacheItems].Font = FontIn;
 			strcpy(CFont_FontCache[fontCacheItems].Filename, FontNameSize);
@@ -159,7 +160,6 @@ void CFont_WriteTextBitmap(bool IgnoreRenderer, LCDBitmap *Renderer, char* Font,
 			char* Filename;
 			pd->system->formatString(&Filename, "fonts/%s", FontNameSize);
 			FontIn = loadFontAtPath(Filename);
-			pd->system->realloc(Filename, 0);
 			if (!FontIn)
 			{
 				if(CFont_DebugInfo)
@@ -167,7 +167,7 @@ void CFont_WriteTextBitmap(bool IgnoreRenderer, LCDBitmap *Renderer, char* Font,
 			}
 			if (CFont_DebugInfo)
 				pd->system->logToConsole("Loaded Font %s\n", Filename);
-
+			pd->system->realloc(Filename, 0);
 			CFont_FontCache[fontCacheItems].Font = FontIn;
 			strcpy(CFont_FontCache[fontCacheItems].Filename, FontNameSize);
 			fontCacheItems++;
