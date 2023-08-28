@@ -6,7 +6,10 @@
 #include <stdbool.h>
 
 #define ShowFPS false
-#define debugInfo false
+#define debugInfoStats false
+#define debufInfoFonts false
+#define debufInfoImages false
+#define debufInfoAudio false
 #define debugShowCollisionShapes false
 #define dumpScaledBitmaps false
 #define useDefaultColorAssets false

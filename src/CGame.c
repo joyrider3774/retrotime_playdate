@@ -120,9 +120,9 @@ void CGame_Init()
 {
 	srand(pd->system->getCurrentTimeMilliseconds());
 
-	CAudio_Init(debugInfo);
-	CFont_Init(debugInfo);
-	CImage_Init(debugInfo);
+	CAudio_Init(debufInfoAudio);
+	CFont_Init(debufInfoFonts);
+	CImage_Init(debufInfoImages);
 	CInput_Init();
 	CSprites_Init();
 	CSprites_SetForceShowCollisionShape(debugShowCollisionShapes);
@@ -606,7 +606,7 @@ int CGame_MainLoop(void* ud)
 		}
 	}
 
-	if (debugInfo || ShowFPS)
+	if (debugInfoStats || ShowFPS)
 	{
 		Frames++;
 		if (pd->system->getCurrentTimeMilliseconds() - FrameTime >= 1000)
@@ -622,14 +622,14 @@ int CGame_MainLoop(void* ud)
 		pd->system->formatString(&TmpText, "FPS: %.0f\n", 1000.0f / CurrentMs);
 		strcat(Text, TmpText);
 		pd->system->realloc(TmpText, 0);
-		if (ShowFPS && !debugInfo)
+		if (ShowFPS && !debugInfoStats)
 		{
 			pd->system->drawFPS(0, 0);
 			/*SDL_Point tz = CFont_TextSize("Roboto-Regular", 11, Text, strlen(Text), 0);
 			pd->graphics->fillRect(ScreenWidth - tz.x, 0, tz.x, tz.y, kColorWhite);
 			CFont_WriteText("Roboto-Regular", 11, Text, strlen(Text), ScreenWidth - tz.x, 0, 0, (LCDColor)kColorBlack);*/
 		}
-		else if(debugInfo)
+		else if(debugInfoStats)
 		{
 			pd->system->formatString(&TmpText, "FrameTime: %.5f\n", CurrentMs);
 			strncat(Text, TmpText, 100);
