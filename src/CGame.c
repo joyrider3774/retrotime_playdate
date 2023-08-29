@@ -135,6 +135,8 @@ void CGame_Init()
 	CGame_LoadMusic();
 	CGame_LoadSound();
 
+	pd->graphics->setBackgroundColor(kColorBlack);
+
 	TexTmp = pd->graphics->newBitmap(ScreenWidth, ScreenHeight, kColorClear);
 	TexOffScreen = pd->graphics->newBitmap(ScreenWidth, ScreenHeight, kColorClear);
 
