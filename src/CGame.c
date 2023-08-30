@@ -35,7 +35,8 @@ char DataPath[500];
 uint32_t AlphaTimer;
 uint32_t TimerTicks;
 int Score;
-int NextSubStateCounter, NextSubState, NextSubStateTimeAdd;
+int NextSubState, NextSubStateTimeAdd;
+float NextSubStateCounter;
 
 int ActiveGameGameStateId;
 CGameSnake *GameSnake;
@@ -330,6 +331,15 @@ void CGame_SaveSettings()
 //or main menu (basically it allows fading while keeping the subgamestate
 void CGame_StartFade()
 {
+	if (!AlphaEnabled)
+		return;
+	//take screenshot of what is on screen and save to TexOffscreen
+	//in the game loop we'll add a mask over it and draw to the screen
+	//as long as gamealpha is not fullalpha
+	pd->graphics->pushContext(TexOffScreen);
+	pd->graphics->drawBitmap(pd->graphics->getDisplayBufferBitmap(), 0, 0, kBitmapUnflipped);
+	pd->graphics->popContext();
+
 	AlphaTimer = pd->system->getCurrentTimeMilliseconds();
 	GameAlpha = 0;
 	NextSubState = SubGameState;
@@ -338,9 +348,27 @@ void CGame_StartFade()
 }
 
 //mainly used to fade when going from one gamestate to another gamestate
-void CGame_StartCrossFade(int SetGameState, int SetNextSubState, int SetNextSubStateCounter, uint32_t SetNextSubStateTimeAdd)
+void CGame_StartCrossFade(int SetGameState, int SetNextSubState, float SetNextSubStateCounter, uint32_t SetNextSubStateTimeAdd)
 {
+	//when alpha not enabled skip
+	//directly to the next state & substate
+	if (!AlphaEnabled)
+	{
+		GameState = SetGameState;
+		SubGameState = SetNextSubState;
+		SubStateCounter = (float)SetNextSubStateCounter;
+		SubStateTime = pd->system->getCurrentTimeMilliseconds() + NextSubStateTimeAdd;
+		return;
+	}
+
+	//take screenshot of what is on screen and save to TexOffscreen
+	//in the game loop we'll add a mask over it and draw to the screen
+	//as long as gamealpha is not fullalpha
+	pd->graphics->pushContext(TexOffScreen);
+	pd->graphics->drawBitmap(pd->graphics->getDisplayBufferBitmap(), 0, 0, kBitmapUnflipped);
+	pd->graphics->popContext();
 	AlphaTimer = pd->system->getCurrentTimeMilliseconds();
+	
 	GameAlpha = 0;
 	SubGameState = SGFadeIn;
 	GameState = SetGameState;
@@ -496,9 +524,6 @@ int CGame_MainLoop(void* ud)
 	CGame_UpdateTimer();
 
 	CInput_Update();
-	if(titleAlphaEnabled)
-		pd->graphics->pushContext(TexOffScreen);
-
 	switch (GameState)
 	{
 		case GSIntroInit:
@@ -607,49 +632,31 @@ int CGame_MainLoop(void* ud)
 		default:
 			break;
 	}
-	if(titleAlphaEnabled)
-		pd->graphics->popContext();
 
-	if (GameAlpha < MaxAlpha)
+	if (AlphaEnabled)
 	{
-		if (titleAlphaEnabled)
-			GameAlpha = (int)truncf(MaxAlpha * ((float)(pd->system->getCurrentTimeMilliseconds() - AlphaTimer) / MaxAlphaTime));
-		else
-			GameAlpha = MaxAlpha;
-		if (GameAlpha >= MaxAlpha)
+		if (GameAlpha < MaxAlpha)
 		{
-			GameAlpha = MaxAlpha;
-			if(titleAlphaEnabled)
+			GameAlpha = (int)truncf(MaxAlpha * ((float)(pd->system->getCurrentTimeMilliseconds() - AlphaTimer) / MaxAlphaTime));
+			if (GameAlpha >= MaxAlpha)
 			{
+				GameAlpha = MaxAlpha;
+				SubGameState = NextSubState;
+				SubStateTime = pd->system->getCurrentTimeMilliseconds() + NextSubStateTimeAdd;
+				SubStateCounter = (float)NextSubStateCounter;
+			}
+			if ((int)floorf((float)(GameAlpha / (MaxAlpha / (GameAlphaPatternLength - 1)))) != GameAlphaPatternIndex)
+			{
+				GameAlphaPatternIndex = (int)floorf((float)(GameAlpha / (MaxAlpha / (GameAlphaPatternLength-1))));
 				pd->graphics->pushContext(TexOffScreenMask);
 				pd->graphics->fillRect(0, 0, 0, 0, kColorBlack);
-				pd->graphics->fillRect(0, 0, ScreenWidth, ScreenHeight, (LCDColor)FadeInPatterns3[GameAlphaPatternLength - 1]);
+				pd->graphics->fillRect(0, 0, ScreenWidth, ScreenHeight, (LCDColor)FadeInPatterns3[(GameAlphaPatternLength - 1) - GameAlphaPatternIndex]);
 				pd->graphics->popContext();
 				pd->graphics->setBitmapMask(TexOffScreen, TexOffScreenMask);
 			}
-			SubGameState = NextSubState;
-			SubStateTime = pd->system->getCurrentTimeMilliseconds() + NextSubStateTimeAdd;
-			SubStateCounter = (float)NextSubStateCounter;
-		}
-		else
-		{
-			if(titleAlphaEnabled)
-			{
-				if ((int)floorf((float)(GameAlpha / (MaxAlpha / GameAlphaPatternLength))) != GameAlphaPatternIndex)
-				{
-					GameAlphaPatternIndex = (int)floorf((float)(GameAlpha / (MaxAlpha / GameAlphaPatternLength)));
-					pd->graphics->pushContext(TexOffScreenMask);
-					pd->graphics->fillRect(0, 0, 0, 0, kColorBlack);
-					pd->graphics->fillRect(0, 0, ScreenWidth, ScreenHeight, (LCDColor)FadeInPatterns3[GameAlphaPatternIndex]);
-					pd->graphics->popContext();				
-				}
-				pd->graphics->setBitmapMask(TexOffScreen, TexOffScreenMask);
-			}
+			pd->graphics->drawBitmap(TexOffScreen, 0, 0, kBitmapUnflipped);
 		}
 	}
-	if(titleAlphaEnabled)
-		pd->graphics->drawBitmap(TexOffScreen, 0, 0, kBitmapUnflipped);
-
 
 	if (debugInfoStats || ShowFPS)
 	{

@@ -25,8 +25,8 @@ extern int GameAlpha;
 extern uint32_t AlphaTimer;
 extern uint32_t TimerTicks;
 extern int Score;
-extern int NextSubStateCounter, NextSubState, NextSubStateTimeAdd;
-
+extern int NextSubState, NextSubStateTimeAdd;
+extern float NextSubStateCounter;
 extern int ActiveGameGameStateId;
 
 extern CGameSnake *GameSnake;
@@ -74,7 +74,7 @@ void CGame_ResetScores();
 void CGame_ResetHighScores();
 void CGame_AddToScore(int Value);
 void CGame_DrawTitleBackground();
-void CGame_StartCrossFade(int SetGameState, int SetNextSubState, int SetNextSubStateCounter, uint32_t SetNextSubStateTimeAdd);
+void CGame_StartCrossFade(int SetGameState, int SetNextSubState, float SetNextSubStateCounter, uint32_t SetNextSubStateTimeAdd);
 void CGame_StartFade();
 
 #endif

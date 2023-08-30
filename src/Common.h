@@ -15,15 +15,9 @@
 #define useDefaultColorAssets false
 #define loadDumpedScaledBitmaps true
 #define BatteryMonitoring false
+#define AlphaEnabled true
 
 #define epsilion 0.0001f
-
-//enables crossfading by drawing everything to offscreen bitmap
-//and faking alpha changes by drawing a pattern in bitmask of the offscreen bitmap
-//based on the alpha value. you'll lose some FPS when enabled but its still doable
-//on the playdate itself. Only brickbraker gets lower than 30 fps but it's not noticeable
-//when no fps counter is displayed
-#define titleAlphaEnabled true
 
 #define MaxAlpha 245
 #define AlphaIncrease 5
