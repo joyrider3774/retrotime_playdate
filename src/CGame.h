@@ -21,7 +21,7 @@
 #include "games/CGameSnake.h"
 
 
-extern uint8_t GameAlpha;
+extern int GameAlpha;
 extern uint32_t AlphaTimer;
 extern uint32_t TimerTicks;
 extern int Score;
@@ -75,5 +75,6 @@ void CGame_ResetHighScores();
 void CGame_AddToScore(int Value);
 void CGame_DrawTitleBackground();
 void CGame_StartCrossFade(int SetGameState, int SetNextSubState, int SetNextSubStateCounter, uint32_t SetNextSubStateTimeAdd);
+void CGame_StartFade();
 
 #endif

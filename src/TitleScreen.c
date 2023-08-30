@@ -151,7 +151,8 @@ void TitleScreen()
 				(!CInput_PrevButtons.ButB && CInput_Buttons.ButB))
 			{
 				CAudio_PlaySound(SfxBack, 0);
-
+				if (titleAlphaEnabled)
+					CGame_StartFade();
 				CurrentMainMenu = -1;
 				CGame_SaveSettings();
 			}
@@ -165,6 +166,8 @@ void TitleScreen()
 				{
 					case OMBack:
 						CurrentMainMenu = -1;
+						if (titleAlphaEnabled)
+							CGame_StartFade();
 						CGame_SaveSettings();
 						break;
 					case OMResetHighScores:
@@ -213,7 +216,8 @@ void TitleScreen()
 				(!CInput_PrevButtons.ButStart && CInput_Buttons.ButStart))
 			{
 				CAudio_PlaySound(SfxBack, 0);
-
+				if (titleAlphaEnabled)
+					CGame_StartFade();
 				CurrentMainMenu = -1;
 			}
 			break;
@@ -252,7 +256,8 @@ void TitleScreen()
 				(!CInput_PrevButtons.ButStart && CInput_Buttons.ButStart))
 			{
 				CAudio_PlaySound(SfxBack, 0);
-
+				if (titleAlphaEnabled)
+					CGame_StartFade();
 				CurrentMainMenu = -1;
 			}
 			break;
@@ -284,7 +289,8 @@ void TitleScreen()
 				(!CInput_PrevButtons.ButB && CInput_Buttons.ButB))
 			 {
 				CAudio_PlaySound(SfxBack, 0);
-
+				if (titleAlphaEnabled)
+					CGame_StartFade();
 				CurrentMainMenu = -1;
 			 }
 
@@ -339,13 +345,16 @@ void TitleScreen()
 			{
 				CAudio_PlaySound(SfxBack, 0);
 				CurrentMainMenu = MMSelectGameMode;
+				if (titleAlphaEnabled)
+					CGame_StartFade();
 			}
 
 			if ((!CInput_PrevButtons.ButStart && CInput_Buttons.ButStart) ||
 				(!CInput_PrevButtons.ButA && CInput_Buttons.ButA))
 			{
 				CAudio_PlaySound(SfxConfirm, 0);
-
+				if (titleAlphaEnabled)
+					CGame_StartFade();
 				GameState = gamestate;
 				CGame_ResetScores();
 				CurrentMainMenu = -1;
@@ -426,6 +435,8 @@ void TitleScreen()
 			{
 				CAudio_PlaySound(SfxBack, 0);
 				CurrentMainMenu = -1;
+				if (titleAlphaEnabled)
+					CGame_StartFade();
 			}
 
 			if ((!CInput_PrevButtons.ButStart && CInput_Buttons.ButStart) ||
@@ -442,6 +453,8 @@ void TitleScreen()
 				}
 				else
 					CurrentMainMenu = MMSelectGame;
+				if (titleAlphaEnabled)
+					CGame_StartFade();
 			}
 			break;
 		}
@@ -490,6 +503,8 @@ void TitleScreen()
 			if ((!CInput_PrevButtons.ButStart && CInput_Buttons.ButStart) ||
 				(!CInput_PrevButtons.ButA && CInput_Buttons.ButA))
 			{
+				if (titleAlphaEnabled)
+					CGame_StartFade();
 				CurrentMainMenu = SelMenu;
 				CAudio_PlaySound(SfxConfirm, 0);
 

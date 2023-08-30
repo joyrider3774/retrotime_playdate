@@ -130,6 +130,8 @@ void CGameBase_PauseMenu(CGameBase* GameBase)
 			{
 				CAudio_PlaySound(SfxBack, 0);
 				SubGameState = SGPauseMenu;
+				if (titleAlphaEnabled)
+					CGame_StartFade();
 				CInput_ResetButtons();
 			}
 		}
@@ -215,6 +217,8 @@ void CGameBase_PauseMenu(CGameBase* GameBase)
 				SubGameState = CGameBase_prevsubgamestate;
 				SubStateCounter = CGameBase_prevsubstatecounter;
 				CGameBase_prevsubgamestate = -1;
+				if (titleAlphaEnabled)
+					CGame_StartFade();
 			}
 
 			if ((!CInput_PrevButtons.ButA && CInput_Buttons.ButA) ||
@@ -230,6 +234,8 @@ void CGameBase_PauseMenu(CGameBase* GameBase)
 					SubStateCounter = CGameBase_prevsubstatecounter;
 					CGameBase_prevsubgamestate = -1;
 					CInput_ResetButtons();
+					if (titleAlphaEnabled)
+						CGame_StartFade();
 					break;
 				}
 
@@ -259,6 +265,8 @@ void CGameBase_PauseMenu(CGameBase* GameBase)
 				{
 					SubGameState = SGGameHelp;
 					CInput_ResetButtons();
+					if (titleAlphaEnabled)
+						CGame_StartFade();
 					break;
 				}
 				}
@@ -342,6 +350,8 @@ bool CGameBase_UpdateLogic(CGameBase* GameBase)
 		CGameBase_prevsubgamestate = SubGameState;
 		CGameBase_prevsubstatecounter = SubStateCounter;
 		SubGameState = SGPauseMenu;
+		if (titleAlphaEnabled)
+			CGame_StartFade();
 	}
 
 	GameBase->PauseMenu(GameBase);
