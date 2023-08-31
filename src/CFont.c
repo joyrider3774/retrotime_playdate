@@ -53,7 +53,7 @@ int CFont_TextWidth(char* Font, int FontSize, char* Tekst, size_t NrOfChars)
 SDL_Point CFont_TextSize(char* Font, int FontSize, char* Tekst, size_t NrOfChars, int YSpacing)
 {
 	SDL_Point Result = {0,0};
-	if(!CFont_GlobalFontEnabled || (NrOfChars == 0))
+	if (!CFont_GlobalFontEnabled || (NrOfChars == 0))
 		return Result;
 
 	LCDFont* FontIn = NULL;
@@ -62,31 +62,31 @@ SDL_Point CFont_TextSize(char* Font, int FontSize, char* Tekst, size_t NrOfChars
 	pd->system->formatString(&TmpFormat, "%s_%d", Font, FontSize);
 	strcpy(FontNameSize, TmpFormat);
 	pd->system->realloc(TmpFormat, 0);
-	
+
 	bool bfound = false;
 	for (int i = 0; i < fontCacheItems; i++)
-		if(strcmp(CFont_FontCache[i].Filename, FontNameSize) == 0)
+		if (strcmp(CFont_FontCache[i].Filename, FontNameSize) == 0)
 		{
-			FontIn = CFont_FontCache[i].Font; 
+			FontIn = CFont_FontCache[i].Font;
 			bfound = true;
 			break;
 		}
 
 	if (fontCacheItems < FontCacheMax)
 	{
-		if(!bfound)
+		if (!bfound)
 		{
-			char *Filename;
+			char* Filename;
 			pd->system->formatString(&Filename, "fonts/%s", FontNameSize);
 			FontIn = loadFontAtPath(Filename);
 			if (!FontIn)
 			{
-				if(CFont_DebugInfo)
+				if (CFont_DebugInfo)
 					pd->system->logToConsole("Failed Loading Font %s\n", Filename);
 				pd->system->realloc(Filename, 0);
 				return Result;
 			}
-			if(CFont_DebugInfo)
+			if (CFont_DebugInfo)
 				pd->system->logToConsole("Loaded Font %s\n", Filename);
 			pd->system->realloc(Filename, 0);
 
@@ -96,35 +96,19 @@ SDL_Point CFont_TextSize(char* Font, int FontSize, char* Tekst, size_t NrOfChars
 		}
 	}
 
-	char List[MaxLines][MaxCharsPerLine];
-	size_t Lines, Teller, Chars;
-	Lines = 0;
+	int Lines, Chars;
+	Lines = 1;
 	Chars = 0;
-	for (Teller = 0; Teller < NrOfChars; Teller++)
+	char* p = Tekst;
+	while ((*p != '\0') && (Chars < NrOfChars))
 	{
-		if (Lines > MaxLines)
-			break;
-		if ((Tekst[Teller] == '\n') || (Chars == MaxCharsPerLine))
-		{
-			List[Lines][Chars] = '\0';
+		if (*p == '\n')
 			Lines++;
-			Chars = 0;
-		}
-		else
-		{
-			List[Lines][Chars] = Tekst[Teller];
-			Chars++;
-		}
+		p++;
+		Chars++;
 	}
-	List[Lines][Chars] = '\0';
-	int w;
-	Result.y = (int)((Lines * pd->graphics->getFontHeight(FontIn)) + (Lines * YSpacing));
-	for (Teller = 0; Teller <= Lines; Teller++)
-	{
-		w = pd->graphics->getTextWidth(FontIn, List[Teller], strlen(List[Teller]), kASCIIEncoding, 0);
-		if (w > Result.x)
-			Result.x = w;
-	}
+	Result.y = Lines * pd->graphics->getFontHeight(FontIn);
+	Result.x = pd->graphics->getTextWidth(FontIn, Tekst, strlen(Tekst), kASCIIEncoding, 0);
 	return Result;
 }
 
@@ -175,35 +159,6 @@ void CFont_WriteTextBitmap(bool IgnoreRenderer, LCDBitmap *Renderer, char* Font,
 	}
 	if (FontIn)
 	{
-		char List[MaxLines][MaxCharsPerLine];
-		size_t Lines, Teller, Chars;
-		Lines = 0;
-		Chars = 0;
-		for (Teller = 0; Teller < NrOfChars; Teller++)
-		{
-			if (Lines > MaxLines)
-				break;
-			if ((Tekst[Teller] == '\n') || (Chars == MaxCharsPerLine))
-			{
-				List[Lines][Chars] = '\0';
-				Lines++;
-				Chars = 0;
-			}
-			else
-			{
-				List[Lines][Chars] = Tekst[Teller];
-				Chars++;
-			}
-		}
-		List[Lines][Chars] = '\0';
-		int fontheight = pd->graphics->getFontHeight(FontIn);
-
-		for (Teller = 0; Teller <= Lines; Teller++)
-		{
-			if (strlen(List[Teller]) > 0)
-			{
-				drawTextColor(IgnoreRenderer, Renderer, FontIn, List[Teller], strlen(List[Teller]), kASCIIEncoding, X, (int)(Y + (Teller)*fontheight + (Teller * YSpacing)), ColorIn, false);
-			}
-		}
+		drawTextColor(IgnoreRenderer, Renderer, FontIn, Tekst, strlen(Tekst), kASCIIEncoding, X, Y, ColorIn, false);
 	}
 }

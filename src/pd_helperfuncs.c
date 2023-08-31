@@ -4,6 +4,20 @@
 #include "pd_api.h"
 
 PlaydateAPI* pd;
+LCDBitmap *Buffer = NULL;
+
+typedef struct DrawTextColorBitmapCacheItem DrawTextColorBitmapCacheItem;
+struct DrawTextColorBitmapCacheItem
+{
+	char Text[DrawTextColorBitmapCacheMaxTextSize+1];
+	LCDBitmap* Bitmap;
+	LCDColor color;
+	LCDFont *font;
+};
+
+DrawTextColorBitmapCacheItem DrawTextColorBitmapCache[DrawTextColorBitmapCacheCount];
+int DrawTextColorBitmapCacheItems = 0;
+long int DrawTextColorBitmapCacheMisses = 0;
 
 LCDPattern kColorGrey = {
 	// Bitmap
@@ -30,41 +44,97 @@ LCDPattern kColorGrey = {
 void drawTextColor(bool IgnoreBitmapContext, LCDBitmap* BitmapContext, LCDFont* font, const void* text, size_t len, PDStringEncoding encoding, int x, int y, LCDColor color, bool inverted)
 {
 	//grab width & height of our to be rendered text
-	if(!IgnoreBitmapContext)
+	if (!IgnoreBitmapContext)
 		pd->graphics->pushContext(BitmapContext);
-	int h = pd->graphics->getFontHeight(font);
+	
+	//check if we previously drawn this text
+	int bcacheditemindex = -1;
+	for (int i = 0; i < DrawTextColorBitmapCacheItems; i++)
+	{
+		if ((strcmp(DrawTextColorBitmapCache[i].Text, text) == 0) && 
+			(DrawTextColorBitmapCache[i].color == color) &&
+			(DrawTextColorBitmapCache[i].font == font))
+		{
+			bcacheditemindex = i;
+			break;
+		}
+	}
+	
+	//text & bitmap was found in cache draw from cache
+	if (bcacheditemindex != -1)
+	{
+		pd->graphics->drawBitmap(DrawTextColorBitmapCache[bcacheditemindex].Bitmap, x, y, kBitmapUnflipped);
+	}
+	else
+	{		
+		//not found in check, if we have max items erase the 1st item we had used
+		//and move the others down
+		if (DrawTextColorBitmapCacheItems == DrawTextColorBitmapCacheCount)
+		{
+			pd->graphics->freeBitmap(DrawTextColorBitmapCache[0].Bitmap);
+			for (int i = 1 ; i < DrawTextColorBitmapCacheCount; i++)
+			{
+				DrawTextColorBitmapCache[i - 1] = DrawTextColorBitmapCache[i];
+			}
+			DrawTextColorBitmapCacheItems--;
+		}
+		int Lines = 1;
+		int chars = 0;
+		const char* p = text;
+		while ((*p != '\0') && (chars < len))
+		{
+			if (*p == '\n')
+				Lines++;
+			p++;
+			chars++;
+		}
+		int h = Lines * pd->graphics->getFontHeight(font);
+		pd->graphics->setFont(font);
+		int w = pd->graphics->getTextWidth(font, text, len, encoding, 0);
 
-	pd->graphics->setFont(font);
-	int w = pd->graphics->getTextWidth(font, text, len, encoding, 0);
+		//create new bitmap and fillrect with our color / pattern
+		DrawTextColorBitmapCache[DrawTextColorBitmapCacheItems].Bitmap = pd->graphics->newBitmap(w, h, kColorClear);
+		if (inverted)
+			pd->graphics->setDrawMode(kDrawModeInverted);
+		pd->graphics->pushContext(DrawTextColorBitmapCache[DrawTextColorBitmapCacheItems].Bitmap);
+		pd->graphics->fillRect(0, 0, w, h, color);
+		pd->graphics->popContext();
 
-	//create new bitmap and fillrect with our color / pattern
-	LCDBitmap* bitmap = pd->graphics->newBitmap(w, h, kColorClear);
-	if (inverted)
-		pd->graphics->setDrawMode(kDrawModeInverted);
-	pd->graphics->pushContext(bitmap);
-	pd->graphics->fillRect(0, 0, w, h, color);
-	pd->graphics->popContext();
+		//create mask with black background and draw text in white on the mask 
+		LCDBitmap* bitmapmask = pd->graphics->newBitmap(w,h, kColorBlack);
+		pd->graphics->pushContext(bitmapmask);
+		pd->graphics->setDrawMode(kDrawModeFillWhite);
+		pd->graphics->setFont(font);
+		pd->graphics->drawText(text, len, encoding, 0, 0);
+		pd->graphics->popContext();
 
-	//create mask with black background and draw text in white on the mask 
-	LCDBitmap* bitmapmask = pd->graphics->newBitmap(w, h, kColorBlack);
-	pd->graphics->pushContext(bitmapmask);
-	pd->graphics->setDrawMode(kDrawModeFillWhite);
-	pd->graphics->setFont(font);
-	pd->graphics->drawText(text, len, encoding, 0, 0);
-	pd->graphics->popContext();
+		//set the mask to the bitmap with our pattern, this will make sure only the text
+		//part (white in mask is drawn from the bitmap)
+		pd->graphics->setBitmapMask(DrawTextColorBitmapCache[DrawTextColorBitmapCacheItems].Bitmap, bitmapmask);
+		pd->graphics->freeBitmap(bitmapmask);
+		//now draw the bitmap containing our text to the x & y position
+		pd->graphics->drawBitmap(DrawTextColorBitmapCache[DrawTextColorBitmapCacheItems].Bitmap, x, y, kBitmapUnflipped);
+		//ignore debug text for the cache
+		if (strstr(text, "DTC Misses") == NULL)
+		{
+			if (DrawTextColorBitmapCacheItems > 0)
+				DrawTextColorBitmapCacheMisses++;
+			DrawTextColorBitmapCache[DrawTextColorBitmapCacheItems].color = color;
+			DrawTextColorBitmapCache[DrawTextColorBitmapCacheItems].font = font;
+			size_t textlen = (len < DrawTextColorBitmapCacheMaxTextSize ? len : DrawTextColorBitmapCacheMaxTextSize);
+			strncpy(DrawTextColorBitmapCache[DrawTextColorBitmapCacheItems].Text, text, textlen);
+			DrawTextColorBitmapCache[DrawTextColorBitmapCacheItems].Text[textlen] = '\0';
+			DrawTextColorBitmapCacheItems++;
+			if (textlen < len)
+				pd->system->logToConsole("Warning DrawTextColorBitmapCache text truncated given size:%d maxsize:%d", len, textlen);
+		}
+		else
+			pd->graphics->freeBitmap(DrawTextColorBitmapCache[DrawTextColorBitmapCacheItems].Bitmap);
+	}
 
-	//set the mask to the bitmap with our pattern, this will make sure only the text
-	//part (white in mask is drawn from the bitmap)
-	pd->graphics->setBitmapMask(bitmap, bitmapmask);
-
-	//now draw the bitmap containing our text to the x & y position
-	pd->graphics->drawBitmap(bitmap, x, y, kBitmapUnflipped);
-	pd->graphics->freeBitmap(bitmap);
-	pd->graphics->freeBitmap(bitmapmask);
 	if (!IgnoreBitmapContext)
 		pd->graphics->popContext();
 }
-
 
 
 LCDBitmap* loadImageAtPath(const char* path)

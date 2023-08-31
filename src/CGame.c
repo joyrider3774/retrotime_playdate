@@ -123,9 +123,9 @@ void CGame_Init()
 {
 	srand(pd->system->getCurrentTimeMilliseconds());
 	GameAlphaPatternLength = (sizeof(FadeInPatterns3) / sizeof(FadeInPatterns3[0]));
-	CAudio_Init(debufInfoAudio);
-	CFont_Init(debufInfoFonts);
-	CImage_Init(debufInfoImages);
+	CAudio_Init(debugInfoAudio);
+	CFont_Init(debugInfoFonts);
+	CImage_Init(debugInfoImages);
 	CInput_Init();
 	CSprites_Init();
 	CSprites_SetForceShowCollisionShape(debugShowCollisionShapes);
@@ -705,6 +705,9 @@ int CGame_MainLoop(void* ud)
 			strncat(Text, TmpText, 100);
 			pd->system->realloc(TmpText, 0);
 			pd->system->formatString(&TmpText, "SCL Loaded: %d/%d\n", CImage_ScaledImagesLoadedCount(), CImage_ScaledImagesLoadedMax());
+			strncat(Text, TmpText, 100);
+			pd->system->realloc(TmpText, 0);
+			pd->system->formatString(&TmpText, "DTC Misses: %d-%d", DrawTextColorBitmapCacheMisses, DrawTextColorBitmapCacheCount);
 			strncat(Text, TmpText, 100);
 			pd->system->realloc(TmpText, 0);
 			SDL_Point tz = CFont_TextSize("Roboto-Regular", 11, Text, strlen(Text), 0);

@@ -7,15 +7,18 @@
 
 #define ShowFPS false
 #define debugInfoStats false
-#define debufInfoFonts false
-#define debufInfoImages false
-#define debufInfoAudio false
+#define debugInfoFonts false
+#define debugInfoImages false
+#define debugInfoAudio false
 #define debugShowCollisionShapes false
 #define dumpScaledBitmaps false
 #define useDefaultColorAssets false
 #define loadDumpedScaledBitmaps true
 #define BatteryMonitoring false
 #define AlphaEnabled true
+
+#undef DrawTextColorBitmapCacheCount
+#define DrawTextColorBitmapCacheCount 20
 
 #define epsilion 0.0001f
 
