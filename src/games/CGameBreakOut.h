@@ -13,14 +13,14 @@
 #define CGameBreakOut_blockstatedeath 1
 #define CGameBreakOut_ballspeed (6.0f*yscale*FPSScale)
 #define CGameBreakOut_ballspeedinc (0.1f*yscale*FPSScale)
-#define CGameBreakOut_ballvelsegments (5*FPSScale)
+#define CGameBreakOut_ballvelsegments 5
 #define CGameBreakOut_playerspeed (8.0f*xscale*FPSScale)
 #define CGameBreakOut_blockxoffset (120.0f*xscale)
 #define CGameBreakOut_blockyoffset (80.0f*yscale)
-#define CGameBreakOut_blockrows 10
+#define CGameBreakOut_blockrows 7
 #define CGameBreakOut_blockcols 17
 //blockrows * blockcols;
-#define CGameBreakOut_numblocks 170 
+#define CGameBreakOut_numblocks 119 
 
 struct sblockinfo
 {

@@ -7,7 +7,7 @@
 #include "../Common.h"
 #include "../CTween.h"
 #include "../Vec2F.h"
-
+#include "../pd_helperfuncs.h"
 
 
 CGameBreakOut* Create_CGameBreakOut()
@@ -21,7 +21,7 @@ CGameBreakOut* Create_CGameBreakOut()
 	GameBreakOut->SfxBat = -1;
 	GameBreakOut->GameBase->screenleft = 0;
 	GameBreakOut->GameBase->screenright = ScreenWidth;
-	GameBreakOut->GameBase->screentop = 0;
+	GameBreakOut->GameBase->screentop = ScoreBarHeight;
 	GameBreakOut->GameBase->screenbottom = ScreenHeight;
 
 	GameBreakOut->background = 0;
@@ -517,7 +517,9 @@ void CGameBreakOut_updateball(CGameBreakOut* GameBreakOut)
 
 void CGameBreakOut_DrawBackground(CGameBreakOut* GameBreakOut)
 {
-	CImage_DrawImage(GameBreakOut->background, NULL, NULL);
+	pd->graphics->fillRect(GameBreakOut->GameBase->screenleft, GameBreakOut->GameBase->screentop,
+		GameBreakOut->GameBase->screenright - GameBreakOut->GameBase->screenleft,
+		GameBreakOut->GameBase->screenbottom - GameBreakOut->GameBase->screentop, kColorBlack);
 }
 
 //init - deinit ----------------------------------------------------------------------------------------------------------------
@@ -567,8 +569,6 @@ void CGameBreakOut_deinit(CGameBreakOut* GameBreakOut)
 
 void CGameBreakOut_LoadGraphics(CGameBreakOut* GameBreakOut)
 {
-	GameBreakOut->background = CImage_LoadImage("breakout/background.png");
-	GameBreakOut->backgroundtz = CImage_ImageSize(GameBreakOut->background);
 	GameBreakOut->spritesheetblocks = CImage_LoadImageEx("breakout/blocks.png", 8, 128, dumpScaledBitmaps); 
 	GameBreakOut->spritesheetbat = CImage_LoadImageEx("breakout/paddle.png",0, 128, dumpScaledBitmaps);
 	GameBreakOut->spritesheetball = CImage_LoadImageEx("breakout/ball.png", 0, 128, dumpScaledBitmaps);
@@ -580,8 +580,6 @@ void CGameBreakOut_LoadGraphics(CGameBreakOut* GameBreakOut)
 	if(!useDefaultColorAssets)
 	{
 		GameBreakOut->UnloadGraphics(GameBreakOut);
-		GameBreakOut->background = CImage_LoadImage("breakout/background.png");
-		GameBreakOut->backgroundtz = CImage_ImageSize(GameBreakOut->background);
 		GameBreakOut->spritesheetblocks = CImage_LoadImage("breakout/blocks.bmp");
 		GameBreakOut->spritesheetbat = CImage_LoadImage("breakout/paddle.bmp");
 		GameBreakOut->spritesheetball = CImage_LoadImage("breakout/ball.bmp");
@@ -592,7 +590,6 @@ void CGameBreakOut_LoadGraphics(CGameBreakOut* GameBreakOut)
 
 void CGameBreakOut_UnloadGraphics(CGameBreakOut* GameBreakOut)
 {
-	CImage_UnLoadImage(GameBreakOut->background);
 	CImage_UnLoadImage(GameBreakOut->spritesheetblocks);
 	CImage_UnLoadImage(GameBreakOut->spritesheetbat);
 	CImage_UnLoadImage(GameBreakOut->spritesheetball);
