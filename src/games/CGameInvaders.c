@@ -300,7 +300,7 @@ void CGameInvaders_createasteroids(CGameInvaders* GameInvaders)
 		Vec2F scale = {CGameInvaders_asteroidscale, CGameInvaders_asteroidscale};
 		CSprites_SetSpriteScale(GameInvaders->asteroids[i].spr, scale);
 		CSprites_SetSpriteCollisionShape(GameInvaders->asteroids[i].spr, SHAPE_BOX, 45,45,0, 0 , 2);
-		CSprites_SetSpriteRotation(GameInvaders->asteroids[i].spr, (float)(rand() % (360)));
+		//CSprites_SetSpriteRotation(GameInvaders->asteroids[i].spr, (float)(rand() % (360)));
 	}
 }
 
@@ -313,7 +313,7 @@ void CGameInvaders_updateasteroids(CGameInvaders* GameInvaders)
 			Vec2F scale = {CGameInvaders_asteroidscale - ((CGameInvaders_asteroidscale / CGameInvaders_asteroidmaxhealthpoints) * (CGameInvaders_asteroidmaxhealthpoints - GameInvaders->asteroids[i].healthpoints)),
 				CGameInvaders_asteroidscale - ((CGameInvaders_asteroidscale / CGameInvaders_asteroidmaxhealthpoints) * (CGameInvaders_asteroidmaxhealthpoints - GameInvaders->asteroids[i].healthpoints))};
 			CSprites_SetSpriteScale(GameInvaders->asteroids[i].spr,scale);
-			CSprites_SetSpriteRotation(GameInvaders->asteroids[i].spr, GameInvaders->asteroids[i].spr->rotation + 0.5f);
+			//CSprites_SetSpriteRotation(GameInvaders->asteroids[i].spr, GameInvaders->asteroids[i].spr->rotation + 0.5f);
 		}
 	}
 }
