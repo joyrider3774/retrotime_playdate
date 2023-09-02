@@ -13,7 +13,7 @@
 #define CGameRamIt_playerspeed (10*xscale*FPSScale)
 #define CGameRamIt_bulletspeed (5*xscale*FPSScale)
 #define CGameRamIt_numblocks 16
-#define CGameRamIt_blocksegments 20
+#define CGameRamIt_blocksegments 21
 #define CGameRamIt_sides 2
 #define CGameRamIt_blockspacing (int)(5*yscale)
 #define CGameRamIt_ticksidle 35

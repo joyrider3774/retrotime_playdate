@@ -675,11 +675,15 @@ void CGameRamIt_UpdateObjects(CGameRamIt* GameRamIt, bool IsGameState)
 {
 	if (IsGameState)
 	{
-		GameRamIt->updateplayer(GameRamIt);
-		GameRamIt->updateplayfield(GameRamIt,false);
-		GameRamIt->updatebullet(GameRamIt);
-
-		if (GameRamIt->playerdeath)
+		if (!GameRamIt->playerdeath)
+		{
+			GameRamIt->updateplayer(GameRamIt);
+			GameRamIt->updateplayfield(GameRamIt, false);
+			GameRamIt->updatebullet(GameRamIt);
+		}
+		//don't handle death state immediatly after updating
+		//otherwise it won't draw the last state hence the else
+		else
 		{
 			CAudio_PlaySound(GameRamIt->SfxDie, 0);
 			if (GameMode == GMGame)

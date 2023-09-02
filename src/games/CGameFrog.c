@@ -1037,30 +1037,33 @@ void CGameFrog_UpdateLogic(CGameFrog* GameFrog)
 
 	if (SubGameState == SGGame)
 	{
-		GameFrog->updateplayer(GameFrog);
-		//needs to be done after player update and before object update
-		//object update checks collisions etc and thus also player death
-		//it does this before adjusting GameFrog->worldspeed to y value
-		//so if not done here weird collisions and false deaths happen
-		if (GameFrog->dolevelinc)
+		if (!GameFrog->playerdeath)
 		{
-			if (GameFrog->GameBase->level-1 < CGameFrog_lenlevelincspeeds - 1)
+			GameFrog->updateplayer(GameFrog);
+			//needs to be done after player update and before object update
+			//object update checks collisions etc and thus also player death
+			//it does this before adjusting GameFrog->worldspeed to y value
+			//so if not done here weird collisions and false deaths happen
+			if (GameFrog->dolevelinc)
 			{
-				GameFrog->GameBase->level += 1;
-				GameFrog->dolevelinc = false;
+				if (GameFrog->GameBase->level - 1 < CGameFrog_lenlevelincspeeds - 1)
+				{
+					GameFrog->GameBase->level += 1;
+					GameFrog->dolevelinc = false;
+				}
 			}
+
+			GameFrog->updateobjects(GameFrog);
+			CSprites_UpdateSprites();
+
 		}
-
-		GameFrog->updateobjects(GameFrog);
-		CSprites_UpdateSprites();
-
-
-		if (GameFrog->playerdeath)
+		else
 		{
 			CAudio_PlaySound(GameFrog->SfxDie, 0);
 			CGame_AddToScore(-150);
 			if(GameFrog->GameBase->HealthPoints > 1)
 			{
+				pdDelay(500);
 				GameFrog->destroyallobjects(GameFrog);
 				GameFrog->destroyplayer(GameFrog);
 				GameFrog->createobjects(GameFrog,true);

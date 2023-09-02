@@ -247,30 +247,31 @@ void CGameSnake_UnLoadSound(CGameSnake* GameSnake)
 
 void CGameSnake_UpdateObjects(CGameSnake* GameSnake, bool IsGameState)
 {
-	if (IsGameState)
+	if (IsGameState && ! GameSnake->playerdeath)
 	{
 		GameSnake->updatesnake(GameSnake);
 		GameSnake->updatefood(GameSnake);
 	}
-
-	if (IsGameState && GameSnake->playerdeath)
-	{
-		CAudio_PlaySound(GameSnake->SfxDie, 0);
-		CGame_AddToScore(-50);
-
-		if (GameSnake->GameBase->HealthPoints > 1)
+	else
+		if (IsGameState)
 		{
-			GameSnake->createsnake(GameSnake);
-			GameSnake->createfood(GameSnake);
-			if (GameMode == GMGame)
-				GameSnake->GameBase->HealthPoints -= 1;
-			SubGameState = SGReadyGo;
-			SubStateTime = pd->system->getCurrentTimeMilliseconds() + 500;
+			CAudio_PlaySound(GameSnake->SfxDie, 0);
+			CGame_AddToScore(-50);
+
+			if (GameSnake->GameBase->HealthPoints > 1)
+			{
+				pdDelay(500);
+				GameSnake->createsnake(GameSnake);
+				GameSnake->createfood(GameSnake);
+				if (GameMode == GMGame)
+					GameSnake->GameBase->HealthPoints -= 1;
+				SubGameState = SGReadyGo;
+				SubStateTime = pd->system->getCurrentTimeMilliseconds() + 500;
+			}
+			else
+				if(GameMode == GMGame)
+					GameSnake->GameBase->HealthPoints -= 1;
 		}
-		else
-			if(GameMode == GMGame)
-				GameSnake->GameBase->HealthPoints -= 1;
-	}
 }
 
 void CGameSnake_UpdateLogic(CGameSnake* GameSnake)
