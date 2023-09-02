@@ -210,7 +210,7 @@ void setPDPtr(PlaydateAPI* playdate)
 void pdDelay(unsigned int milliseconds)
 {
 	unsigned int start = pd->system->getCurrentTimeMilliseconds();
-	while (start + milliseconds < pd->system->getCurrentTimeMilliseconds());
+	while (start + milliseconds > pd->system->getCurrentTimeMilliseconds());
 }
 
 bool pdFileExists(char* Path)
