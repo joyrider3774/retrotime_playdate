@@ -817,7 +817,7 @@ void CGameFrog_createplayer(CGameFrog* GameFrog)
 	SDL_Point tz = CSprites_TileSize(GameFrog->player.spr);
 	Vec2F scale = {((CGameFrog_playerspeed -8*xscale)) / tz.x, ((CGameFrog_playerspeed -8*yscale)) / tz.y};
 	CSprites_SetSpriteScale(GameFrog->player.spr, scale);
-	CSprites_SetSpriteCollisionShape(GameFrog->player.spr, SHAPE_BOX, (int)(CGameFrog_playerspeed / 3.0f), (int)(CGameFrog_playerspeed/3.0f), 0, 0, (int)(CGameFrog_playerspeed/12.0f));
+	CSprites_SetSpriteCollisionShape(GameFrog->player.spr, SHAPE_BOX, 20.0f, 20.0f, 0, 1.0f, 1.0f);
 	GameFrog->player.tz.x = (int)(tz.x * scale.x);
 	GameFrog->player.tz.y = (int)(tz.y * scale.y);
 	GameFrog->player.pos.x = GameFrog->GameBase->screenleft + (CGameFrog_numcols / 2) * CGameFrog_playerspeed + CGameFrog_playerspeed / 2;
