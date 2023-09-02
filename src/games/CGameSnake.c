@@ -9,7 +9,7 @@
 CGameSnake* Create_CGameSnake()
 {
 	CGameSnake* GameSnake = (CGameSnake*) malloc(sizeof(CGameSnake));
-	GameSnake->GameBase = Create_CGameBase(GSSnake, true);
+	GameSnake->GameBase = Create_CGameBase(GSSnake, false);
 	GameSnake->MusMusic = -1;
 	GameSnake->SfxFood = -1;
 	GameSnake->SfxDie = -1;
