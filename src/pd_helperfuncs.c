@@ -79,7 +79,7 @@ void drawTextColor(bool IgnoreBitmapContext, LCDBitmap* BitmapContext, LCDFont* 
 			DrawTextColorBitmapCacheItems--;
 		}
 		int Lines = 1;
-		int chars = 0;
+		size_t chars = 0;
 		const char* p = text;
 		while ((*p != '\0') && (chars < len))
 		{
@@ -88,10 +88,10 @@ void drawTextColor(bool IgnoreBitmapContext, LCDBitmap* BitmapContext, LCDFont* 
 			p++;
 			chars++;
 		}
+
 		int h = Lines * pd->graphics->getFontHeight(font);
 		pd->graphics->setFont(font);
 		int w = pd->graphics->getTextWidth(font, text, len, encoding, 0);
-
 		//create new bitmap and fillrect with our color / pattern
 		DrawTextColorBitmapCache[DrawTextColorBitmapCacheItems].Bitmap = pd->graphics->newBitmap(w, h, kColorClear);
 		if (inverted)

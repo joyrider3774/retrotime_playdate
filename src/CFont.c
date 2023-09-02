@@ -96,9 +96,8 @@ SDL_Point CFont_TextSize(char* Font, int FontSize, char* Tekst, size_t NrOfChars
 		}
 	}
 
-	int Lines, Chars;
-	Lines = 1;
-	Chars = 0;
+	int Lines = 1;
+	size_t Chars = 0;
 	char* p = Tekst;
 	while ((*p != '\0') && (Chars < NrOfChars))
 	{
