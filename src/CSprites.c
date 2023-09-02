@@ -276,11 +276,9 @@ void CSprites_DrawSprite(CSprite* Spr)
 	{
 		CSprites_SpritesDrawn++;
 		SDL_Point pos = {(int)(Spr->x), (int)(Spr->y)};
-	
-		Vec2F scale = {Spr->sxscale, Spr->syscale};
+		
 		//multiply is to get the sign
-		scale.x = 1.0f * (Spr->sxscale / fabsf(Spr->sxscale));
-		scale.y = 1.0f * (Spr->syscale/fabsf(Spr->syscale));
+		Vec2F scale = { 1.0f * (Spr->sxscale / fabsf(Spr->sxscale)), 1.0f * (Spr->syscale / fabsf(Spr->syscale))};
 		int AnimTile = Spr->animTile;
 		int y = (int)floor(AnimTile / Spr->tilesX);
 		int x = AnimTile - (y * Spr->tilesX);
