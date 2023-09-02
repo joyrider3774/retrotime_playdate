@@ -242,7 +242,8 @@ void CGameInvaders_updateenemybullet(CGameInvaders* GameInvaders)
 					GameInvaders->player.freeze = 30;
 					GameInvaders->createexplosion(GameInvaders,GameInvaders->player.pos);
 					GameInvaders->destroyenemybullet(GameInvaders,i);
-					CGame_AddToScore(-150);
+					if (!(GameMode == GMGame))
+						CGame_AddToScore(-150);
 					GameInvaders->deaths += 1;
 					GameInvaders->GameBase->HealthPoints -= 1;
 					CAudio_PlaySound(GameInvaders->SfxDie, 0);
@@ -613,7 +614,8 @@ void CGameInvaders_updateinvaders(CGameInvaders* GameInvaders)
 	//enemies reached bottom
 	if ((GameInvaders->player.pos.y - GameInvaders->enemies[GameInvaders->enemyinfo.mostbottom].pos.y) < CGameInvaders_endscreenconstant)
 	{
-		CGame_AddToScore(-250);
+		if (!(GameMode == GMGame))
+			CGame_AddToScore(-250);
 		GameInvaders->enemyvel.x = CGameInvaders_enemyspeed;
 		GameInvaders->enemyvel.y = 0;
 		GameInvaders->destroyallinvaders(GameInvaders);

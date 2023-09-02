@@ -103,6 +103,7 @@ struct CGameFrog {
 	int previd;
 	int prevrowtype;
 	int playerdeath;
+	unsigned int playerdeathtime;
 	int playermaxrow;
 	int playerrow;
 	int plantsspawned;

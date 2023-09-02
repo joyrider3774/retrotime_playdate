@@ -632,7 +632,16 @@ void CGameFrog_updateobjects(CGameFrog* GameFrog)
 							GameFrog->player.spr->x = (float)((int)GameFrog->player.pos.x);
 							GameFrog->player.spr->y = (float)((int)GameFrog->player.pos.y);
 							if ((GameFrog->player.pos.x < GameFrog->GameBase->screenleft) || (GameFrog->player.pos.x > GameFrog->GameBase->screenright))
-								GameFrog->playerdeath = true;
+							{
+								if(!GameFrog->playerdeath)
+								{
+									GameFrog->playerdeath = true;
+									GameFrog->playerdeathtime = pd->system->getCurrentTimeMilliseconds() + 500;
+									CAudio_PlaySound(GameFrog->SfxDie, 0);
+									if (!(GameMode == GMGame))
+										CGame_AddToScore(-150);
+								}
+							}
 
 							playermoved = true;
 							plantcol = true;
@@ -640,7 +649,16 @@ void CGameFrog_updateobjects(CGameFrog* GameFrog)
 
 					if ((id == CGameFrog_idenemycar1) || (id == CGameFrog_idenemycar2) || (id == CGameFrog_idenemycar3) ||
 						(id == CGameFrog_idenemycar4) || (id == CGameFrog_idenemycar5))
-						GameFrog->playerdeath = true;
+					{
+						if(!GameFrog->playerdeath)
+						{
+							GameFrog->playerdeath = true;
+							GameFrog->playerdeathtime = pd->system->getCurrentTimeMilliseconds() + 500;
+							CAudio_PlaySound(GameFrog->SfxDie, 0);
+							if (!(GameMode == GMGame))
+								CGame_AddToScore(-150);
+						}
+					}
 					else
 					{
 						if ((id == CGameFrog_idroad) || (id == CGameFrog_idgrass))
@@ -772,9 +790,13 @@ void CGameFrog_updateobjects(CGameFrog* GameFrog)
 		}
 	}
 
-	if (!playermoved)
+	if (!playermoved && !GameFrog->playerdeath)
 	{
 		GameFrog->playerdeath = true;
+		GameFrog->playerdeathtime = pd->system->getCurrentTimeMilliseconds() + 500;
+		CAudio_PlaySound(GameFrog->SfxDie, 0);
+		if (!(GameMode == GMGame))
+			CGame_AddToScore(-150);
 	}
 }
 
@@ -891,7 +913,16 @@ void CGameFrog_updateplayer(CGameFrog* GameFrog)
 		GameFrog->player.spr->y = (float)((int)(GameFrog->player.pos.y));
 
 		if (GameFrog->player.pos.y >= GameFrog->GameBase->screenbottom)
-			GameFrog->playerdeath = true;
+		{
+			if(!GameFrog->playerdeath)
+			{
+				GameFrog->playerdeath = true;
+				GameFrog->playerdeathtime = pd->system->getCurrentTimeMilliseconds() + 500;
+				CAudio_PlaySound(GameFrog->SfxDie, 0);
+				if (!(GameMode == GMGame))
+					CGame_AddToScore(-150);
+			}
+		}
 	}
 	else
 	{
@@ -1025,6 +1056,7 @@ void CGameFrog_UnloadGraphics(CGameFrog* GameFrog)
 void CGameFrog_OnGameStart(CGameFrog* GameFrog)
 {
 	GameFrog->playerdeath = false;
+	GameFrog->playerdeathtime = 0;
 }
 
 void CGameFrog_UpdateLogic(CGameFrog* GameFrog)
@@ -1059,21 +1091,30 @@ void CGameFrog_UpdateLogic(CGameFrog* GameFrog)
 		}
 		else
 		{
-			CAudio_PlaySound(GameFrog->SfxDie, 0);
-			CGame_AddToScore(-150);
 			if(GameFrog->GameBase->HealthPoints > 1)
 			{
-				pdDelay(500);
-				GameFrog->destroyallobjects(GameFrog);
-				GameFrog->destroyplayer(GameFrog);
-				GameFrog->createobjects(GameFrog,true);
-				GameFrog->createplayer(GameFrog);
-				GameFrog->GameBase->HealthPoints = GameFrog->GameBase->HealthPoints - 1;
-				SubGameState = SGReadyGo;
-				SubStateTime = pd->system->getCurrentTimeMilliseconds() + 500;
+				if (GameFrog->playerdeathtime < pd->system->getCurrentTimeMilliseconds())
+				{
+					GameFrog->destroyallobjects(GameFrog);
+					GameFrog->destroyplayer(GameFrog);
+					GameFrog->createobjects(GameFrog, true);
+					if (GameMode == GMGame)
+					{
+						//createplayer sets healthpoints!
+						int tmpHealthPoints = GameFrog->GameBase->HealthPoints - 1;
+						GameFrog->createplayer(GameFrog);
+						GameFrog->GameBase->HealthPoints = tmpHealthPoints;
+					}
+					else
+						GameFrog->createplayer(GameFrog);
+					SubGameState = SGReadyGo;
+					SubStateTime = pd->system->getCurrentTimeMilliseconds() + 500;
+				}
 			}
-			if(GameMode == GMGame)
-				GameFrog->GameBase->HealthPoints -= 1;
+			else
+				if(GameMode == GMGame)
+					if (GameFrog->GameBase->HealthPoints > 0)
+						GameFrog->GameBase->HealthPoints = GameFrog->GameBase->HealthPoints - 1;
 		}
 	}
 }

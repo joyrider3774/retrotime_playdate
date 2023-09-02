@@ -77,7 +77,8 @@ struct CGameFastEddy {
 	SDL_Point backgroundtz;
 
 	int MusMusic, SfxSucces, SfxCollect, SfxDie;
-
+	bool playerdeath;
+	unsigned int playeardeathtime;
 	int rowzeroenemyindex;
 	int collecteditems;
 	int collectedcreated;

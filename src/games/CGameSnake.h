@@ -33,6 +33,7 @@ struct CGameSnake {
 	SDL_Point body[CGameSnake_totalcells];
 	SDL_Point dir;
 	SDL_Point food;
+	unsigned int playerdeathtime;
 	int playerdeath;
 	int MusMusic, SfxFood, SfxDie;
 

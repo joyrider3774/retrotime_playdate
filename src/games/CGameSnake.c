@@ -13,6 +13,7 @@ CGameSnake* Create_CGameSnake()
 	GameSnake->MusMusic = -1;
 	GameSnake->SfxFood = -1;
 	GameSnake->SfxDie = -1;
+	GameSnake->playerdeathtime = 0;
 	GameSnake->GameBase->playfieldwidth = (CGameSnake_cols) * CGameSnake_snakesize;
 	GameSnake->GameBase->playfieldheight = (CGameSnake_rows) * CGameSnake_snakesize;
 	GameSnake->GameBase->screenleft = (ScreenWidth - GameSnake->GameBase->playfieldwidth) / 2;
@@ -89,6 +90,7 @@ void CGameSnake_updatefood(CGameSnake* GameSnake)
 void CGameSnake_createsnake(CGameSnake* GameSnake)
 {
 	GameSnake->playerdeath = false;
+	GameSnake->playerdeathtime = 0;
 	GameSnake->snakelength = 0;
 	GameSnake->head.x = GameSnake->GameBase->screenleft + ((int)(floor(CGameSnake_cols / 2))) * CGameSnake_snakesize;
 	GameSnake->head.y = GameSnake->GameBase->screentop + ((int)(floor(CGameSnake_rows / 2))) * CGameSnake_snakesize;
@@ -186,13 +188,28 @@ void CGameSnake_updatesnake(CGameSnake* GameSnake)
 		GameSnake->body[0] = GameSnake->head;
 		GameSnake->head.x += GameSnake->dir.x * CGameSnake_snakesize;
 		GameSnake->head.y += GameSnake->dir.y * CGameSnake_snakesize;
-		if((GameSnake->head.x < GameSnake->GameBase->screenleft) || (GameSnake->head.x >= GameSnake->GameBase->screenright) ||
+		if ((GameSnake->head.x < GameSnake->GameBase->screenleft) || (GameSnake->head.x >= GameSnake->GameBase->screenright) ||
 			(GameSnake->head.y < GameSnake->GameBase->screentop) || (GameSnake->head.y >= GameSnake->GameBase->screenbottom))
-			GameSnake->playerdeath = true;
+		{
+			if(!GameSnake->playerdeath)
+			{
+				GameSnake->playerdeath = true;
+				CAudio_PlaySound(GameSnake->SfxDie, 0);
+				if (!(GameMode == GMGame))
+					CGame_AddToScore(-50);
+				GameSnake->playerdeathtime = pd->system->getCurrentTimeMilliseconds() + 500;
+			}
+		}
 
 		for (int i = 0; i < GameSnake->snakelength; i++)
 			if ((GameSnake->head.x == GameSnake->body[i].x) && (GameSnake->head.y == GameSnake->body[i].y))
-				GameSnake->playerdeath = true;
+			{
+				if(!GameSnake->playerdeath)
+				{
+					GameSnake->playerdeath = true;
+					GameSnake->playerdeathtime = pd->system->getCurrentTimeMilliseconds() + 500;
+				}
+			}
 	}
 }
 
@@ -255,22 +272,22 @@ void CGameSnake_UpdateObjects(CGameSnake* GameSnake, bool IsGameState)
 	else
 		if (IsGameState)
 		{
-			CAudio_PlaySound(GameSnake->SfxDie, 0);
-			CGame_AddToScore(-50);
-
 			if (GameSnake->GameBase->HealthPoints > 1)
 			{
-				pdDelay(500);
-				GameSnake->createsnake(GameSnake);
-				GameSnake->createfood(GameSnake);
-				if (GameMode == GMGame)
-					GameSnake->GameBase->HealthPoints -= 1;
-				SubGameState = SGReadyGo;
-				SubStateTime = pd->system->getCurrentTimeMilliseconds() + 500;
+				if (GameSnake->playerdeathtime < pd->system->getCurrentTimeMilliseconds())
+				{
+					GameSnake->createsnake(GameSnake);
+					GameSnake->createfood(GameSnake);
+					if (GameMode == GMGame)
+						GameSnake->GameBase->HealthPoints -= 1;
+					SubGameState = SGReadyGo;
+					SubStateTime = pd->system->getCurrentTimeMilliseconds() + 500;
+				}
 			}
 			else
 				if(GameMode == GMGame)
-					GameSnake->GameBase->HealthPoints -= 1;
+					if (GameSnake->GameBase->HealthPoints > 0)
+						GameSnake->GameBase->HealthPoints -= 1;
 		}
 }
 

@@ -584,7 +584,9 @@ void CGameRamIt_updateplayfield(CGameRamIt* GameRamIt, bool force)
 					for (block = 0; block < CGameRamIt_numblocks; block++)
 						if (GameRamIt->playfield[side][block].segments == CGameRamIt_blocksegments)
 						{
+							GameRamIt->playerdeathtime = pd->system->getCurrentTimeMilliseconds() + 500;
 							GameRamIt->playerdeath = true;
+							CAudio_PlaySound(GameRamIt->SfxDie, 0);
 							break;
 						}
 			}
@@ -634,6 +636,7 @@ void CGameRamIt_init(CGameRamIt* GameRamIt)
 	GameRamIt->speed = CGameRamIt_ticksidle;
 	GameRamIt->GameBase->level = 1;
 	GameRamIt->playerdeath = false;
+	GameRamIt->playerdeathtime = 0;
 	GameRamIt->createplayer(GameRamIt);
 	GameRamIt->createplayfield(GameRamIt);
 	GameRamIt->GameBase->HealthPoints = 3;
@@ -685,16 +688,23 @@ void CGameRamIt_UpdateObjects(CGameRamIt* GameRamIt, bool IsGameState)
 		//otherwise it won't draw the last state hence the else
 		else
 		{
-			CAudio_PlaySound(GameRamIt->SfxDie, 0);
-			if (GameMode == GMGame)
-				GameRamIt->GameBase->HealthPoints -= 1;
-
-			if (GameRamIt->GameBase->HealthPoints > 0)
+			if (GameRamIt->GameBase->HealthPoints > 1)
 			{
-				pdDelay(500);
-				GameRamIt->createplayfield(GameRamIt);
+				if (GameRamIt->playerdeathtime < pd->system->getCurrentTimeMilliseconds())
+				{
+					if (GameMode == GMGame)
+						GameRamIt->GameBase->HealthPoints -= 1;
+
+					GameRamIt->createplayfield(GameRamIt);
+					GameRamIt->playerdeath = false;	
+					SubGameState = SGReadyGo;
+					SubStateTime = pd->system->getCurrentTimeMilliseconds() + 500;
+				}
 			}
-			GameRamIt->playerdeath = false;
+			else
+				if (GameMode == GMGame)
+					if (GameRamIt->GameBase->HealthPoints > 0)
+						GameRamIt->GameBase->HealthPoints -= 1;
 		}
 	}
 }

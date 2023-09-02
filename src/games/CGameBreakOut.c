@@ -393,10 +393,17 @@ void CGameBreakOut_updateball(CGameBreakOut* GameBreakOut)
 				{
 					GameBreakOut->destroyball(GameBreakOut);
 					GameBreakOut->createball(GameBreakOut);
-					GameBreakOut->ball.freeze = 45;
-					GameBreakOut->GameBase->HealthPoints -= 1;
-					CGame_AddToScore(-100);
+					GameBreakOut->ball.freeze = 15;
+					if (GameMode == GMGame)
+						GameBreakOut->GameBase->HealthPoints -= 1;
+					else
+						CGame_AddToScore(-100);
 					CAudio_PlaySound(GameBreakOut->SfxDie, 0);
+					if (GameBreakOut->GameBase->HealthPoints > 0)
+					{
+						SubGameState = SGReadyGo;
+						SubStateTime = pd->system->getCurrentTimeMilliseconds() + 500;
+					}
 				}
 
 				for (int k = 0; k < CGameBreakOut_numblocks; k++)

@@ -448,22 +448,13 @@ void CGameFastEddy_updateenemies(CGameFastEddy* GameFastEddy)
 					(GameFastEddy->player.state != GameFastEddy_playerstateunknown)) ||
 					(GameFastEddy->enemies[i].row == 0))
 				{
-					CAudio_PlaySound(GameFastEddy->SfxDie, 0);
-					if (GameMode == GMGame)
-						GameFastEddy->GameBase->HealthPoints -= 1;
-
-					if (GameFastEddy->GameBase->HealthPoints > 0)
+					if(!GameFastEddy->playerdeath)
 					{
-						CGame_AddToScore(-100);
-						pdDelay(500);
-						GameFastEddy->destroyenemies(GameFastEddy);
-						GameFastEddy->destroyplayer(GameFastEddy);
-						GameFastEddy->destroykey(GameFastEddy);
-						GameFastEddy->createplayer(GameFastEddy);
-						GameFastEddy->createenemies(GameFastEddy,false);
-						GameFastEddy->createkey(GameFastEddy);
-						if (GameFastEddy->collecteditems >= 9)
-							GameFastEddy->enemyenablelevelend(GameFastEddy);
+						GameFastEddy->playerdeath = true;
+						GameFastEddy->playeardeathtime = pd->system->getCurrentTimeMilliseconds() + 500;
+						CAudio_PlaySound(GameFastEddy->SfxDie, 0);
+						if (!(GameMode == GMGame))
+							CGame_AddToScore(-100);
 					}
 					break;
 				}
@@ -485,6 +476,7 @@ void CGameFastEddy_destroyplayer(CGameFastEddy* GameFastEddy)
 
 void CGameFastEddy_createplayer(CGameFastEddy* GameFastEddy)
 {
+	GameFastEddy->playerdeath = false;
 	GameFastEddy->player.spr = CSprites_CreateSprite();
 	GameFastEddy->player.alive = true;
 	SDL_Point tz = {238, 342};
@@ -1085,10 +1077,43 @@ void CGameFastEddy_UpdateLogic(CGameFastEddy* GameFastEddy)
 
 	if ((GameState == GSTitleScreenInit) || (SubGameState == SGPauseMenu) || (SubGameState == SGFrame) || (SubGameState == SGGameHelp))
 		return;
-	
-	GameFastEddy->UpdateObjects(GameFastEddy, SubGameState == SGGame);
-	if(SubGameState == SGGame)
-		CSprites_UpdateSprites();
+
+	if (!GameFastEddy->playerdeath)
+	{
+		GameFastEddy->UpdateObjects(GameFastEddy, SubGameState == SGGame);
+		if (SubGameState == SGGame)
+			CSprites_UpdateSprites();
+	}
+	else
+	{
+		if (GameFastEddy->GameBase->HealthPoints > 1)
+		{
+			if (GameFastEddy->playeardeathtime < pd->system->getCurrentTimeMilliseconds())
+			{
+				
+				if (GameMode == GMGame)
+					GameFastEddy->GameBase->HealthPoints -= 1;
+			
+				GameFastEddy->destroyenemies(GameFastEddy);
+				GameFastEddy->destroyplayer(GameFastEddy);
+				GameFastEddy->destroykey(GameFastEddy);
+				GameFastEddy->createplayer(GameFastEddy);
+				GameFastEddy->createenemies(GameFastEddy, false);
+				GameFastEddy->createkey(GameFastEddy);
+				if (GameFastEddy->collecteditems >= 9)
+					GameFastEddy->enemyenablelevelend(GameFastEddy);
+				SubGameState = SGReadyGo;
+				SubStateTime = pd->system->getCurrentTimeMilliseconds() + 500;
+			}
+		}
+		else
+			if (GameMode == GMGame)
+				if (GameFastEddy->GameBase->HealthPoints > 0)
+					GameFastEddy->GameBase->HealthPoints -= 1;
+
+	}
+
+
 }
 
 void CGameFastEddy_Draw(CGameFastEddy* GameFastEddy)

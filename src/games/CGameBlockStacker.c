@@ -244,11 +244,19 @@ void CGameBlockStacker_updateplayfield(CGameBlockStacker* BlockStacker, bool for
 					if(GameMode == GMGame)
 					{
 						BlockStacker->GameBase->HealthPoints -= 1;
+						if (BlockStacker->GameBase->HealthPoints > 0)
+						{
+							BlockStacker->createplayfield(BlockStacker);
+							SubGameState = SGReadyGo;
+							SubStateTime = pd->system->getCurrentTimeMilliseconds() + 500;
+						}
 					}
 					else
 					{
 						CGame_AddToScore(-250);
 						BlockStacker->createplayfield(BlockStacker);
+						SubGameState = SGReadyGo;
+						SubStateTime = pd->system->getCurrentTimeMilliseconds() + 500;
 					}
 				}
 			}

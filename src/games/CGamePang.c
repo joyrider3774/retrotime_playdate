@@ -191,7 +191,8 @@ void CGamePang_updateballs(CGamePang* GamePang)
 
 			if (!GamePang->playerstate(GamePang,CGamePang_playerstatereviving) && CSprites_DetectSpriteCollision(GamePang->balls[i].spr, GamePang->player.spr))
 			{
-				CGame_AddToScore(-25);
+				if (!(GameMode == GMGame))
+					CGame_AddToScore(-25);
 				GamePang->GameBase->HealthPoints -= 1;
 				GamePang->addplayerstate(GamePang,CGamePang_playerstatereviving);
 				GamePang->remplayerstate(GamePang,CGamePang_playerstateshoot);

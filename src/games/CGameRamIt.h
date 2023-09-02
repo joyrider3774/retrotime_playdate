@@ -35,6 +35,7 @@ struct CGameRamIt {
 
 	int SfxShoot, SfxHit, SfxDie, SfxSucces, MusMusic;
 	int speed, speedcount, playerdx, playerdeath, riblocksize, riblocksizespacing, segmentwidth;
+	unsigned int playerdeathtime;
 	SDL_Point playerpos;
 	SDL_Point bulletpos;
 	SDL_Point bulletvel;
