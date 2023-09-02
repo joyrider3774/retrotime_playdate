@@ -17,10 +17,10 @@
 #define CGameBreakOut_playerspeed (8.0f*xscale*FPSScale)
 #define CGameBreakOut_blockxoffset (120.0f*xscale)
 #define CGameBreakOut_blockyoffset (80.0f*yscale)
-#define CGameBreakOut_blockrows 7
+#define CGameBreakOut_blockrows 8
 #define CGameBreakOut_blockcols 17
 //blockrows * blockcols;
-#define CGameBreakOut_numblocks 119 
+#define CGameBreakOut_numblocks 136 
 
 struct sblockinfo
 {
