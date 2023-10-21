@@ -130,16 +130,16 @@ void SubScoreScreen()
 			{
 				char* msg;
 				pd->system->formatString(&msg, "SUBMIT YOUR HI-SCORE ONLINE: %d", RetroCarouselHighScore);
-				int tw = CFont_TextWidth("Roboto-Regular", (int)(50.0f * yscale), msg, strlen(msg), kASCIIEncoding, 0);
-				CFont_WriteText("Roboto-Regular", (int)(50.0f * yscale), msg, strlen(msg), (400 - tw) >> 1, 18, 0, kColorWhite);
+				int tw = CFont_TextWidth("Roboto-Regular", (int)(50.0f * yscale), msg, strlen(msg));
+				CFont_WriteText("Roboto-Regular", (int)(50.0f * yscale), msg, strlen(msg), (ScreenWidth - tw) >> 1, 18, 0, kColorWhite);
 				pd->system->realloc(msg, 0);
 				if (QRCode)
 				{
 					int w, h;
 					pd->graphics->getBitmapData(QRCode, &w, &h, NULL, NULL, NULL);
-					pd->graphics->fillRect(((400 - w) >> 1) - 1, 42, w + 2, h + 2, kColorWhite);
+					pd->graphics->fillRect(((ScreenWidth - w) >> 1) - 1, 42, w + 2, h + 2, kColorWhite);
 					//-80 from drawoffset set
-					pd->graphics->drawBitmap(QRCode, (400 - w) >> 1, 43, kBitmapUnflipped);
+					pd->graphics->drawBitmap(QRCode, (ScreenWidth - w) >> 1, 43, kBitmapUnflipped);
 				}
 			}
 		}
