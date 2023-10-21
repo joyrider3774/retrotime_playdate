@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - { pdx: Retrotime.pdx, env: playdate }
+          - { pdx: RetroTime.pdx, env: playdate }
           
     runs-on: ubuntu-latest       
     steps:
@@ -61,6 +61,6 @@ jobs:
       - name: Store build
         uses: actions/upload-artifact@v3
         with:
-          name: Formula1 ${{matrix.env}}
+          name: RetroTime ${{matrix.env}}
           path: output
 

@@ -96,5 +96,5 @@ jobs:
       - name: Store build
         uses: actions/upload-artifact@v3
         with:
-          name: Retrotime ${{ matrix.env }}
+          name: RetroTime ${{ matrix.env }}
           path: Source/
