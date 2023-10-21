@@ -8,7 +8,7 @@
 #include "SDL_HelperTypes.h"
 #include "pd_helperfuncs.h"
 
-int maxticks = 240;
+int maxticks = 75;
 int scene = 0;
 int sceneticks = 0;
 int tsize = (int)(70.0f*yscale);
