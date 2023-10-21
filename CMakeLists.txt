@@ -33,11 +33,13 @@ project(${PLAYDATE_GAME_NAME} C ASM)
 file(GLOB SOURCES
 	"src/*.c"
 	"src/games/*.c"
+  "src/scoresubmit/*.c"
 )
 
 file(GLOB HEADERS
 	"src/*.h"
 	"src/games/*.h"
+  "src/scoresubmit/*.h"
 )
 
 if (TOOLCHAIN STREQUAL "armgcc")
