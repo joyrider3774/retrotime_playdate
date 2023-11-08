@@ -57,14 +57,19 @@ void Destroy_CGameSnake(CGameSnake* GameSnake)
 
 void CGameSnake_createfood(CGameSnake* GameSnake)
 {
+	srand(time(NULL));
 	bool bok = false;
 	while (!bok)
 	{
-		GameSnake->food.x = GameSnake->GameBase->screenleft + (int)((rand() % CGameSnake_cols) *CGameSnake_snakesize);
+		GameSnake->food.x = GameSnake->GameBase->screenleft + (int)((rand() % CGameSnake_cols) * CGameSnake_snakesize);
 		GameSnake->food.y = GameSnake->GameBase->screentop + (int)((rand() % CGameSnake_rows) * CGameSnake_snakesize);
-		bok = ((GameSnake->food.x != GameSnake->head.x) && (GameSnake->food.y != GameSnake->head.y));
+		bok = !((GameSnake->food.x == GameSnake->head.x) && (GameSnake->food.y == GameSnake->head.y));
 		for (int i = 0; i < GameSnake->snakelength; i++)
-			bok = bok && ((GameSnake->food.x != GameSnake->body[i].x) && (GameSnake->food.y != GameSnake->body[i].y));
+		{
+			bok = bok && !((GameSnake->food.x == GameSnake->body[i].x) && (GameSnake->food.y == GameSnake->body[i].y));
+			if (!bok)
+				break;
+		}
 	}
 }
 
