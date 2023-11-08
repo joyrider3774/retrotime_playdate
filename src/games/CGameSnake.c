@@ -57,7 +57,7 @@ void Destroy_CGameSnake(CGameSnake* GameSnake)
 
 void CGameSnake_createfood(CGameSnake* GameSnake)
 {
-	srand(time(NULL));
+	srand(pd->system->getCurrentTimeMilliseconds());
 	bool bok = false;
 	while (!bok)
 	{
