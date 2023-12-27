@@ -66,7 +66,7 @@ void InitSubScoreScreen()
 		RETROTIME_PLAYDATE_CODEKEY
 #endif 
 			QRCode = CreateQrCodeSubmit(pd, (char*)codekey, 42, RetroCarouselHighScore, 210, &verifyCode);
-		pd->system->logToConsole("score: %u verifier:%s %s", RetroCarouselHighScore, verifyCode, codekey);
+		pd->system->logToConsole("score: %u verifier:%s", RetroCarouselHighScore, verifyCode);
 	}
 }
 
