@@ -27,6 +27,15 @@ char* verifyCode;
 LCDBitmap* QRCode = NULL;
 int view = 0;
 
+void DeInitSubScoreScreen()
+{
+	if(QRCode)
+	{
+		pd->graphics->freeBitmap(QRCode);
+		QRCode = NULL;
+	}
+}
+
 void InitSubScoreScreen()
 {
 	SubGameState = SGFrame;

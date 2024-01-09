@@ -13,11 +13,19 @@ int scene = 0;
 int sceneticks = 0;
 int tsize = (int)(70.0f*yscale);
 
+void InroInit()
+{
+	scene = 0;
+	sceneticks = 0;
+	maxticks = 75;
+	tsize = (int)(70.0f*yscale);
+}
 
 void Intro()
 {
 	if(GameState == GSIntroInit)
 	{
+		InroInit();
 		GameState -= initDiff;
 	}
 

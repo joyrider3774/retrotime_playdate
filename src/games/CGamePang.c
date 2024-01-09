@@ -75,6 +75,7 @@ void Destroy_CGamePang(CGamePang* GamePang)
 {
 	Destroy_CGameBase(GamePang->GameBase);
 	free(GamePang);
+	GamePang = NULL;
 }
 
 

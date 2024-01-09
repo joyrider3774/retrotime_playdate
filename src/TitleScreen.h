@@ -3,5 +3,6 @@
 
 void TitleScreen();
 void InitTitleScreen();
+void ResetGlobalsTitleScreen();
 
 #endif

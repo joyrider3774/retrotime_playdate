@@ -164,6 +164,8 @@ int CImage_LoadImageEx(const char* FileName, int bayerver, int whitethreshold, b
 			}
 		}
 
+	pd->system->realloc(BaseFileName, 0);
+
 	if(result == -1)
 		if (CImage_DebugInfo)
 			pd->system->logToConsole("Failed Loading Graphic %s\n", BaseFileName);

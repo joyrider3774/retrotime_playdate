@@ -152,6 +152,7 @@ void Destroy_CGameFrog(CGameFrog* GameFrog)
 {
 	Destroy_CGameBase(GameFrog->GameBase);
 	free(GameFrog);
+	GameFrog = NULL;
 }
 
 

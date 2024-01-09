@@ -279,6 +279,7 @@ void Destroy_CGameRamIt(CGameRamIt* GameRamIt)
 {
 	Destroy_CGameBase(GameRamIt->GameBase);
 	free(GameRamIt);
+	GameRamIt = NULL;
 }
 
 bool CGameRamIt_createbullet(CGameRamIt* GameRamIt)

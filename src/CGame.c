@@ -62,7 +62,6 @@ int CurrentGameMusicID;
 
 void CGame_DeInit()
 {
-
 	switch(ActiveGameGameStateId)
 	{
 		case GSSnake:
@@ -101,10 +100,13 @@ void CGame_DeInit()
 			break;
 	}
 
+	DeInitSubScoreScreen();
+
 	pd->graphics->freeBitmap(TexScreen);
 	pd->graphics->freeBitmap(TexTmp);
 	pd->graphics->freeBitmap(TexOffScreen);
 	pd->graphics->freeBitmap(TexOffScreenMask);
+	clearDrawtextBitmapCache();
 
 	CGame_UnLoadMusic();
 	CGame_UnLoadGraphics();
@@ -143,6 +145,8 @@ void CGame_Init()
 	TexTmp = pd->graphics->newBitmap(ScreenWidth, ScreenHeight, kColorClear);
 	TexOffScreen = pd->graphics->newBitmap(ScreenWidth, ScreenHeight, kColorClear);
 	TexOffScreenMask = pd->graphics->newBitmap(ScreenWidth, ScreenHeight, kColorBlack);
+
+	ResetGlobalsTitleScreen();
 
 	//Main State Variables and such
 	CurrentGameMusicID = -1;

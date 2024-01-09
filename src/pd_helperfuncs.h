@@ -24,4 +24,5 @@ LCDBitmapTable* loadBitmapTableAtPath(const char* path);
 unsigned int logPower(const char* filename, unsigned int logIntervalSeconds, unsigned int prevLogTime);
 void setPDPtr(PlaydateAPI* playdate);
 void pdDelay(unsigned int milliseconds);
+void clearDrawtextBitmapCache();
 #endif

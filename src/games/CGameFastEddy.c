@@ -88,6 +88,8 @@ CGameFastEddy* Create_CGameFastEddy()
 void Destroy_CGameFastEddy(CGameFastEddy* GameFastEddy)
 {
 	Destroy_CGameBase(GameFastEddy->GameBase);
+	free(GameFastEddy);
+	GameFastEddy = NULL;
 }
 
 

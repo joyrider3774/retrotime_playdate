@@ -51,6 +51,7 @@ void Destroy_CGameSnake(CGameSnake* GameSnake)
 {
 	Destroy_CGameBase(GameSnake->GameBase);
 	free(GameSnake);
+	GameSnake = NULL;
 }
 
 //GameSnake->food ----------------------------------------------------------------------------------------------------------------

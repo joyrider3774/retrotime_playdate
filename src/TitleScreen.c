@@ -17,6 +17,14 @@ const int menuspacing = (int)(90.0f*yscale);
 const int rcolor = 64;
 const int rdcolor = 1;
 
+void ResetGlobalsTitleScreen()
+{
+	SelectedMenu = 0;
+	CurrentMainMenu = -1;
+	SelMenu = 0;
+	SelOptions = 0;	
+}
+
 void InitTitleScreen()
 {
 	CAudio_PlayMusic(MusMenu, -1);

@@ -101,6 +101,7 @@ void Destroy_CGameInvaders(CGameInvaders* GameInvaders)
 {
 	Destroy_CGameBase(GameInvaders->GameBase);
 	free(GameInvaders);
+	GameInvaders = NULL;
 }
 
 //explosions ----------------------------------------------------------------------------------------------------------------

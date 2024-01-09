@@ -81,6 +81,7 @@ void Destroy_CGameBreakOut(CGameBreakOut* GameBreakOut)
 {
 	Destroy_CGameBase(GameBreakOut->GameBase);
 	free(GameBreakOut);
+	GameBreakOut = NULL;
 }
 
 //blocks ----------------------------------------------------------------------------------------------------------------

@@ -17,5 +17,10 @@ int eventHandler(PlaydateAPI* playdate, PDSystemEvent event, uint32_t arg)
 		playdate->system->setUpdateCallback(CGame_MainLoop, NULL);
 		CGame_Init();
 	}
+
+	if (event == kEventTerminate)
+	{
+		CGame_DeInit();
+	}
 	return 0;
 }

@@ -49,6 +49,8 @@ CGameBlockStacker* Create_CGameBlockStacker()
 void Destroy_CGameBlockStacker(CGameBlockStacker* BlockStacker)
 {
 	Destroy_CGameBase(BlockStacker->GameBase);
+	free(BlockStacker);
+	BlockStacker = NULL;
 }
 
 //helper funcs ----------------------------------------------------------------------------------------------------------------

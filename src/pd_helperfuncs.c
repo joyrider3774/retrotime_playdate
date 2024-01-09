@@ -41,6 +41,20 @@ LCDPattern kColorGrey = {
 	0b11111111,
 };
 
+void clearDrawtextBitmapCache()
+{
+	for (int i = 0; i < DrawTextColorBitmapCacheItems; i++)
+	{
+		if (DrawTextColorBitmapCache[i].Bitmap)
+		{
+			pd->graphics->freeBitmap(DrawTextColorBitmapCache[i].Bitmap);
+			DrawTextColorBitmapCache[i].font = NULL;
+			DrawTextColorBitmapCache[i].Text[0] = '\0';
+		}
+	}
+	DrawTextColorBitmapCacheItems = 0;
+}
+
 void drawTextColor(bool IgnoreBitmapContext, LCDBitmap* BitmapContext, LCDFont* font, const void* text, size_t len, PDStringEncoding encoding, int x, int y, LCDColor color, bool inverted)
 {
 	//grab width & height of our to be rendered text

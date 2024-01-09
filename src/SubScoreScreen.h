@@ -3,5 +3,6 @@
 
 void SubScoreScreen();
 void InitSubScoreScreen();
+void DeInitSubScoreScreen();
 
 #endif
