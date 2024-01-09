@@ -275,7 +275,7 @@ void CGameFastEddy_enemyenablelevelend(CGameFastEddy* GameFastEddy)
 {
 	int index = GameFastEddy->rowzeroenemyindex;
 	SDL_Point tz = {32, 32};
-	Vec2F scale = {GameFastEddy->enemyheight / tz.y, GameFastEddy->enemyheight / tz.y};
+	Vec2F scale = {ceil(GameFastEddy->enemyheight) / tz.y, ceil(GameFastEddy->enemyheight) / tz.y};
 	GameFastEddy->enemies[index].tz.x = (int)(tz.x * scale.x);
 	GameFastEddy->enemies[index].tz.y = (int)(tz.y * scale.y);
 	GameFastEddy->enemies[index].pos.y = (0 + 1) * GameFastEddy->rowspacingsize - GameFastEddy_rowfloorsizey / 2 - GameFastEddy->enemies[index].tz.y / 2;
@@ -298,7 +298,7 @@ void CGameFastEddy_createenemy(CGameFastEddy* GameFastEddy, int row, float x, in
 			GameFastEddy->enemies[i].row = row;
 			GameFastEddy->enemies[i].group = group;
 			GameFastEddy->enemies[i].state = state;
-			Vec2F scale = {GameFastEddy->enemyheight / tz.y * multiply, GameFastEddy->enemyheight / tz.y * multiply};
+			Vec2F scale = {(ceil(GameFastEddy->enemyheight) / tz.y * multiply), (ceil(GameFastEddy->enemyheight) / tz.y * multiply)};
 			GameFastEddy->enemies[i].tz.x = (int)(tz.x * scale.x);
 			GameFastEddy->enemies[i].tz.y = (int)(tz.y * scale.y);
 			CSprites_SetSpriteImageTiles(GameFastEddy->enemies[i].spr, &GameFastEddy->spritesheetenemy, 3, 4);
