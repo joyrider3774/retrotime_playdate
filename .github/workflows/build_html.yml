@@ -54,7 +54,7 @@ jobs:
       - name: Build Game        
         run: |
           source ./emsdk/emsdk_env.sh
-          emmake make EMSCRIPTEN_BUILD=1 EMSCRIPTEN_ASYNCIFY=1 EMSCRIPTEN_MEMORY_SIZE=891289600 "SRC_C_DIR=src/srcgame src/srcgame/scoresubmit src/srcgame/games"
+          emmake make EMSCRIPTEN_BUILD=1 EMSCRIPTEN_ASYNCIFY=1 EMSCRIPTEN_MEMORY_SIZE=891289600 "SRC_C_DIR=src/srcgame src/srcgame/scoresubmit src/srcgame/games" WINDOWSCALE=2
 
       - name: Store build
         uses: actions/upload-artifact@v3

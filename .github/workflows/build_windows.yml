@@ -57,7 +57,7 @@ jobs:
         env: # Or as an environment variable
           SECRET: ${{ secrets.RETROTIME_PLAYDATE_CODEKEY }}
         run: |
-          make "SRC_C_DIR=src/srcgame src/srcgame/scoresubmit src/srcgame/games"
+          make "SRC_C_DIR=src/srcgame src/srcgame/scoresubmit src/srcgame/games" WINDOWSCALE=2
       - name: Copy dll libraries
         shell: msys2 {0}
         run: |
